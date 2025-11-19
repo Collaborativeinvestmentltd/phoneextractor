@@ -15,10 +15,11 @@ RUN python -m playwright install --with-deps
 COPY . /opt/app
 
 ENV PORT 5000
-EXPOSE $PORT
+EXPOSE 5000
 
 RUN groupadd -r app && useradd -r -g app app
 RUN chown -R app:app /opt/app
 USER app
 
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:$PORT", "--workers", "2", "--worker-class", "gthread"]
+# Shell form to expand $PORT
+CMD gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --worker-class gthread
