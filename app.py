@@ -325,8 +325,8 @@ def index():
                            csrf_token=generate_csrf(),
                            SCRAPERS_AVAILABLE=SCRAPERS_AVAILABLE)
 
+@limiter.limit("10 per minute")
 @app.route('/extract', methods=['POST'])
-@limiter.limit
 @user_login_required
 def start_extraction():
     """Start data extraction process. Accepts either keywords OR location (or both)."""
@@ -359,6 +359,7 @@ def start_extraction():
     app.logger.info(f"Extraction started for keywords: '{keywords}' location: '{location}' platforms: {platforms}")
     return jsonify({"status": "Extraction started"})
 
+@limiter.limit("10 per minute")
 @app.route('/stop-extraction', methods=['POST'])
 @user_login_required
 def stop_extraction():
@@ -550,6 +551,7 @@ def revoke_license(license_key):
     
     return redirect(url_for("admin_dashboard"))
 
+@limiter.exempt
 @app.route('/stream-extraction')
 def stream_extraction():
     """SSE stream for real-time extraction progress.
