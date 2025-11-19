@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Austria",
+    "states": ["Burgenland","Carinthia","Lower Austria","Salzburg","Styria","Tyrol","Upper Austria","Vienna","Vorarlberg"]
+  },
+  {
+    "name": "Belgium",
+    "states": ["Brussels-Capital","Flanders","Wallonia"]
+  },
+  {
+    "name": "Croatia",
+    "states": ["Bjelovar-Bilogora","Brodsko-Posavska","Dubrovnik-Neretva","Istria","Karlovac","Koprivnica-Križevci","Krapina-Zagorje","Lika-Senj","Međimurje","Osijek-Baranja","Požega-Slavonia","Primorje-Gorski Kotar","Sisak-Moslavina","Split-Dalmatia","Šibenik-Knin","Varaždin","Virovitica-Podravina","Vukovar-Srijem","Zadar","Zagreb"]
+  },
+  {
+    "name": "Czech Republic",
+    "states": ["Prague","Central Bohemian","South Bohemian","Plzeň","Karlovy Vary","Ústí nad Labem","Liberec","Hradec Králové","Pardubice","Vysočina","South Moravian","Olomouc","Zlín","Moravian-Silesian"]
+  },
+  {
+    "name": "Denmark",
+    "states": ["Capital Region","Central Denmark","North Denmark","Region Zealand","Southern Denmark"]
+  },
+  {
+    "name": "Estonia",
+    "states": ["Harju","Hiiu","Ida-Viru","Jõgeva","Järva","Lääne","Lääne-Viru","Põlva","Pärnu","Rapla","Saare","Tartu","Valga","Viljandi","Võru"]
+  },
+  {
+    "name": "Finland",
+    "states": ["Åland Islands","Southern Finland","Eastern Finland","Western Finland","Ostrobothnia","Lapland","Northern Ostrobothnia","Central Finland","Satakunta","Päijänne Tavastia","Kainuu","South Karelia","Southwest Finland","Northern Savonia","Southern Savonia","Central Ostrobothnia"]
+  },
+  {
+    "name": "France",
+    "states": ["Auvergne-Rhône-Alpes","Bourgogne-Franche-Comté","Brittany","Centre-Val de Loire","Corsica","Grand Est","Hauts-de-France","Île-de-France","Normandy","Nouvelle-Aquitaine","Occitanie","Pays de la Loire","Provence-Alpes-Côte d'Azur"]
+  },
+  {
+    "name": "Germany",
+    "states": ["Baden-Württemberg","Bavaria","Berlin","Brandenburg","Bremen","Hamburg","Hesse","Lower Saxony","Mecklenburg-Vorpommern","North Rhine-Westphalia","Rhineland-Palatinate","Saarland","Saxony","Saxony-Anhalt","Schleswig-Holstein","Thuringia"]
+  },
+  {
+    "name": "Greece",
+    "states": ["Attica","Central Greece","Central Macedonia","Crete","East Macedonia and Thrace","Epirus","Ionian Islands","North Aegean","Peloponnese","South Aegean","Thessaly","Western Greece","Western Macedonia"]
+  },
+  {
+    "name": "Hungary",
+    "states": ["Bács-Kiskun","Baranya","Békés","Borsod-Abaúj-Zemplén","Csongrád-Csanád","Fejér","Győr-Moson-Sopron","Hajdú-Bihar","Heves","Jász-Nagykun-Szolnok","Komárom-Esztergom","Nógrád","Pest","Somogy","Szabolcs-Szatmár-Bereg","Tolna","Vas","Veszprém","Zala"]
+  },
+  {
+    "name": "Iceland",
+    "states": ["Capital Region","Southern Peninsula","Western","Westfjords","Northwestern","Northeastern","Eastern","Southern"]
+  },
+  {
+    "name": "Ireland",
+    "states": ["Connacht","Leinster","Munster","Ulster"]
+  },
+  {
+    "name": "Italy",
+    "states": ["Abruzzo","Aosta Valley","Apulia","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli Venezia Giulia","Lazio","Liguria","Lombardy","Marche","Molise","Piedmont","Sardinia","Sicily","Trentino-Alto Adige/Südtirol","Tuscany","Umbria","Veneto"]
+  },
+  {
+    "name": "Netherlands",
+    "states": ["Drenthe","Flevoland","Friesland","Gelderland","Groningen","Limburg","North Brabant","North Holland","Overijssel","South Holland","Utrecht","Zeeland"]
+  },
+  {
+    "name": "Norway",
+    "states": ["Agder","Innlandet","Møre og Romsdal","Nordland","Oslo","Rogaland","Troms og Finnmark","Trøndelag","Vestfold og Telemark","Vestland","Viken"]
+  },
+  {
+    "name": "Poland",
+    "states": ["Greater Poland","Kuyavian-Pomeranian","Lesser Poland","Łódź","Lower Silesian","Lublin","Lubusz","Masovian","Opole","Podlaskie","Pomeranian","Silesian","Subcarpathian","Świętokrzyskie","Warmian-Masurian","West Pomeranian"]
+  },
+  {
+    "name": "Portugal",
+    "states": ["Aveiro","Beja","Braga","Bragança","Castelo Branco","Coimbra","Évora","Faro","Guarda","Leiria","Lisbon","Portalegre","Porto","Santarém","Setúbal","Viana do Castelo","Vila Real","Viseu"]
+  },
+  {
+    "name": "Spain",
+    "states": ["Andalusia","Aragon","Asturias","Balearic Islands","Basque Country","Canary Islands","Cantabria","Castile and León","Castile-La Mancha","Catalonia","Extremadura","Galicia","La Rioja","Community of Madrid","Region of Murcia","Navarre","Valencian Community"]
+  },
+  {
+    "name": "Sweden",
+    "states": ["Blekinge","Dalarna","Gotland","Gävleborg","Halland","Jämtland","Jönköping","Kalmar","Kronoberg","Norrbotten","Skåne","Stockholm","Södermanland","Uppsala","Värmland","Västerbotten","Västernorrland","Västmanland","Västra Götaland","Örebro","Östergötland"]
+  },
+  {
+    "name": "Switzerland",
+    "states": ["Aargau","Appenzell Ausserrhoden","Appenzell Innerrhoden","Basel-Landschaft","Basel-Stadt","Bern","Fribourg","Geneva","Glarus","Graubünden","Jura","Lucerne","Neuchâtel","Nidwalden","Obwalden","St. Gallen","Schaffhausen","Schwyz","Solothurn","Thurgau","Ticino","Uri","Valais","Vaud","Zug","Zurich"]
+  },
+  {
+    "name": "United Kingdom",
+    "states": ["England","Scotland","Wales","Northern Ireland"]
+  },
+  {
+    "name": "United States",
+    "states": ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]
+  },
+  {
+    "name": "Canada",
+    "states": ["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Nova Scotia","Ontario","Prince Edward Island","Quebec","Saskatchewan","Northwest Territories","Nunavut","Yukon"]
+  },
+  {
+    "name": "Mexico",
+    "states": ["Aguascalientes","Baja California","Baja California Sur","Campeche","Chiapas","Chihuahua","Coahuila","Colima","Durango","Guanajuato","Guerrero","Hidalgo","Jalisco","Mexico City","Michoacán","Morelos","Nayarit","Nuevo León","Oaxaca","Puebla","Querétaro","Quintana Roo","San Luis Potosí","Sinaloa","Sonora","Tabasco","Tamaulipas","Tlaxcala","Veracruz","Yucatán","Zacatecas"]
+  }
+]

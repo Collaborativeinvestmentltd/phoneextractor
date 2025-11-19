@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Professional Data Extractor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header Styles */
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 15px 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .main-header h1 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Button Styles */
+    .btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .primary-btn {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .primary-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .success-btn {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .danger-btn {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .warning-btn {
+      background-color: var(--warning);
+      color: white;
+    }
+
+    .admin-btn {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .outline-btn {
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    /* Form Styles */
+    .form-section {
+      background: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 20px;
+    }
+
+    .form-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--gray-light);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .helper {
+      display: block;
+      margin-top: 5px;
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+
+    /* Checkbox Group */
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: normal;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .checkbox-group label:hover {
+      background-color: var(--gray-light);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+    }
+
+    /* Results Section */
+    .results-section {
+      background: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-top: 20px;
+    }
+
+    .results-section h2 {
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .results-container {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid var(--gray-light);
+      border-radius: var(--border-radius);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      background-color: var(--primary);
+      color: white;
+      position: sticky;
+      top: 0;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    .data-table td {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .data-entry:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .data-entry:hover {
+      background-color: #e9ecef;
+    }
+
+    .placeholder-msg {
+      text-align: center;
+      color: var(--gray);
+      padding: 20px;
+    }
+
+    .progress-stats {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: var(--gray-light);
+      border-radius: var(--border-radius);
+      font-weight: 600;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 450px;
+      width: 90%;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: modalFadeIn 0.3s;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+
+    .close-modal:hover {
+      color: var(--dark);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: var(--border-radius);
+      color: white;
+      z-index: 1100;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      background-color: var(--success);
+    }
+
+    .toast.error {
+      background-color: var(--danger);
+    }
+
+    .toast.warning {
+      background-color: var(--warning);
+    }
+
+    /* Status Indicators */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success);
+    }
+
+    .status-inactive {
+      background-color: rgba(108, 117, 125, 0.2);
+      color: var(--gray);
+    }
+
+    /* Extraction Panel */
+    .extraction-panel {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 15px;
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .extracted-item {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .extracted-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .header-controls {
+        justify-content: center;
+      }
+
+      .checkbox-group {
+        grid-template-columns: 1fr;
+      }
+
+      .data-table {
+        font-size: 0.9rem;
+      }
+
+      .data-table th, .data-table td {
+        padding: 8px 10px;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <header class="main-header">
+      <h1><i class="fas fa-search"></i> Professional Data Extractor</h1>
+      <div class="header-controls">
+        <button class="btn success-btn" onclick="exportData()">
+          <i class="fas fa-download"></i> Export CSV
+        </button>
+        <button class="btn danger-btn" onclick="stopExtraction()">
+          <i class="fas fa-stop"></i> Stop Extraction
+        </button>
+        <a href="{{ url_for('admin_login') }}" class="btn admin-btn" target="_blank">
+          <i class="fas fa-cog"></i> Admin Panel
+        </a>
+        <button class="btn primary-btn" id="user-login-btn">
+          <i class="fas fa-key"></i> User Login
+        </button>
+        <button class="btn warning-btn" id="user-logout-btn" style="display:none;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- License Login Modal -->
+    <div id="license-login" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-key"></i> User License Login</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <form id="license-form">
+          <div class="input-group">
+            <label for="license-key">Enter Your License Key:</label>
+            <input type="text" id="license-key" name="license_key" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+          </div>
+          <button type="submit" class="btn primary-btn" style="width: 100%;">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+        </form>
+        <div id="license-error" style="color: var(--danger); margin-top: 10px; text-align: center;"></div>
+      </div>
+    </div>
+
+    <!-- Main Form -->
+    <form method="POST" id="phone-extractor-form">
+      <div class="form-section">
+        <div class="input-group">
+          <label for="urls"><i class="fas fa-link"></i> Enter URLs (optional):</label>
+          <textarea name="urls" id="urls" placeholder="Optional: Enter specific URLs separated by commas"></textarea>
+          <small class="helper">Leave blank to let the scraper search the selected sites automatically.</small>
+        </div>
+        <div class="input-group">
+          <label for="keywords"><i class="fas fa-key"></i> Keywords (optional):</label>
+          <textarea name="keywords" id="keywords" placeholder="Keywords, categories or business names (optional)"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label><i class="fas fa-sitemap"></i> Select Source Sites:</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="platforms[]" value="yellowpages"> <i class="fas fa-book"></i> Yellow Pages</label>
+          <label><input type="checkbox" name="platforms[]" value="whitepages"> <i class="fas fa-book-open"></i> Whitepages</label>
+          <label><input type="checkbox" name="platforms[]" value="manta"> <i class="fas fa-fish"></i> Manta</label>
+          <label><input type="checkbox" name="platforms[]" value="yelp"> <i class="fas fa-utensils"></i> Yelp</label>
+          <label><input type="checkbox" name="platforms[]" value="411"> <i class="fas fa-phone"></i> 411</label>
+          <label><input type="checkbox" name="platforms[]" value="local_com"> <i class="fas fa-map-marker-alt"></i> Local.com</label>
+          <label><input type="checkbox" name="platforms[]" value="foursquare"> <i class="fas fa-square"></i> Foursquare</label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="input-group">
+          <label for="country"><i class="fas fa-globe"></i> Select Country:</label>
+          <select id="country" name="country">
+            <option value="">-- Select Country --</option>
+            {% for country in countries %}
+              <option value="{{ country }}">{{ country }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="state"><i class="fas fa-map"></i> Select State / Region (optional):</label>
+          <select id="state" name="state">
+            <option value="">-- Select State --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section" style="text-align: center;">
+        <button type="button" class="btn primary-btn" onclick="startExtraction()" style="padding: 12px 30px; font-size: 1.1rem;">
+          <i class="fas fa-play"></i> Start Extraction
+        </button>
+        <div id="extraction-status" class="status-indicator status-inactive" style="margin-top: 10px;">
+          <i class="fas fa-circle"></i> Extraction Inactive
+        </div>
+      </div>
+    </form>
+
+    <!-- Results Section -->
+    <section class="results-section">
+      <h2><i class="fas fa-list"></i> Live Extraction Results</h2>
+      <div class="results-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Phone Number</th>
+              <th>Full Name</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody id="phone-preview">
+            <tr>
+              <td colspan="3" class="placeholder-msg">No data extracted yet. Click "Start Extraction" to begin.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="progress-stats">
+        <p><i class="fas fa-database"></i> Records found: <span id="number-count">0</span></p>
+      </div>
+    </section>
+
+    <!-- Live Extraction Panel -->
+    <div class="extraction-panel">
+      <h3><i class="fas fa-bolt"></i> Live Extraction Feed</h3>
+      <div id="extraction-container">
+        <div class="placeholder-msg">Live extraction results will appear here</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    const countryStates = JSON.parse('{{ country_states | tojson | safe }}');
+    let csrfToken = '{{ csrf_token }}';
+    let extractionInterval;
+    let totalItems = 0;
+    let userLoggedIn = false;
+    let extractionActive = false;
+    let eventSource = null;
+
+    // Utility functions
+    function getCSRFToken() { 
+      return csrfToken; 
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = $('#toast');
+      toast.removeClass('success error warning').addClass(type).html(`
+        <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+        ${message}
+      `).addClass('show');
+      
+      setTimeout(() => {
+        toast.removeClass('show');
+      }, 4000);
+    }
+
+    function updateExtractionStatus(active) {
+      extractionActive = active;
+      const statusElement = $('#extraction-status');
+      if (active) {
+        statusElement.html('<i class="fas fa-circle"></i> Extraction Active').removeClass('status-inactive').addClass('status-active');
+      } else {
+        statusElement.html('<i class="fas fa-circle"></i> Extraction Inactive').removeClass('status-active').addClass('status-inactive');
+      }
+    }
+
+    // Form handling functions
+    function updateStates() {
+      const country = $('#country').val();
+      const stateSelect = $('#state');
+      stateSelect.empty().append('<option value="">-- Select State --</option>');
+      
+      if (country && countryStates[country]) {
+        countryStates[country].forEach(state => {
+          stateSelect.append(`<option value="${state}">${state}</option>`);
+        });
+      }
+    }
+
+    function exportData() {
+      if (totalItems === 0) {
+        showToast('No data to export', 'warning');
+        return;
+      }
+      window.location.href = '/export-data?format=csv';
+    }
+
+    function updateResults() {
+      $.get('/view-extraction')
+        .done(function(data) {
+          const container = $('#phone-preview');
+          container.empty();
+          totalItems = data.total || 0;
+
+          if (data.numbers && data.numbers.length > 0) {
+            data.numbers.forEach(entry => {
+              const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${entry.source}</span>` : '';
+              container.append(`
+                <tr class="data-entry">
+                  <td><i class="fas fa-phone"></i> ${entry.number} ${sourceBadge}</td>
+                  <td><i class="fas fa-user"></i> ${entry.name || 'N/A'}</td>
+                  <td><i class="fas fa-map-marker-alt"></i> ${entry.address || 'N/A'}</td>
+                </tr>
+              `);
+            });
+          } else {
+            container.append(`
+              <tr>
+                <td colspan="3" class="placeholder-msg">No data extracted yet. Click "Start Extraction" to begin.</td>
+              </tr>
+            `);
+          }
+          $('#number-count').text(totalItems);
+        })
+        .fail(function() {
+          showToast('Failed to fetch results', 'error');
+        });
+    }
+
+// Enhanced startExtraction function with continuous feedback
+function startExtraction() {
+  if (!userLoggedIn) {
+    showToast('You must login with a valid license first!', 'error');
+    $('#user-login-btn').click();
+    return;
+  }
+
+  const keywords = $('#keywords').val().trim();
+  const location = $('#state').val() || $('#country').val() || '';
+  const platforms = $('input[name="platforms[]"]:checked')
+    .map(function() { return this.value; })
+    .get();
+
+  if (!keywords && !location) {
+    showToast('Please provide either keywords or a location', 'warning');
+    return;
+  }
+
+  if (platforms.length === 0) {
+    showToast('Please select at least one platform', 'warning');
+    return;
+  }
+
+  const formData = new FormData(document.getElementById('phone-extractor-form'));
+  formData.append('csrf_token', getCSRFToken());
+
+  // Show loading state with platform info
+  const extractBtn = $('.primary-btn');
+  const platformNames = platforms.join(', ');
+  extractBtn.prop('disabled', true).html(`<div class="loading"></div> Starting continuous extraction...`);
+
+  $.ajax({
+    url: '/extract',
+    method: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    headers: { 'X-CSRF-TOKEN': getCSRFToken() },
+    success: function(resp) {
+      if (resp.status === 'Extraction started') {
+        if (extractionInterval) clearInterval(extractionInterval);
+        extractionInterval = setInterval(updateResults, 3000);
+        updateExtractionStatus(true);
+        startEventStream();
+        showToast(`Continuous extraction started! Scanning: ${platformNames}`);
+        
+        $('#phone-preview').html(`
+          <tr>
+            <td colspan="3" class="placeholder-msg">
+              <div class="loading"></div> Continuous extraction in progress... 
+              <br><small>Scanning ${platforms.length} platforms repeatedly until you click Stop</small>
+              <br><small>Platforms: ${platformNames}</small>
+            </td>
+          </tr>
+        `);
+        $('#extraction-container').html(`
+          <div class="placeholder-msg">
+            <div class="loading"></div> 
+            <div>Starting continuous extraction...</div>
+            <small>Will keep scanning until you click Stop button</small>
+          </div>
+        `);
+      } else if (resp.error) {
+        showToast(resp.error, 'error');
+      }
+    },
+    error: function(xhr) {
+      let msg = 'Failed to start extraction';
+      if (xhr.responseJSON && xhr.responseJSON.error)
+        msg = xhr.responseJSON.error;
+      showToast(msg, 'error');
+    },
+    complete: function() {
+      extractBtn.prop('disabled', false).html('<i class="fas fa-play"></i> Start Extraction');
+    }
+  });
+}
+
+// Single Event Stream function
+function startEventStream() {
+  if (eventSource) eventSource.close();
+  
+  eventSource = new EventSource('/stream-extraction');
+  const container = $('#extraction-container');
+  container.empty();
+  
+  let roundCount = 0;
+  let lastUpdate = Date.now();
+  
+  eventSource.onmessage = function(e) {
+    const data = e.data;
+    lastUpdate = Date.now();
+    
+    if (data === 'END') {
+      eventSource.close();
+      updateExtractionStatus(false);
+      showToast('Extraction completed!');
+      updateResults();
+      return;
+    }
+    
+    // Handle heartbeat updates
+    if (data.startsWith('COUNT:')) {
+      const count = data.split(':')[1];
+      $('#number-count').text(count);
+      return;
+    }
+    
+    // Regular data update
+    const parts = data.split('|');
+    if (parts.length >= 4) {
+      const number = parts[0] || 'N/A';
+      const name = parts[1] || 'N/A';
+      const address = parts[2] || 'N/A';
+      const source = parts[3] || 'unknown';
+      
+      if (number !== 'N/A' && number.trim() !== '') {
+        const sourceBadge = source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${source}</span>` : '';
+        
+        const item = $(`<div class="extracted-item"></div>`).html(`
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div><i class="fas fa-phone text-success"></i> <strong>${number}</strong> ${sourceBadge}</div>
+            <div style="flex: 1; min-width: 200px;">
+              <small><i class="fas fa-user"></i> ${name}</small>
+              <br>
+              <small><i class="fas fa-map-marker-alt"></i> ${address}</small>
+            </div>
+          </div>
+        `);
+        
+        container.prepend(item);
+        
+        if (container.children().length > 100) {
+          container.children().last().remove();
+        }
+        
+        if (Math.random() < 0.3) {
+          updateResults();
+        }
+      }
+    }
+  };
+  
+  eventSource.onerror = function() {
+    console.error('EventSource failed');
+    if (eventSource) {
+      eventSource.close();
+    }
+    if (extractionActive) {
+      setTimeout(() => {
+        if (extractionActive) {
+          showToast('Reconnecting to extraction stream...', 'warning');
+          startEventStream();
+        }
+      }, 5000);
+    }
+  };
+  
+  setInterval(() => {
+    if (extractionActive && Date.now() - lastUpdate > 15000) {
+      console.warn('No updates from server for 15 seconds, reconnecting...');
+      if (eventSource) eventSource.close();
+      startEventStream();
+    }
+  }, 5000);
+}
+
+// Fixed License Login with proper promise handling
+function handleLicenseLogin(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const key = $('#license-key').val().trim();
+  const errorElement = $('#license-error');
+
+  if (!key) {
+    errorElement.text('License key is required');
+    return $.Deferred().reject().promise();
+  }
+
+  errorElement.text('');
+  const $btn = $('#license-form button');
+  $btn.prop('disabled', true).html('<div class="loading"></div> Verifying...');
+
+  return $.post('/user-login', { 
+      license_key: key, 
+      csrf_token: getCSRFToken() 
+    })
+    .done(function(resp) {
+      if (resp.success) {
+        $('#license-login').fadeOut(300);
+        userLoggedIn = true;
+        $('#user-login-btn').hide();
+        $('#user-logout-btn').show();
+        showToast('License verified! You can now start extraction.');
+      } else {
+        errorElement.text(resp.error || 'Invalid license key.');
+      }
+    })
+    .fail(function(xhr) {
+      const msg = xhr.responseJSON && xhr.responseJSON.error
+        ? xhr.responseJSON.error
+        : 'License verification failed. Please try again.';
+      errorElement.text(msg);
+    })
+    .always(function() {
+      $btn.prop('disabled', false).html('<i class="fas fa-sign-in-alt"></i> Login');
+    });
+}
+
+    function stopExtraction() {
+      if (!extractionActive) {
+        showToast('No extraction is currently running', 'warning');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('csrf_token', getCSRFToken());
+      
+      $.ajax({
+        url: '/stop-extraction',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {'X-CSRF-TOKEN': getCSRFToken()},
+        success: function() {
+          if (extractionInterval) clearInterval(extractionInterval);
+          if (eventSource) eventSource.close();
+          updateExtractionStatus(false);
+          updateResults();
+          showToast('Extraction stopped successfully!');
+        },
+        error: function(xhr) {
+          let errorMsg = 'Failed to stop extraction';
+          if (xhr.responseJSON && xhr.responseJSON.error) errorMsg = xhr.responseJSON.error;
+          showToast(errorMsg, 'error');
+        }
+      });
+    }
+
+    function handleUserLogout() {
+      $.post('/user-logout', { csrf_token: getCSRFToken() })
+        .done(function(resp) {
+          if (resp.success) {
+            userLoggedIn = false;
+            $('#user-login-btn').show();
+            $('#user-logout-btn').hide();
+            if (extractionActive) stopExtraction();
+            showToast('Logged out successfully!');
+          }
+        })
+        .fail(function() {
+          showToast('Logout failed', 'error');
+        });
+    }
+
+// Document ready
+$(document).ready(function() {
+  // Initialize page
+  updateResults();
+  $('#country').on('change', updateStates);
+
+  // Add CSRF token to form safely
+  const csrfToken = typeof getCSRFToken === 'function' ? getCSRFToken() : $('meta[name="csrf-token"]').attr('content') || '';
+  $('<input>').attr({type: 'hidden', name: 'csrf_token', value: csrfToken})
+              .appendTo('#phone-extractor-form');
+
+  // Modal handlers
+  $('#user-login-btn').on('click', function() {
+    $('#license-login').fadeIn(300);
+    $('#license-key').focus();
+  });
+
+  $('#license-login').on('click', function(e) {
+    if (e.target === this) $(this).fadeOut(300);
+  });
+
+  $('.close-modal').on('click', () => $('#license-login').fadeOut(300));
+
+  $(document).on('keydown', function(e) {
+    if (e.key === "Escape") $('#license-login').fadeOut(300);
+  });
+
+  // Form submissions
+  $('#license-form').on('submit', function(e) {
+    e.preventDefault();
+    const $btn = $(this).find('button[type=submit]');
+    $btn.prop('disabled', true);
+    handleLicenseLogin().always(() => $btn.prop('disabled', false));
+  });
+
+  $('#user-logout-btn').on('click', handleUserLogout);
+
+  // Check if user is already logged in
+  $.get('/view-extraction')
+    .done(() => {
+      userLoggedIn = true;
+      $('#user-login-btn').hide();
+      $('#user-logout-btn').show();
+    })
+    .fail((xhr) => {
+      if (xhr.status === 403) {
+        userLoggedIn = false;
+        $('#user-login-btn').show();
+        $('#user-logout-btn').hide();
+      }
+    });
+});
+  </script>
+</body>
+</html>
