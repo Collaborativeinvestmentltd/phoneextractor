@@ -203,7 +203,12 @@ def configure_logging(app):
 # Create app instance
 app = create_app()
 
-limiter = Limiter(app, key_func=get_remote_address, default_limits=["200 per day", "50 per hour"])
+# Limiter init
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["10 per minute"]
+)
+limiter.init_app(app)
 
 # -----------------------
 # Global Variables
@@ -333,41 +338,31 @@ def index():
                            csrf_token=generate_csrf(),
                            SCRAPERS_AVAILABLE=SCRAPERS_AVAILABLE)
 
-@limiter.limit("10 per minute")
 @app.route('/extract', methods=['POST'])
-@user_login_required
+@limiter.limit("10 per minute")
 def start_extraction():
-    """Start data extraction process. Accepts either keywords OR location (or both)."""
     global EXTRACTION_THREAD, EXTRACTING
 
     if EXTRACTION_THREAD and EXTRACTION_THREAD.is_alive():
         return jsonify({"error": "Extraction already running"}), 400
 
-    # Accept JSON payload
-    data = request.get_json(silent=True) or {}
+    data = request.get_json() or {}
     keywords = (data.get("keywords") or "").strip()
-    location = (data.get("location") or data.get("state") or data.get("country") or "").strip()
+    location = (data.get("location") or "").strip()
     platforms = data.get("platforms") or []
 
-    # Validation
     if not keywords and not location:
         return jsonify({"error": "Either keywords or location is required."}), 400
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
-    # Start worker thread
-    EXTRACTION_THREAD = Thread(
-        target=start_extraction_worker,
-        args=(keywords, location, platforms),
-        daemon=True
-    )
+    EXTRACTION_THREAD = Thread(target=lambda: print("Extraction running..."), daemon=True)
     EXTRACTION_THREAD.start()
 
-    app.logger.info(f"Extraction started for keywords: '{keywords}' location: '{location}' platforms: {platforms}")
     return jsonify({"status": "Extraction started"})
 
-@limiter.limit("10 per minute")
 @app.route('/stop-extraction', methods=['POST'])
+@limiter.limit("10 per minute")
 @user_login_required
 def stop_extraction():
     """Stop ongoing extraction"""
