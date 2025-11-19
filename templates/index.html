@@ -578,7 +578,6 @@
     // Global variables
     const countryStates = JSON.parse('{{ country_states | tojson | safe }}');
     let csrfToken = '{{ csrf_token }}';
-    let extractionInterval;
     let totalItems = 0;
     let userLoggedIn = false;
     let extractionActive = false;
@@ -611,6 +610,31 @@
         }
     }
 
+    // Simple session check
+    function checkAuth() {
+        return $.get('/check-auth')
+            .done(function(data) {
+                userLoggedIn = data.authenticated;
+                updateUI();
+                return userLoggedIn;
+            })
+            .fail(function() {
+                userLoggedIn = false;
+                updateUI();
+                return false;
+            });
+    }
+
+    function updateUI() {
+        if (userLoggedIn) {
+            $('#user-login-btn').hide();
+            $('#user-logout-btn').show();
+        } else {
+            $('#user-login-btn').show();
+            $('#user-logout-btn').hide();
+        }
+    }
+
     // Form handling functions
     function updateStates() {
         const country = $('#country').val();
@@ -629,18 +653,29 @@
             showToast('No data to export', 'warning');
             return;
         }
+        if (!userLoggedIn) {
+            showToast('Please login first', 'error');
+            return;
+        }
         window.location.href = '/export-data?format=csv';
     }
 
     function updateResults() {
         $.get('/view-extraction')
             .done(function(data) {
+                if (data.error && data.error === "Authentication required") {
+                    userLoggedIn = false;
+                    updateUI();
+                    showToast('Please login to view results', 'error');
+                    return;
+                }
+
                 const container = $('#phone-preview');
                 container.empty();
                 totalItems = data.total || 0;
 
                 if (data.numbers && data.numbers.length > 0) {
-                    data.numbers.slice(-50).forEach(entry => { // Show last 50 entries
+                    data.numbers.slice(-50).forEach(entry => {
                         const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${entry.source}</span>` : '';
                         container.append(`
                             <tr class="data-entry">
@@ -651,7 +686,6 @@
                         `);
                     });
                     
-                    // Show message if there are more items
                     if (data.numbers.length > 50) {
                         container.append(`
                             <tr>
@@ -670,8 +704,14 @@
                 }
                 $('#number-count').text(totalItems);
             })
-            .fail(function() {
-                showToast('Failed to fetch results', 'error');
+            .fail(function(xhr) {
+                if (xhr.status === 403) {
+                    userLoggedIn = false;
+                    updateUI();
+                    showToast('Session expired. Please login again.', 'error');
+                } else {
+                    showToast('Failed to fetch results', 'error');
+                }
             });
     }
 
@@ -699,7 +739,12 @@
             return;
         }
 
-        const formData = new FormData(document.getElementById('phone-extractor-form'));
+        const formData = new FormData();
+        formData.append('keywords', keywords);
+        formData.append('location', location);
+        platforms.forEach(platform => {
+            formData.append('platforms[]', platform);
+        });
         formData.append('csrf_token', getCSRFToken());
 
         // Show loading state
@@ -742,8 +787,15 @@
             },
             error: function(xhr) {
                 let msg = 'Failed to start extraction';
-                if (xhr.responseJSON && xhr.responseJSON.error)
+                if (xhr.responseJSON && xhr.responseJSON.error) {
                     msg = xhr.responseJSON.error;
+                }
+                
+                if (xhr.status === 403) {
+                    userLoggedIn = false;
+                    updateUI();
+                    msg = 'Session expired. Please login again.';
+                }
                 showToast(msg, 'error');
             },
             complete: function() {
@@ -752,28 +804,36 @@
         });
     }
 
-    // Enhanced Event Stream function
+    // Event Stream function
     function startEventStream() {
-        if (eventSource) eventSource.close();
+        if (eventSource) {
+            eventSource.close();
+        }
         
         eventSource = new EventSource('/stream-extraction');
         const container = $('#extraction-container');
-        let lastUpdateTime = Date.now();
         
         eventSource.onopen = function() {
-            console.log('🔗 SSE connection established');
+            console.log('SSE connection established');
             container.html('<div class="placeholder-msg"><div class="loading"></div> Connected, waiting for data...</div>');
         };
         
         eventSource.onmessage = function(e) {
             const data = e.data;
-            lastUpdateTime = Date.now();
             
             if (data === 'END:stopped' || data === 'END:timeout') {
                 eventSource.close();
                 updateExtractionStatus(false);
                 showToast(data === 'END:stopped' ? 'Extraction stopped!' : 'Extraction timeout reached');
                 updateResults();
+                return;
+            }
+            
+            if (data === 'ERROR:unauthorized') {
+                eventSource.close();
+                userLoggedIn = false;
+                updateUI();
+                showToast('Session expired during extraction', 'error');
                 return;
             }
             
@@ -785,81 +845,57 @@
             }
             
             // Handle data updates
-            const parts = data.split('|');
-            if (parts.length >= 4) {
-                const number = parts[0] || 'N/A';
-                const name = parts[1] || 'N/A';
-                const address = parts[2] || 'N/A';
-                const source = parts[3] || 'unknown';
-                
-                if (number !== 'N/A' && number.trim() !== '') {
-                    const sourceBadge = source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${source}</span>` : '';
+            if (data.startsWith('DATA:')) {
+                const content = data.substring(5);
+                const parts = content.split('|');
+                if (parts.length >= 4) {
+                    const number = parts[0] || 'N/A';
+                    const name = parts[1] || 'N/A';
+                    const address = parts[2] || 'N/A';
+                    const source = parts[3] || 'unknown';
                     
-                    const timestamp = new Date().toLocaleTimeString();
-                    const item = $(`<div class="extracted-item"></div>`).html(`
-                        <div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; width: 100%;">
-                            <div style="flex-shrink: 0;">
-                                <i class="fas fa-phone text-success"></i> <strong>${number}</strong> ${sourceBadge}
-                                <br><small style="color: #666;">${timestamp}</small>
+                    if (number !== 'N/A' && number.trim() !== '') {
+                        const sourceBadge = source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${source}</span>` : '';
+                        
+                        const timestamp = new Date().toLocaleTimeString();
+                        const item = $(`<div class="extracted-item"></div>`).html(`
+                            <div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; width: 100%;">
+                                <div style="flex-shrink: 0;">
+                                    <i class="fas fa-phone text-success"></i> <strong>${number}</strong> ${sourceBadge}
+                                    <br><small style="color: #666;">${timestamp}</small>
+                                </div>
+                                <div style="flex: 1; min-width: 200px;">
+                                    <div><small><i class="fas fa-user"></i> ${name}</small></div>
+                                    <div><small><i class="fas fa-map-marker-alt"></i> ${address}</small></div>
+                                </div>
                             </div>
-                            <div style="flex: 1; min-width: 200px;">
-                                <div><small><i class="fas fa-user"></i> ${name}</small></div>
-                                <div><small><i class="fas fa-map-marker-alt"></i> ${address}</small></div>
-                            </div>
-                        </div>
-                    `);
-                    
-                    // Add with fade-in effect
-                    item.hide().prependTo(container).fadeIn(300);
-                    
-                    // Limit container size
-                    if (container.children().length > 100) {
-                        container.children().last().remove();
-                    }
-                    
-                    // Update results table periodically
-                    if (container.children().length % 5 === 0) {
-                        updateResults();
+                        `);
+                        
+                        item.hide().prependTo(container).fadeIn(300);
+                        
+                        if (container.children().length > 100) {
+                            container.children().last().remove();
+                        }
+                        
+                        if (container.children().length % 3 === 0) {
+                            updateResults();
+                        }
                     }
                 }
             }
         };
         
         eventSource.onerror = function(err) {
-            console.error('❌ EventSource error:', err);
+            console.error('EventSource error:', err);
             if (eventSource) {
                 eventSource.close();
             }
-            
-            if (extractionActive) {
-                showToast('Connection lost, reconnecting...', 'warning');
-                setTimeout(() => {
-                    if (extractionActive) {
-                        startEventStream();
-                    }
-                }, 3000);
-            }
         };
-        
-        // Connection health monitor
-        const healthCheck = setInterval(() => {
-            if (!extractionActive) {
-                clearInterval(healthCheck);
-                return;
-            }
-            
-            if (Date.now() - lastUpdateTime > 10000) { // 10 seconds without updates
-                console.warn('⚠️ No SSE updates for 10 seconds, reconnecting...');
-                if (eventSource) eventSource.close();
-                startEventStream();
-                clearInterval(healthCheck);
-            }
-        }, 5000);
     }
 
-    // License Login function
+    // License Login function - Fixed
     function handleLicenseLogin(e) {
-        if (e && e.preventDefault) e.preventDefault();
+        e.preventDefault();
 
         const key = $('#license-key').val().trim();
         const errorElement = $('#license-error');
@@ -873,29 +909,41 @@
         const $btn = $('#license-form button');
         $btn.prop('disabled', true).html('<div class="loading"></div> Verifying...');
 
-        $.post('/user-login', { 
-            license_key: key, 
-            csrf_token: getCSRFToken() 
-        })
-        .done(function(resp) {
-            if (resp.success) {
-                $('#license-login').fadeOut(300);
-                userLoggedIn = true;
-                $('#user-login-btn').hide();
-                $('#user-logout-btn').show();
-                showToast('License verified! You can now start extraction.');
-            } else {
-                errorElement.text(resp.error || 'Invalid license key.');
+        // Create form data properly
+        const formData = new FormData();
+        formData.append('license_key', key);
+        formData.append('csrf_token', getCSRFToken());
+
+        $.ajax({
+            url: '/user-login',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(resp) {
+                if (resp.success) {
+                    $('#license-login').fadeOut(300);
+                    userLoggedIn = true;
+                    updateUI();
+                    showToast('License verified! You can now start extraction.');
+                    $('#license-key').val(''); // Clear the input
+                    
+                    // Refresh results after successful login
+                    setTimeout(updateResults, 500);
+                } else {
+                    errorElement.text(resp.error || 'Invalid license key.');
+                }
+            },
+            error: function(xhr) {
+                let msg = 'Login failed. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    msg = xhr.responseJSON.error;
+                }
+                errorElement.text(msg);
+            },
+            complete: function() {
+                $btn.prop('disabled', false).html('<i class="fas fa-sign-in-alt"></i> Login');
             }
-        })
-        .fail(function(xhr) {
-            const msg = xhr.responseJSON && xhr.responseJSON.error
-                ? xhr.responseJSON.error
-                : 'License verification failed. Please try again.';
-            errorElement.text(msg);
-        })
-        .always(function() {
-            $btn.prop('disabled', false).html('<i class="fas fa-sign-in-alt"></i> Login');
         });
     }
 
@@ -934,10 +982,10 @@
             .done(function(resp) {
                 if (resp.success) {
                     userLoggedIn = false;
-                    $('#user-login-btn').show();
-                    $('#user-logout-btn').hide();
+                    updateUI();
                     if (extractionActive) stopExtraction();
                     showToast('Logged out successfully!');
+                    updateResults();
                 }
             })
             .fail(function() {
@@ -948,13 +996,19 @@
     // Document ready
     $(document).ready(function() {
         // Initialize page
-        updateResults();
         $('#country').on('change', updateStates);
 
-        // Add CSRF token to form
-        const csrfToken = typeof getCSRFToken === 'function' ? getCSRFToken() : $('meta[name="csrf-token"]').attr('content') || '';
-        $('<input>').attr({type: 'hidden', name: 'csrf_token', value: csrfToken})
-                    .appendTo('#phone-extractor-form');
+        // Check auth status on page load
+        checkAuth().then(function() {
+            updateResults();
+        });
+
+        // Add CSRF token to main form
+        $('<input>').attr({
+            type: 'hidden', 
+            name: 'csrf_token', 
+            value: getCSRFToken()
+        }).appendTo('#phone-extractor-form');
 
         // Modal handlers
         $('#user-login-btn').on('click', function() {
@@ -966,30 +1020,22 @@
             if (e.target === this) $(this).fadeOut(300);
         });
 
-        $('.close-modal').on('click', () => $('#license-login').fadeOut(300));
+        $('.close-modal').on('click', function() {
+            $('#license-login').fadeOut(300);
+        });
 
         $(document).on('keydown', function(e) {
-            if (e.key === "Escape") $('#license-login').fadeOut(300);
+            if (e.key === "Escape") {
+                $('#license-login').fadeOut(300);
+            }
         });
 
         // Form submissions
         $('#license-form').on('submit', handleLicenseLogin);
         $('#user-logout-btn').on('click', handleUserLogout);
 
-        // Check if user is already logged in
-        $.get('/view-extraction')
-            .done(() => {
-                userLoggedIn = true;
-                $('#user-login-btn').hide();
-                $('#user-logout-btn').show();
-            })
-            .fail((xhr) => {
-                if (xhr.status === 403) {
-                    userLoggedIn = false;
-                    $('#user-login-btn').show();
-                    $('#user-logout-btn').hide();
-                }
-            });
+        // Check auth every 2 minutes
+        setInterval(checkAuth, 120000);
     });
 </script>
 </body>

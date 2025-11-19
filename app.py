@@ -1,15 +1,16 @@
 import logging
+from flask import make_response
 from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, request, jsonify, Response, redirect, url_for, session, flash, stream_with_context
 from functools import wraps
 from threading import Thread, Lock
 from datetime import datetime, timedelta, timezone
-import json, os, threading, time, secrets
+import json, os, time, secrets
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from contextlib import suppress
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Import CSRF with fallback
 try:
@@ -18,9 +19,9 @@ try:
 except ImportError as e:
     print(f"CSRF not available: {e}")
     class CSRFProtect:
-        def init_app(self, app): 
-            pass
-    def generate_csrf(): 
+        def init_app(self, app):
+            self._app = app
+    def generate_csrf():
         return "dummy-csrf-token"
     CSRF_AVAILABLE = False
 
@@ -58,7 +59,7 @@ except ImportError as e:
 def mock_scraper(keywords, location):
     return [{
         'number': '555-123-4567',
-        'name': 'Sample Business',
+        'name': 'Sample Business ' + str(int(time.time())),
         'address': '123 Main St, Sample City',
         'source': 'mock'
     }]
@@ -79,11 +80,15 @@ class Config:
     WTF_CSRF_ENABLED = bool(CSRF_AVAILABLE)
     WTF_CSRF_SECRET_KEY = os.environ.get('CSRF_SECRET_KEY', secrets.token_hex(32))
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
-    LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
+    LOG_MAX_BYTES = 10 * 1024 * 1024
     LOG_BACKUP_COUNT = 5
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
     PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
+    # Add session protection
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    # For production, you might want to use Redis or database sessions
+    # SESSION_TYPE = 'filesystem'  # or 'redis', 'mongodb', etc.
 
 # -----------------------
 # Initialize Extensions
@@ -117,20 +122,19 @@ class License(db.Model):
     last_used = db.Column(db.DateTime)
     usage_count = db.Column(db.Integer, default=0)
     
-def is_valid(self):
-    if self.revoked:
-        return False
-    if self.expiry:
-        # Convert to UTC timezone-aware datetime for comparison
-        if self.expiry.tzinfo is None:
-            expiry_utc = self.expiry.replace(tzinfo=timezone.utc)
-        else:
-            expiry_utc = self.expiry.astimezone(timezone.utc)
-        
-        now_utc = datetime.now(timezone.utc)
-        if expiry_utc < now_utc:
+    def is_valid(self):
+        if self.revoked:
             return False
-    return True
+        if self.expiry:
+            if self.expiry.tzinfo is None:
+                expiry_utc = self.expiry.replace(tzinfo=timezone.utc)
+            else:
+                expiry_utc = self.expiry.astimezone(timezone.utc)
+            
+            now_utc = datetime.now(timezone.utc)
+            if expiry_utc < now_utc:
+                return False
+        return True
 
 # -----------------------
 # App Factory
@@ -148,6 +152,9 @@ def create_app(config_class=Config):
     # Configure logging
     configure_logging(app)
     
+    # Add proxy fix for production
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    
     return app
 
 def configure_logging(app):
@@ -156,10 +163,8 @@ def configure_logging(app):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     
-    # Custom formatter to handle Unicode characters safely
     class SafeFormatter(logging.Formatter):
         def format(self, record):
-            # Replace Unicode emojis with text equivalents
             if hasattr(record, 'msg') and isinstance(record.msg, str):
                 record.msg = (record.msg
                     .replace('✅', '[OK]')
@@ -172,7 +177,7 @@ def configure_logging(app):
         os.path.join(log_dir, 'app.log'),
         maxBytes=app.config['LOG_MAX_BYTES'],
         backupCount=app.config['LOG_BACKUP_COUNT'],
-        encoding='utf-8'  # Force UTF-8 encoding
+        encoding='utf-8'
     )
     
     formatter = SafeFormatter(
@@ -181,7 +186,6 @@ def configure_logging(app):
     file_handler.setFormatter(formatter)
     file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
     
-    # Also configure the root logger to avoid Unicode issues
     logging.basicConfig(
         level=getattr(logging, app.config['LOG_LEVEL']),
         format='%(asctime)s %(levelname)s: %(message)s',
@@ -206,8 +210,8 @@ EXTRACTING = False
 # -----------------------
 # Admin configuration - Fixed credentials
 # -----------------------
-ADMIN_USERNAME = "Admin"  # Fixed username
-ADMIN_PASSWORD_HASH = generate_password_hash("112122")  # Fixed password
+ADMIN_USERNAME = "Admin"
+ADMIN_PASSWORD_HASH = generate_password_hash("112122")
 
 def verify_admin_password(password):
     """Verify admin password"""
@@ -229,6 +233,7 @@ def user_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('user_logged_in'):
+            app.logger.warning(f"User not logged in. Session: {dict(session)}")
             return jsonify({"error": "You must login with a valid license first."}), 403
         return f(*args, **kwargs)
     return decorated_function
@@ -263,24 +268,26 @@ with app.app_context():
 # Scraper Integration
 # -----------------------
 def run_scraper(platform, keywords, location):
-    """Run specific scraper based on platform"""
+    """Run specific scraper based on platform.
+
+    Relaxed validation: allow empty keywords or empty location because
+    some scrapers (or mock fallback) can work with only one.
+    """
     if not SCRAPERS_AVAILABLE or platform not in scraper_functions:
         app.logger.warning(f"Scraper not available for platform: {platform}")
         return []
-    
-    # Validate inputs
-    if not keywords or not keywords.strip():
-        app.logger.warning(f"No keywords provided for {platform} scraper")
-        return []
-    
-    if not location or not location.strip():
-        app.logger.warning(f"No location provided for {platform} scraper")
-        return []
-    
+
+    # Allow empty keywords/location — sanitized to '' for scrapers
+    keywords = (keywords or '').strip()
+    location = (location or '').strip()
+
     try:
         scraper_func = scraper_functions[platform]
-        safe_log_info(f"Running scraper: {platform} for '{keywords}' in '{location}'")
+        safe_log_info(f"Running scraper: {platform} for '{keywords or '<<no-keywords>>'}' in '{location or '<<no-location>>'}'")
         results = scraper_func(keywords, location)
+        if not isinstance(results, list):
+            safe_log_error(f"Scraper {platform} returned non-list result, coerced to [].")
+            return []
         safe_log_info(f"[OK] Scraper {platform} returned {len(results)} results")
         return results
     except Exception as e:
@@ -295,7 +302,6 @@ def index():
     """Main application page"""
     countries, country_states = [], {}
     
-    # Load countries/states JSON if available
     data_file = os.path.join("data", "countries_states.json")
     try:
         with open(data_file, 'r', encoding='utf-8') as f:
@@ -304,7 +310,6 @@ def index():
             countries = sorted(country_states.keys())
     except FileNotFoundError:
         app.logger.warning(f"Countries/states file not found: {data_file}")
-        # Provide default empty data to avoid template errors
         country_states = {}
         countries = []
     except Exception as e:
@@ -321,38 +326,37 @@ def index():
                            SCRAPERS_AVAILABLE=SCRAPERS_AVAILABLE)
 
 @app.route('/extract', methods=['POST'])
-@limiter.limit("10 per minute")
+@limiter.limit
 @user_login_required
 def start_extraction():
-    """Start data extraction process"""
+    """Start data extraction process. Accepts either keywords OR location (or both)."""
     global EXTRACTION_THREAD, EXTRACTING
-    
+
     if EXTRACTING:
         return jsonify({"error": "Extraction already running"}), 400
-    
-    keywords = request.form.get('keywords', '').strip()
-    location = request.form.get('state') or request.form.get('country') or ''
+
+    # Prefer form keys used by the front-end: 'keywords' and 'location'
+    keywords = (request.form.get('keywords') or '').strip()
+    # front-end sometimes sends 'location' as single field; fall back to state/country for compatibility
+    location = (request.form.get('location') or request.form.get('state') or request.form.get('country') or '').strip()
     platforms = request.form.getlist('platforms[]')
-    
-    # Validate inputs more strictly
-    if not keywords:
-        return jsonify({"error": "Keywords are required"}), 400
-    
-    if not location:
-        return jsonify({"error": "Location is required"}), 400
-    
+
+    # Require at least keywords or location
+    if not keywords and not location:
+        return jsonify({"error": "Either keywords or location is required."}), 400
+
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
-    # Start extraction in background thread
+    # Start worker thread
     EXTRACTION_THREAD = Thread(
-        target=start_extraction_worker, 
+        target=start_extraction_worker,
         args=(keywords, location, platforms),
         daemon=True
     )
     EXTRACTION_THREAD.start()
-    
-    app.logger.info(f"Extraction started for keywords: '{keywords}' in location: '{location}'")
+
+    app.logger.info(f"Extraction started for keywords: '{keywords}' location: '{location}' platforms: {platforms}")
     return jsonify({"status": "Extraction started"})
 
 @app.route('/stop-extraction', methods=['POST'])
@@ -365,13 +369,21 @@ def stop_extraction():
     return jsonify({"status": "Extraction stopped"})
 
 @app.route('/view-extraction', methods=['GET'])
-@user_login_required
 def view_extraction():
-    """Get current extraction results"""
-    with DATA_LOCK:
-        total = len(EXTRACTION_DATA)
-        numbers = EXTRACTION_DATA.copy()  # Create a copy to avoid thread issues
-    return jsonify({"total": total, "numbers": numbers})
+    """Get current extraction results - simplified auth check"""
+    if not session.get('user_logged_in'):
+        return jsonify({"error": "Authentication required"}), 403
+    
+    try:
+        with DATA_LOCK:
+            total = len(EXTRACTION_DATA)
+            numbers = EXTRACTION_DATA.copy()
+        
+        return jsonify({"total": total, "numbers": numbers})
+        
+    except Exception as e:
+        app.logger.error(f"Error in view-extraction: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 @app.route('/export-data')
 @user_login_required
@@ -405,7 +417,6 @@ def export_data():
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     """Admin login page"""
-    # Redirect if already logged in
     if session.get("is_admin"):
         return redirect(url_for("admin_dashboard"))
     
@@ -437,14 +448,11 @@ def admin_dashboard():
     licenses = License.query.all()
     users = UserData.query.all()
     
-    # FIX: Convert all license expiry dates to aware datetimes for comparison
     now_aware = datetime.now(timezone.utc)
     
-    # Create a list of licenses with safe comparison data
     licenses_with_status = []
     for lic in licenses:
         if lic.expiry:
-            # Convert naive datetime to aware datetime
             if lic.expiry.tzinfo is None:
                 expiry_aware = lic.expiry.replace(tzinfo=timezone.utc)
             else:
@@ -465,7 +473,7 @@ def admin_dashboard():
         extracted_count=extracted_count,
         user_count=user_count,
         licenses_with_status=licenses_with_status,
-        licenses=licenses,  # Keep original for backward compatibility
+        licenses=licenses,
         users=users,
         timezone=timezone,
         now=now_aware,
@@ -489,7 +497,7 @@ def admin_logs():
         log_file = 'logs/app.log'
         if os.path.exists(log_file):
             with open(log_file, 'r', encoding='utf-8') as f:
-                logs = f.readlines()[-100:]  # Last 100 lines
+                logs = f.readlines()[-100:]
         else:
             logs = ["No log file available"]
     except Exception as e:
@@ -508,11 +516,10 @@ def generate_license():
         flash("Expiry days must be a positive number", "error")
         return redirect(url_for("admin_dashboard"))
     
-    # Always create timezone-aware datetimes
     expiry = datetime.now(timezone.utc) + timedelta(days=expiry_days) if expiry_days else None
     
     new_license = License(
-        key=secrets.token_hex(8).upper(),  # 16 character hex string
+        key=secrets.token_hex(8).upper(),
         expiry=expiry
     )
     
@@ -544,100 +551,141 @@ def revoke_license(license_key):
     return redirect(url_for("admin_dashboard"))
 
 @app.route('/stream-extraction')
-@user_login_required
 def stream_extraction():
-    """Enhanced SSE stream for real-time extraction progress"""
+    """SSE stream for real-time extraction progress.
+
+    Generator yields events compatible with front-end expectations:
+      - data: COUNT:<n>
+      - data: DATA:<number>|<name>|<address>|<source>
+      - data: END:stopped or END:timeout
+      - data: ERROR:unauthorized
+    """
+    if not session.get('user_logged_in'):
+        # immediate unauthorized message then close
+        def unauthorized_stream():
+            yield "data: ERROR:unauthorized\n\n"
+        return Response(unauthorized_stream(), mimetype='text/event-stream',
+                        headers={'Cache-Control': 'no-cache', 'Connection': 'keep-alive'})
+
     def event_stream():
         last_index = 0
         consecutive_empty_checks = 0
-        max_empty_checks = 30  # ~1 minute of no updates
-        
-        while EXTRACTING and consecutive_empty_checks < max_empty_checks:
+        max_empty_checks = 30  # ~60 seconds if sleep 2s; adjust as needed
+
+        # Immediately send initial count
+        with DATA_LOCK:
+            current_count = len(EXTRACTION_DATA)
+        yield f"data: COUNT:{current_count}\n\n"
+
+        # Keep streaming while extraction active OR until we've polled enough times without new data
+        while True:
+            # If extraction stopped and we've drained data, end the stream
+            if not EXTRACTING:
+                # send final count and a stopped message
+                with DATA_LOCK:
+                    current_count = len(EXTRACTION_DATA)
+                yield f"data: COUNT:{current_count}\n\n"
+                yield "data: END:stopped\n\n"
+                break
+
             with DATA_LOCK:
                 current_count = len(EXTRACTION_DATA)
-                
-                # Send heartbeat count update every 2 seconds
+
+                # Send heartbeat count update
                 yield f"data: COUNT:{current_count}\n\n"
-                
-                # Send new items if available
+
                 if current_count > last_index:
                     new_items = EXTRACTION_DATA[last_index:current_count]
                     last_index = current_count
-                    consecutive_empty_checks = 0  # Reset counter on new data
-                    
+                    consecutive_empty_checks = 0
+
                     for item in new_items:
-                        # Format data for frontend
-                        number = item.get('number', 'N/A').replace('|', ' ')
-                        name = item.get('name', 'N/A').replace('|', ' ')[:100]  # Limit length
-                        address = item.get('address', 'N/A').replace('|', ' ')[:150]
-                        source = item.get('source', 'unknown')
-                        
-                        data = f"{number}|{name}|{address}|{source}"
-                        yield f"data: {data}\n\n"
+                        try:
+                            number = (item.get('number') or 'N/A').replace('|', ' ')
+                            name = (item.get('name') or 'N/A').replace('|', ' ')[:200]
+                            address = (item.get('address') or 'N/A').replace('|', ' ')[:300]
+                            source = item.get('source', 'unknown')
+                            data = f"DATA:{number}|{name}|{address}|{source}"
+                            yield f"data: {data}\n\n"
+                        except Exception as e:
+                            app.logger.warning(f"Error streaming item: {e}")
+                            # skip malformed item
+                            continue
                 else:
                     consecutive_empty_checks += 1
-            
-            # Wait before next check
+
+            # No busy looping
             time.sleep(2)
-        
-        # Send completion signal
-        if EXTRACTING:
-            yield "data: END:timeout\n\n"
-        else:
-            yield "data: END:stopped\n\n"
-    
-    return Response(
-        stream_with_context(event_stream()), 
-        mimetype='text/event-stream',
-        headers={
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            'X-Accel-Buffering': 'no'  # Important for nginx
-        }
-    )
+
+            # If we've had many empty polls, send timeout end and break
+            if consecutive_empty_checks >= max_empty_checks:
+                yield "data: END:timeout\n\n"
+                break
+
+    headers = {
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no'  # helpful for nginx + uWSGI buffering
+    }
+    return Response(stream_with_context(event_stream()), mimetype='text/event-stream', headers=headers)
 
 @app.route('/user-login', methods=['POST'])
 def user_login():
-    """User login with license key"""
-    license_key = request.form.get('license_key', '').strip().upper()
-    
-    if not license_key:
-        return jsonify({"success": False, "error": "License key is required."})
-
-    license_obj = License.query.filter_by(key=license_key).first()
-    
-    if not license_obj:
-        return jsonify({"success": False, "error": "Invalid license key."})
-    
-    if license_obj.revoked:
-        return jsonify({"success": False, "error": "License has been revoked."})
-
-    # FIXED: Safe timezone comparison
-    if license_obj.expiry:
-        expiry = license_obj.expiry
-        # if it's naive, make it timezone-aware (assume UTC)
-        if expiry.tzinfo is None:
-            expiry = expiry.replace(tzinfo=timezone.utc)
-
-        if expiry < datetime.now(timezone.utc):
-            return jsonify({"success": False, "error": "License has expired."})
-
-    # Update license usage
-    license_obj.last_used = datetime.now(timezone.utc)
-    license_obj.usage_count += 1
-    
+    """User login with license key - Fixed version"""
     try:
+        license_key = request.form.get('license_key', '').strip().upper()
+        
+        if not license_key:
+            return jsonify({"success": False, "error": "License key is required."})
+
+        license_obj = License.query.filter_by(key=license_key).first()
+        
+        if not license_obj:
+            return jsonify({"success": False, "error": "Invalid license key."})
+        
+        if license_obj.revoked:
+            return jsonify({"success": False, "error": "License has been revoked."})
+
+        # Check expiry
+        if license_obj.expiry:
+            expiry = license_obj.expiry
+            if expiry.tzinfo is None:
+                expiry = expiry.replace(tzinfo=timezone.utc)
+
+            if expiry < datetime.now(timezone.utc):
+                return jsonify({"success": False, "error": "License has expired."})
+
+        # Update license usage
+        license_obj.last_used = datetime.now(timezone.utc)
+        license_obj.usage_count += 1
+        
         db.session.commit()
+        
+        # Simple session setup - avoid complex session data
         session['user_logged_in'] = True
         session['license_key'] = license_key
         session.permanent = True
         
-        app.logger.info(f"User logged in with license: {license_key}")
+        app.logger.info(f"User successfully logged in with license: {license_key}")
+        
         return jsonify({"success": True})
+        
     except Exception as e:
         db.session.rollback()
         app.logger.error(f"Error during user login: {str(e)}")
-        return jsonify({"success": False, "error": "Database error occurred."})
+        return jsonify({"success": False, "error": "Server error occurred. Please try again."})
+
+# Add a simple session check that won't fail
+@app.route('/check-auth')
+def check_auth():
+    """Simple authentication check"""
+    try:
+        return jsonify({
+            'authenticated': session.get('user_logged_in', False)
+        })
+    except Exception as e:
+        app.logger.error(f"Error in check-auth: {e}")
+        return jsonify({'authenticated': False})
 
 @app.route('/user-logout', methods=['POST'])
 def user_logout():
@@ -656,7 +704,6 @@ def edit_user(username):
     user = UserData.query.filter_by(username=username).first_or_404()
     
     if request.method == "POST":
-        # Handle user editing logic here
         flash(f"User {username} updated successfully", "success")
         return redirect(url_for("admin_dashboard"))
     
@@ -674,13 +721,11 @@ def add_user():
         flash("Username and password are required", "error")
         return redirect(url_for("admin_dashboard"))
     
-    # Check if user already exists
     existing_user = UserData.query.filter_by(username=username).first()
     if existing_user:
         flash("Username already exists", "error")
         return redirect(url_for("admin_dashboard"))
     
-    # Create new user
     new_user = UserData(
         username=username,
         password_hash=generate_password_hash(password),
@@ -728,11 +773,13 @@ def get_csrf():
 @app.errorhandler(404)
 def not_found_error(error):
     """Handle 404 errors"""
+    app.logger.warning(f"404 Not Found: {request.url}")
     return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     """Handle 500 errors"""
+    app.logger.error(f"500 Internal Server Error: {str(error)}")
     db.session.rollback()
     return render_template('500.html'), 500
 
@@ -744,18 +791,18 @@ def start_extraction_worker(keywords, location, platforms):
     global EXTRACTION_DATA, EXTRACTING
     EXTRACTING = True
     
-    app.logger.info(f"🚀 Continuous extraction started for platforms: {platforms}")
+    app.logger.info(f"Continuous extraction started for platforms: {platforms}")
     
     # Clear previous data at the start of new extraction
     with DATA_LOCK:
         EXTRACTION_DATA.clear()
     
     round_count = 0
-    max_rounds = 50  # Reasonable safety limit
+    max_rounds = 20  # Reduced for testing
     
     while EXTRACTING and round_count < max_rounds:
         round_count += 1
-        safe_log_info(f"🔄 Starting extraction round {round_count}")
+        safe_log_info(f"Starting extraction round {round_count}")
         
         total_this_round = 0
         for platform in platforms:
@@ -763,7 +810,7 @@ def start_extraction_worker(keywords, location, platforms):
                 break
                 
             try:
-                safe_log_info(f"🔍 Running scraper: {platform} (Round {round_count})")
+                safe_log_info(f"Running scraper: {platform} (Round {round_count})")
                 batch = run_scraper(platform, keywords, location)
                 
                 if batch:
@@ -781,53 +828,45 @@ def start_extraction_worker(keywords, location, platforms):
                         total_this_round += len(new_entries)
                         current_total = len(EXTRACTION_DATA)
                         
-                        # Log new additions in real-time
                         if new_entries:
-                            safe_log_info(f"✅ Round {round_count}: Added {len(new_entries)} from {platform}, Total: {current_total}")
+                            safe_log_info(f"Round {round_count}: Added {len(new_entries)} from {platform}, Total: {current_total}")
                             
                 else:
-                    safe_log_info(f"⚠️ No results from {platform} in round {round_count}")
+                    safe_log_info(f"No results from {platform} in round {round_count}")
                     
             except Exception as e:
-                safe_log_error(f"❌ Scraper {platform} failed in round {round_count}: {str(e)}")
+                safe_log_error(f"Scraper {platform} failed in round {round_count}: {str(e)}")
         
-        # Real-time progress update
-        safe_log_info(f"📊 Round {round_count} completed: {total_this_round} new numbers, Total: {len(EXTRACTION_DATA)}")
+        safe_log_info(f"Round {round_count} completed: {total_this_round} new numbers, Total: {len(EXTRACTION_DATA)}")
         
         # Continue to next round unless stopped
-        if EXTRACTING and total_this_round > 0:
-            safe_log_info(f"⏳ Waiting 10 seconds before round {round_count + 1}...")
-            for i in range(10):
-                if not EXTRACTING:
-                    break
-                time.sleep(1)
-        else:
-            # If no new data, wait longer before next round
-            safe_log_info("💤 No new data this round, waiting 20 seconds...")
-            for i in range(20):
+        if EXTRACTING:
+            safe_log_info(f"Waiting 5 seconds before round {round_count + 1}...")
+            for i in range(5):
                 if not EXTRACTING:
                     break
                 time.sleep(1)
     
     EXTRACTING = False
-    safe_log_info(f"🏁 Extraction completed after {round_count} rounds with {len(EXTRACTION_DATA)} total numbers")
+    safe_log_info(f"Extraction completed after {round_count} rounds with {len(EXTRACTION_DATA)} total numbers")
 
 # -----------------------
-# Health Check
+# Enhanced Health Check
 # -----------------------
 @app.route('/health')
 def health_check():
-    """Application health check endpoint"""
+    """Enhanced health check for production"""
     health_status = {
         'status': 'healthy',
         'timestamp': datetime.now(timezone.utc).isoformat(),
         'extraction_active': EXTRACTING,
         'data_count': len(EXTRACTION_DATA),
-        'database_connected': True
+        'database_connected': True,
+        'version': '1.0.0',
+        'environment': os.environ.get('FLASK_ENV', 'development')
     }
     
     try:
-        # Test database connection
         db.session.execute('SELECT 1')
     except Exception as e:
         health_status.update({
@@ -835,12 +874,34 @@ def health_check():
             'database_connected': False,
             'error': str(e)
         })
+        return jsonify(health_status), 500
     
     return jsonify(health_status)
 
+# Add security headers
+@app.after_request
+def after_request(response):
+    """Add security headers"""
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['Server'] = 'DataExtractor'
+    return response
+
 @app.route('/favicon.ico')
 def favicon():
-    return '', 204  # No content
+    return '', 204
+
+@app.route('/debug-session')
+def debug_session():
+    """Debug endpoint to check session state"""
+    return jsonify({
+        'session_data': dict(session),
+        'user_logged_in': session.get('user_logged_in', False),
+        'license_key': session.get('license_key'),
+        'session_id': session.sid if session else None
+    })
 
 # -----------------------
 # Run Application
@@ -851,12 +912,21 @@ if __name__ == "__main__":
     print("[OK] Database initialized")
     print("[OK] Logging configured")
     print("[OK] Admin panel available at /admin/login")
+    print(f"[OK] Admin credentials - Username: {ADMIN_USERNAME}, Password: 112122")
     
-    # Production settings
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
-    app.run(
-        debug=debug_mode,
-        host=os.environ.get('FLASK_HOST', '0.0.0.0'),
-        port=int(os.environ.get('FLASK_PORT', 5000))
-    )
+    if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('PRODUCTION'):
+        print("[PRODUCTION] Starting production server...")
+        app.run(
+            host='0.0.0.0',
+            port=int(os.environ.get('PORT', 5000)),
+            debug=False
+        )
+    else:
+        print("[DEVELOPMENT] Starting development server...")
+        app.run(
+            debug=debug_mode,
+            host=os.environ.get('FLASK_HOST', '0.0.0.0'),
+            port=int(os.environ.get('FLASK_PORT', 5000))
+        )
