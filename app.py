@@ -1,5 +1,6 @@
 import logging
 from flask import make_response
+from flask import Flask, request, jsonify
 from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, request, jsonify, Response, redirect, url_for, session, flash, stream_with_context
 from functools import wraps
@@ -141,6 +142,9 @@ class License(db.Model):
 # -----------------------
 def create_app(config_class=Config):
     app = Flask(__name__)
+    app = Flask(__name__)
+
+    port = int(os.environ.get("PORT", 5000))
     app.config.from_object(config_class)
     
     # Initialize extensions
@@ -199,6 +203,8 @@ def configure_logging(app):
 # Create app instance
 app = create_app()
 
+limiter = Limiter(app, key_func=get_remote_address, default_limits=["200 per day", "50 per hour"])
+
 # -----------------------
 # Global Variables
 # -----------------------
@@ -230,11 +236,13 @@ def admin_required(f):
     return decorated_function
 
 def user_login_required(f):
+    from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('user_logged_in'):
-            app.logger.warning(f"User not logged in. Session: {dict(session)}")
-            return jsonify({"error": "You must login with a valid license first."}), 403
+        # Example: check for a simple header token for demo
+        token = request.headers.get("Authorization")
+        if not token or token != "Bearer SECRET_TOKEN":
+            return jsonify({"error": "Unauthorized"}), 403
         return f(*args, **kwargs)
     return decorated_function
 
@@ -332,19 +340,18 @@ def start_extraction():
     """Start data extraction process. Accepts either keywords OR location (or both)."""
     global EXTRACTION_THREAD, EXTRACTING
 
-    if EXTRACTING:
+    if EXTRACTION_THREAD and EXTRACTION_THREAD.is_alive():
         return jsonify({"error": "Extraction already running"}), 400
 
-    # Prefer form keys used by the front-end: 'keywords' and 'location'
-    keywords = (request.form.get('keywords') or '').strip()
-    # front-end sometimes sends 'location' as single field; fall back to state/country for compatibility
-    location = (request.form.get('location') or request.form.get('state') or request.form.get('country') or '').strip()
-    platforms = request.form.getlist('platforms[]')
+    # Accept JSON payload
+    data = request.get_json(silent=True) or {}
+    keywords = (data.get("keywords") or "").strip()
+    location = (data.get("location") or data.get("state") or data.get("country") or "").strip()
+    platforms = data.get("platforms") or []
 
-    # Require at least keywords or location
+    # Validation
     if not keywords and not location:
         return jsonify({"error": "Either keywords or location is required."}), 400
-
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
@@ -789,68 +796,27 @@ def internal_error(error):
 # Enhanced Extraction Worker
 # -----------------------
 def start_extraction_worker(keywords, location, platforms):
-    """Background worker for continuous data extraction with real-time updates"""
-    global EXTRACTION_DATA, EXTRACTING
+    global EXTRACTING
     EXTRACTING = True
-    
-    app.logger.info(f"Continuous extraction started for platforms: {platforms}")
-    
-    # Clear previous data at the start of new extraction
-    with DATA_LOCK:
-        EXTRACTION_DATA.clear()
-    
-    round_count = 0
-    max_rounds = 20  # Reduced for testing
-    
-    while EXTRACTING and round_count < max_rounds:
-        round_count += 1
-        safe_log_info(f"Starting extraction round {round_count}")
-        
-        total_this_round = 0
-        for platform in platforms:
-            if not EXTRACTING:
-                break
-                
-            try:
-                safe_log_info(f"Running scraper: {platform} (Round {round_count})")
-                batch = run_scraper(platform, keywords, location)
-                
-                if batch:
-                    with DATA_LOCK:
-                        existing_numbers = {entry['number'] for entry in EXTRACTION_DATA if 'number' in entry}
-                        new_entries = []
-                        
-                        for entry in batch:
-                            phone = entry.get('number', '')
-                            if phone and phone != "N/A" and phone not in existing_numbers:
-                                new_entries.append(entry)
-                                existing_numbers.add(phone)
-                        
-                        EXTRACTION_DATA.extend(new_entries)
-                        total_this_round += len(new_entries)
-                        current_total = len(EXTRACTION_DATA)
-                        
-                        if new_entries:
-                            safe_log_info(f"Round {round_count}: Added {len(new_entries)} from {platform}, Total: {current_total}")
-                            
-                else:
-                    safe_log_info(f"No results from {platform} in round {round_count}")
-                    
-            except Exception as e:
-                safe_log_error(f"Scraper {platform} failed in round {round_count}: {str(e)}")
-        
-        safe_log_info(f"Round {round_count} completed: {total_this_round} new numbers, Total: {len(EXTRACTION_DATA)}")
-        
-        # Continue to next round unless stopped
-        if EXTRACTING:
-            safe_log_info(f"Waiting 5 seconds before round {round_count + 1}...")
-            for i in range(5):
-                if not EXTRACTING:
-                    break
-                time.sleep(1)
-    
-    EXTRACTING = False
-    safe_log_info(f"Extraction completed after {round_count} rounds with {len(EXTRACTION_DATA)} total numbers")
+    try:
+        # Here goes your Playwright scraping logic
+        import time
+        import playwright.sync_api
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            # Example: just navigate somewhere
+            page.goto("https://example.com")
+            time.sleep(2)  # simulate work
+            browser.close()
+
+        # Simulate extraction time
+        time.sleep(5)
+
+    finally:
+        EXTRACTING = False
 
 # -----------------------
 # Enhanced Health Check
