@@ -338,31 +338,91 @@ def index():
                            csrf_token=generate_csrf(),
                            SCRAPERS_AVAILABLE=SCRAPERS_AVAILABLE)
 
-@app.route('/extract', methods=['POST'])
-@limiter.limit("10 per minute")
+@limiter.limit("10/minute")
+@app.route("/extract", methods=["POST"])
+@user_login_required
 def start_extraction():
+    """
+    Starts a data extraction job.
+    Works with:
+       - application/json
+       - multipart/form-data
+       - requests missing Content-Type
+    Returns clean JSON errors.
+    """
     global EXTRACTION_THREAD, EXTRACTING
 
+    # Prevent parallel jobs
     if EXTRACTION_THREAD and EXTRACTION_THREAD.is_alive():
         return jsonify({"error": "Extraction already running"}), 400
 
-    data = request.get_json() or {}
-    keywords = (data.get("keywords") or "").strip()
-    location = (data.get("location") or "").strip()
-    platforms = data.get("platforms") or []
+    content_type = (request.content_type or "").lower()
 
+    # --- JSON request ---------------------------------------------------------
+    if "application/json" in content_type:
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({"error": "Invalid JSON body"}), 415
+
+        keywords = (data.get("keywords") or "").strip()
+        location = (data.get("location") or "").strip()
+
+        # Platforms may come as:
+        #   ["facebook", "google"]
+        #   "facebook"
+        #   None
+        raw_platforms = data.get("platforms")
+        if isinstance(raw_platforms, list):
+            platforms = raw_platforms
+        elif isinstance(raw_platforms, str):
+            platforms = [raw_platforms]
+        else:
+            platforms = []
+
+    # --- Form-data request (frontend) -----------------------------------------
+    elif "multipart/form-data" in content_type or True:
+        # Form keys
+        keywords = (request.form.get("keywords") or "").strip()
+        location = (
+            request.form.get("location")
+            or request.form.get("state")
+            or request.form.get("country")
+            or ""
+        ).strip()
+
+        # front-end sends platforms[] multiple times
+        platforms = request.form.getlist("platforms[]") or []
+
+    else:
+        return jsonify({"error": "Unsupported Content-Type"}), 415
+
+    # --- Validation ------------------------------------------------------------
     if not keywords and not location:
         return jsonify({"error": "Either keywords or location is required."}), 400
+
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
-    EXTRACTION_THREAD = Thread(target=lambda: print("Extraction running..."), daemon=True)
-    EXTRACTION_THREAD.start()
+    # --- Start background thread ----------------------------------------------
+    try:
+        EXTRACTION_THREAD = Thread(
+            target=start_extraction_worker,
+            args=(keywords, location, platforms),
+            daemon=True
+        )
+        EXTRACTION_THREAD.start()
+    except Exception as e:
+        return jsonify({"error": f"Failed to start extraction: {str(e)}"}), 500
+
+    app.logger.info(
+        f"Extraction started | keywords={keywords} | location={location} | platforms={platforms}"
+    )
 
     return jsonify({"status": "Extraction started"})
 
-@app.route('/stop-extraction', methods=['POST'])
+
 @limiter.limit("10 per minute")
+@app.route('/stop-extraction', methods=['POST'])
 @user_login_required
 def stop_extraction():
     """Stop ongoing extraction"""
@@ -632,6 +692,10 @@ def stream_extraction():
         'X-Accel-Buffering': 'no'  # helpful for nginx + uWSGI buffering
     }
     return Response(stream_with_context(event_stream()), mimetype='text/event-stream', headers=headers)
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"}), 200
 
 @app.route('/user-login', methods=['POST'])
 def user_login():
