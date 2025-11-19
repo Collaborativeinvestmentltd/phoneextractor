@@ -857,16 +857,6 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-@app.route('/debug-session')
-def debug_session():
-    """Debug endpoint to check session state"""
-    return jsonify({
-        'session_data': dict(session),
-        'user_logged_in': session.get('user_logged_in', False),
-        'license_key': session.get('license_key'),
-        'session_id': session.sid if session else None
-    })
-
 # -----------------------
 # Enhanced Extraction Worker
 # -----------------------
