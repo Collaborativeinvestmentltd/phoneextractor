@@ -86,11 +86,13 @@ class Config:
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
     PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
-    # Add session protection
     SESSION_COOKIE_SAMESITE = 'Lax'
-    # For production, you might want to use Redis or database sessions
-    # SESSION_TYPE = 'filesystem'  # or 'redis', 'mongodb', etc.
-
+    
+    # ADD THESE SESSION CONFIGURATIONS:
+    SESSION_TYPE = 'filesystem'
+    SESSION_PERMANENT = True
+    SESSION_USE_SIGNER = True
+    SESSION_KEY_PREFIX = 'session:'
 # -----------------------
 # Initialize Extensions
 # -----------------------
@@ -142,9 +144,6 @@ class License(db.Model):
 # -----------------------
 def create_app(config_class=Config):
     app = Flask(__name__)
-    app = Flask(__name__)
-
-    port = int(os.environ.get("PORT", 5000))
     app.config.from_object(config_class)
     
     # Initialize extensions
@@ -158,6 +157,12 @@ def create_app(config_class=Config):
     
     # Add proxy fix for production
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    
+    # ADD SESSION CONFIGURATION
+    @app.before_request
+    def make_session_permanent():
+        session.permanent = True
+        app.permanent_session_lifetime = timedelta(hours=24)
     
     return app
 
@@ -241,13 +246,11 @@ def admin_required(f):
     return decorated_function
 
 def user_login_required(f):
-    from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Example: check for a simple header token for demo
-        token = request.headers.get("Authorization")
-        if not token or token != "Bearer SECRET_TOKEN":
-            return jsonify({"error": "Unauthorized"}), 403
+        # Check session instead of header token
+        if not session.get('user_logged_in'):
+            return jsonify({"error": "Authentication required"}), 403
         return f(*args, **kwargs)
     return decorated_function
 
@@ -729,10 +732,13 @@ def user_login():
         
         db.session.commit()
         
-        # Simple session setup - avoid complex session data
+        # Enhanced session setup
         session['user_logged_in'] = True
         session['license_key'] = license_key
         session.permanent = True
+        
+        # EXPLICITLY SAVE THE SESSION
+        session.modified = True
         
         app.logger.info(f"User successfully logged in with license: {license_key}")
         
@@ -850,6 +856,16 @@ def internal_error(error):
     app.logger.error(f"500 Internal Server Error: {str(error)}")
     db.session.rollback()
     return render_template('500.html'), 500
+
+@app.route('/debug-session')
+def debug_session():
+    """Debug endpoint to check session state"""
+    return jsonify({
+        'session_data': dict(session),
+        'user_logged_in': session.get('user_logged_in', False),
+        'license_key': session.get('license_key'),
+        'session_id': session.sid if session else None
+    })
 
 # -----------------------
 # Enhanced Extraction Worker
