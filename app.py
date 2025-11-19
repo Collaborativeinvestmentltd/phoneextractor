@@ -1,4 +1,5 @@
 import logging
+from flask import Response, jsonify, request
 from flask import make_response
 from flask import Flask, request, jsonify
 from logging.handlers import RotatingFileHandler
@@ -12,6 +13,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Global extraction flags
+EXTRACTING = False
+EXTRACTION_THREAD = None
+
+# Storage for live extracted results
+EXTRACTION_DATA = []
+DATA_LOCK = Lock()
 
 # Import CSRF with fallback
 try:
@@ -346,35 +355,30 @@ def index():
 @user_login_required
 def start_extraction():
     """
-    Starts a data extraction job.
-    Works with:
-       - application/json
-       - multipart/form-data
-       - requests missing Content-Type
-    Returns clean JSON errors.
+    Start extraction job.
+    Supports:
+        - application/json
+        - multipart/form-data
+    All errors return structured JSON.
     """
-    global EXTRACTION_THREAD, EXTRACTING
+    global EXTRACTION_THREAD, EXTRACTING, EXTRACTION_DATA
 
     # Prevent parallel jobs
-    if EXTRACTION_THREAD and EXTRACTION_THREAD.is_alive():
+    if EXTRACTING:
         return jsonify({"error": "Extraction already running"}), 400
 
+    # ------------------ Parse request ------------------
     content_type = (request.content_type or "").lower()
 
-    # --- JSON request ---------------------------------------------------------
     if "application/json" in content_type:
-        data = request.get_json(silent=True)
-        if not data:
+        body = request.get_json(silent=True)
+        if not body:
             return jsonify({"error": "Invalid JSON body"}), 415
 
-        keywords = (data.get("keywords") or "").strip()
-        location = (data.get("location") or "").strip()
+        keywords = (body.get("keywords") or "").strip()
+        location = (body.get("location") or "").strip()
 
-        # Platforms may come as:
-        #   ["facebook", "google"]
-        #   "facebook"
-        #   None
-        raw_platforms = data.get("platforms")
+        raw_platforms = body.get("platforms")
         if isinstance(raw_platforms, list):
             platforms = raw_platforms
         elif isinstance(raw_platforms, str):
@@ -382,9 +386,8 @@ def start_extraction():
         else:
             platforms = []
 
-    # --- Form-data request (frontend) -----------------------------------------
-    elif "multipart/form-data" in content_type or True:
-        # Form keys
+    else:
+        # Handles form-data AND unknown content types safely
         keywords = (request.form.get("keywords") or "").strip()
         location = (
             request.form.get("location")
@@ -392,36 +395,34 @@ def start_extraction():
             or request.form.get("country")
             or ""
         ).strip()
-
-        # front-end sends platforms[] multiple times
         platforms = request.form.getlist("platforms[]") or []
 
-    else:
-        return jsonify({"error": "Unsupported Content-Type"}), 415
-
-    # --- Validation ------------------------------------------------------------
+    # ------------------ Validate ------------------
     if not keywords and not location:
         return jsonify({"error": "Either keywords or location is required."}), 400
 
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
-    # --- Start background thread ----------------------------------------------
-    try:
-        EXTRACTION_THREAD = Thread(
-            target=start_extraction_worker,
-            args=(keywords, location, platforms),
-            daemon=True
-        )
-        EXTRACTION_THREAD.start()
-    except Exception as e:
-        return jsonify({"error": f"Failed to start extraction: {str(e)}"}), 500
+    # ------------------ Clean slate ------------------
+    with DATA_LOCK:
+        EXTRACTION_DATA.clear()
+
+    EXTRACTING = True  # <-- prevent race condition
+
+    # ------------------ Start thread ------------------
+    EXTRACTION_THREAD = Thread(
+        target=start_extraction_worker,
+        args=(keywords, location, platforms),
+        daemon=True
+    )
+    EXTRACTION_THREAD.start()
 
     app.logger.info(
-        f"Extraction started | keywords={keywords} | location={location} | platforms={platforms}"
+        f"[EXTRACT] Started | keywords={keywords} | location={location} | platforms={platforms}"
     )
 
-    return jsonify({"status": "Extraction started"})
+    return jsonify({"status": "started"})
 
 
 @limiter.limit("10 per minute")
@@ -616,85 +617,31 @@ def revoke_license(license_key):
     
     return redirect(url_for("admin_dashboard"))
 
-@limiter.exempt
-@app.route('/stream-extraction')
+@app.route("/stream-extraction")
+@user_login_required
 def stream_extraction():
-    """SSE stream for real-time extraction progress.
-
-    Generator yields events compatible with front-end expectations:
-      - data: COUNT:<n>
-      - data: DATA:<number>|<name>|<address>|<source>
-      - data: END:stopped or END:timeout
-      - data: ERROR:unauthorized
-    """
-    if not session.get('user_logged_in'):
-        # immediate unauthorized message then close
-        def unauthorized_stream():
-            yield "data: ERROR:unauthorized\n\n"
-        return Response(unauthorized_stream(), mimetype='text/event-stream',
-                        headers={'Cache-Control': 'no-cache', 'Connection': 'keep-alive'})
-
     def event_stream():
         last_index = 0
-        consecutive_empty_checks = 0
-        max_empty_checks = 30  # ~60 seconds if sleep 2s; adjust as needed
 
-        # Immediately send initial count
-        with DATA_LOCK:
-            current_count = len(EXTRACTION_DATA)
-        yield f"data: COUNT:{current_count}\n\n"
-
-        # Keep streaming while extraction active OR until we've polled enough times without new data
         while True:
-            # If extraction stopped and we've drained data, end the stream
-            if not EXTRACTING:
-                # send final count and a stopped message
-                with DATA_LOCK:
-                    current_count = len(EXTRACTION_DATA)
-                yield f"data: COUNT:{current_count}\n\n"
-                yield "data: END:stopped\n\n"
-                break
+            time.sleep(0.3)
 
+            global EXTRACTION_DATA, EXTRACTING
+
+            # Send new items
             with DATA_LOCK:
-                current_count = len(EXTRACTION_DATA)
+                new_items = EXTRACTION_DATA[last_index:]
+                last_index = len(EXTRACTION_DATA)
 
-                # Send heartbeat count update
-                yield f"data: COUNT:{current_count}\n\n"
+            for item in new_items:
+                yield f"data: {json.dumps(item)}\n\n"
 
-                if current_count > last_index:
-                    new_items = EXTRACTION_DATA[last_index:current_count]
-                    last_index = current_count
-                    consecutive_empty_checks = 0
-
-                    for item in new_items:
-                        try:
-                            number = (item.get('number') or 'N/A').replace('|', ' ')
-                            name = (item.get('name') or 'N/A').replace('|', ' ')[:200]
-                            address = (item.get('address') or 'N/A').replace('|', ' ')[:300]
-                            source = item.get('source', 'unknown')
-                            data = f"DATA:{number}|{name}|{address}|{source}"
-                            yield f"data: {data}\n\n"
-                        except Exception as e:
-                            app.logger.warning(f"Error streaming item: {e}")
-                            # skip malformed item
-                            continue
-                else:
-                    consecutive_empty_checks += 1
-
-            # No busy looping
-            time.sleep(2)
-
-            # If we've had many empty polls, send timeout end and break
-            if consecutive_empty_checks >= max_empty_checks:
-                yield "data: END:timeout\n\n"
+            # Extraction finished + all data sent
+            if not EXTRACTING and last_index >= len(EXTRACTION_DATA):
+                yield "event: done\ndata: {}\n\n"
                 break
 
-    headers = {
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'X-Accel-Buffering': 'no'  # helpful for nginx + uWSGI buffering
-    }
-    return Response(stream_with_context(event_stream()), mimetype='text/event-stream', headers=headers)
+    return Response(event_stream(), mimetype="text/event-stream")
 
 @app.route("/health", methods=["GET"])
 def health():
@@ -861,24 +808,39 @@ def internal_error(error):
 # Enhanced Extraction Worker
 # -----------------------
 def start_extraction_worker(keywords, location, platforms):
-    global EXTRACTING
-    EXTRACTING = True
+    global EXTRACTING, EXTRACTION_DATA
+
     try:
-        # Here goes your Playwright scraping logic
-        import time
-        import playwright.sync_api
         from playwright.sync_api import sync_playwright
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
-            # Example: just navigate somewhere
+
+            # Example navigation — replace with your scraper logic
             page.goto("https://example.com")
-            time.sleep(2)  # simulate work
+            time.sleep(1)
+
+            # Simulate multiple extracted items
+            for i in range(5):
+                time.sleep(1)
+
+                item = {
+                    "number": f"555-{i}{i}{i}-{int(time.time())}",
+                    "name": f"Lead {i}",
+                    "address": f"Address {i}",
+                    "source": "debug-source",
+                }
+
+                with DATA_LOCK:
+                    EXTRACTION_DATA.append(item)
+
             browser.close()
 
-        # Simulate extraction time
-        time.sleep(5)
+    except Exception as e:
+        # Append error for SSE stream
+        with DATA_LOCK:
+            EXTRACTION_DATA.append({"error": str(e)})
 
     finally:
         EXTRACTING = False
