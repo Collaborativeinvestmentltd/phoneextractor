@@ -203,23 +203,15 @@ DATA_LOCK = Lock()
 EXTRACTION_THREAD = None
 EXTRACTING = False
 
-# Admin configuration
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH")
+# -----------------------
+# Admin configuration - Fixed credentials
+# -----------------------
+ADMIN_USERNAME = "Admin"  # Fixed username
+ADMIN_PASSWORD_HASH = generate_password_hash("112122")  # Fixed password
 
 def verify_admin_password(password):
-    """Verify admin password with secure fallback"""
-    if ADMIN_PASSWORD_HASH:
-        # If it's a hash, check it properly
-        if ADMIN_PASSWORD_HASH.startswith('pbkdf2:'):
-            return check_password_hash(ADMIN_PASSWORD_HASH, password)
-        else:
-            # Fallback for plain text in development
-            return password == ADMIN_PASSWORD_HASH
-    else:
-        # Development fallback
-        app.logger.warning("Using development admin password fallback")
-        return password == "12345"  # Your current password
+    """Verify admin password"""
+    return check_password_hash(ADMIN_PASSWORD_HASH, password)
 
 # -----------------------
 # Authentication Decorators
@@ -554,28 +546,55 @@ def revoke_license(license_key):
 @app.route('/stream-extraction')
 @user_login_required
 def stream_extraction():
-    """Stream extraction progress via Server-Sent Events"""
+    """Enhanced SSE stream for real-time extraction progress"""
     def event_stream():
         last_index = 0
-        while EXTRACTING:
+        consecutive_empty_checks = 0
+        max_empty_checks = 30  # ~1 minute of no updates
+        
+        while EXTRACTING and consecutive_empty_checks < max_empty_checks:
             with DATA_LOCK:
                 current_count = len(EXTRACTION_DATA)
-                # Send count update
+                
+                # Send heartbeat count update every 2 seconds
                 yield f"data: COUNT:{current_count}\n\n"
                 
-                # Send new items
+                # Send new items if available
                 if current_count > last_index:
                     new_items = EXTRACTION_DATA[last_index:current_count]
                     last_index = current_count
+                    consecutive_empty_checks = 0  # Reset counter on new data
+                    
                     for item in new_items:
-                        data = f"{item.get('number','')}|{item.get('name','')}|{item.get('address','')}|{item.get('source','')}"
+                        # Format data for frontend
+                        number = item.get('number', 'N/A').replace('|', ' ')
+                        name = item.get('name', 'N/A').replace('|', ' ')[:100]  # Limit length
+                        address = item.get('address', 'N/A').replace('|', ' ')[:150]
+                        source = item.get('source', 'unknown')
+                        
+                        data = f"{number}|{name}|{address}|{source}"
                         yield f"data: {data}\n\n"
+                else:
+                    consecutive_empty_checks += 1
             
+            # Wait before next check
             time.sleep(2)
         
-        yield "data: END\n\n"
+        # Send completion signal
+        if EXTRACTING:
+            yield "data: END:timeout\n\n"
+        else:
+            yield "data: END:stopped\n\n"
     
-    return Response(stream_with_context(event_stream()), mimetype='text/event-stream')
+    return Response(
+        stream_with_context(event_stream()), 
+        mimetype='text/event-stream',
+        headers={
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no'  # Important for nginx
+        }
+    )
 
 @app.route('/user-login', methods=['POST'])
 def user_login():
@@ -718,64 +737,80 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 # -----------------------
-# Extraction Worker
+# Enhanced Extraction Worker
 # -----------------------
 def start_extraction_worker(keywords, location, platforms):
-    """Background worker for continuous data extraction"""
+    """Background worker for continuous data extraction with real-time updates"""
     global EXTRACTION_DATA, EXTRACTING
     EXTRACTING = True
     
-    app.logger.info(f"Continuous extraction started for platforms: {platforms}")
+    app.logger.info(f"🚀 Continuous extraction started for platforms: {platforms}")
     
     # Clear previous data at the start of new extraction
     with DATA_LOCK:
         EXTRACTION_DATA.clear()
     
     round_count = 0
-    max_rounds = 100  # Increased safety limit
+    max_rounds = 50  # Reasonable safety limit
     
     while EXTRACTING and round_count < max_rounds:
         round_count += 1
-        safe_log_info(f"Starting extraction round {round_count}")
+        safe_log_info(f"🔄 Starting extraction round {round_count}")
         
-        platforms_processed = 0
+        total_this_round = 0
         for platform in platforms:
             if not EXTRACTING:
                 break
                 
             try:
-                safe_log_info(f"Running scraper: {platform} (Round {round_count})")
+                safe_log_info(f"🔍 Running scraper: {platform} (Round {round_count})")
                 batch = run_scraper(platform, keywords, location)
                 
-                with DATA_LOCK:
-                    existing_numbers = {entry['number'] for entry in EXTRACTION_DATA if 'number' in entry}
-                    new_entries = []
+                if batch:
+                    with DATA_LOCK:
+                        existing_numbers = {entry['number'] for entry in EXTRACTION_DATA if 'number' in entry}
+                        new_entries = []
+                        
+                        for entry in batch:
+                            phone = entry.get('number', '')
+                            if phone and phone != "N/A" and phone not in existing_numbers:
+                                new_entries.append(entry)
+                                existing_numbers.add(phone)
+                        
+                        EXTRACTION_DATA.extend(new_entries)
+                        total_this_round += len(new_entries)
+                        current_total = len(EXTRACTION_DATA)
+                        
+                        # Log new additions in real-time
+                        if new_entries:
+                            safe_log_info(f"✅ Round {round_count}: Added {len(new_entries)} from {platform}, Total: {current_total}")
+                            
+                else:
+                    safe_log_info(f"⚠️ No results from {platform} in round {round_count}")
                     
-                    for entry in batch:
-                        phone = entry.get('number', '')
-                        if phone and phone != "N/A" and phone not in existing_numbers:
-                            new_entries.append(entry)
-                            existing_numbers.add(phone)
-                    
-                    EXTRACTION_DATA.extend(new_entries)
-                    total_count = len(EXTRACTION_DATA)
-                    safe_log_info(f"Round {round_count}: Added {len(new_entries)} from {platform}, Total: {total_count}")
-                    
-                platforms_processed += 1
-                
             except Exception as e:
-                safe_log_error(f"Scraper {platform} failed in round {round_count}: {str(e)}")
+                safe_log_error(f"❌ Scraper {platform} failed in round {round_count}: {str(e)}")
+        
+        # Real-time progress update
+        safe_log_info(f"📊 Round {round_count} completed: {total_this_round} new numbers, Total: {len(EXTRACTION_DATA)}")
         
         # Continue to next round unless stopped
-        if EXTRACTING and platforms_processed > 0:
-            safe_log_info(f"Completed round {round_count}. Waiting 15 seconds before next round...")
-            for i in range(15):  # Check every second if stopped during wait
+        if EXTRACTING and total_this_round > 0:
+            safe_log_info(f"⏳ Waiting 10 seconds before round {round_count + 1}...")
+            for i in range(10):
+                if not EXTRACTING:
+                    break
+                time.sleep(1)
+        else:
+            # If no new data, wait longer before next round
+            safe_log_info("💤 No new data this round, waiting 20 seconds...")
+            for i in range(20):
                 if not EXTRACTING:
                     break
                 time.sleep(1)
     
     EXTRACTING = False
-    safe_log_info(f"Extraction completed after {round_count} rounds")
+    safe_log_info(f"🏁 Extraction completed after {round_count} rounds with {len(EXTRACTION_DATA)} total numbers")
 
 # -----------------------
 # Health Check
