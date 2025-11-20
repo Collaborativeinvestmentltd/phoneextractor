@@ -180,43 +180,28 @@ def create_app(config_class=Config):
     return app
 
 def configure_logging(app):
-    """Set up logging with rotation"""
-    log_dir = 'logs'
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
+    import os
+    from logging.handlers import RotatingFileHandler
     
-    class SafeFormatter(logging.Formatter):
-        def format(self, record):
-            if hasattr(record, 'msg') and isinstance(record.msg, str):
-                record.msg = (record.msg
-                    .replace('✅', '[OK]')
-                    .replace('❌', '[ERROR]')
-                    .replace('⚠️', '[WARN]')
-                    .replace('🚀', '[START]'))
-            return super().format(record)
-    
+    log_path = '/tmp/app.log'  # <-- Render allows writing here
+
     file_handler = RotatingFileHandler(
-        os.path.join(log_dir, 'app.log'),
-        maxBytes=app.config['LOG_MAX_BYTES'],
-        backupCount=app.config['LOG_BACKUP_COUNT'],
-        encoding='utf-8'
+        log_path,
+        maxBytes=10240,
+        backupCount=5
     )
-    
-    formatter = SafeFormatter(
-        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    file_handler.setLevel(app.config.get("LOG_LEVEL", "INFO"))
+
+    formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s'
     )
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
-    
-    logging.basicConfig(
-        level=getattr(logging, app.config['LOG_LEVEL']),
-        format='%(asctime)s %(levelname)s: %(message)s',
-        handlers=[file_handler]
-    )
-    
+
     app.logger.addHandler(file_handler)
-    app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL']))
-    app.logger.info('Application startup')
+    app.logger.setLevel(app.config.get("LOG_LEVEL", "INFO"))
+
+    print(f"[OK] Logging to {log_path}")
+
 
 # Create app instance
 app = create_app()
