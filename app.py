@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, request, jsonify, Response, redirect, url_for, session, flash, stream_with_context
 from functools import wraps
-from threading import Thread, Lock
+from threading import Thread, Lock, Event
 from datetime import datetime, timedelta, timezone
 import json, os, time, secrets
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +17,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # Global extraction flags
 EXTRACTING = False
 EXTRACTION_THREAD = None
+EXTRACTION_STOP_EVENT = Event()
 
 # Storage for live extracted results
 EXTRACTION_DATA = []
@@ -67,10 +68,11 @@ except ImportError as e:
 
 # Mock scraper functions for deployment
 def mock_scraper(keywords, location):
+    time.sleep(2)  # Simulate scraping delay
     return [{
-        'number': '555-123-4567',
-        'name': 'Sample Business ' + str(int(time.time())),
-        'address': '123 Main St, Sample City',
+        'number': f"555-{int(time.time()) % 10000:04d}",
+        'name': f'Sample Business {int(time.time()) % 1000}',
+        'address': f'123 Main St, {location or "Sample City"}',
         'source': 'mock'
     }]
 
@@ -97,11 +99,12 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
     SESSION_COOKIE_SAMESITE = 'Lax'
     
-    # ADD THESE SESSION CONFIGURATIONS:
+    # Session configurations
     SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = True
     SESSION_USE_SIGNER = True
     SESSION_KEY_PREFIX = 'session:'
+
 # -----------------------
 # Initialize Extensions
 # -----------------------
@@ -167,7 +170,7 @@ def create_app(config_class=Config):
     # Add proxy fix for production
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     
-    # ADD SESSION CONFIGURATION
+    # Session configuration
     @app.before_request
     def make_session_permanent():
         session.permanent = True
@@ -231,6 +234,7 @@ EXTRACTION_DATA = []
 DATA_LOCK = Lock()
 EXTRACTION_THREAD = None
 EXTRACTING = False
+EXTRACTION_STOP_EVENT = Event()
 
 # -----------------------
 # Admin configuration - Fixed credentials
@@ -257,7 +261,6 @@ def admin_required(f):
 def user_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # Check session instead of header token
         if not session.get('user_logged_in'):
             return jsonify({"error": "Authentication required"}), 403
         return f(*args, **kwargs)
@@ -293,16 +296,12 @@ with app.app_context():
 # Scraper Integration
 # -----------------------
 def run_scraper(platform, keywords, location):
-    """Run specific scraper based on platform.
-
-    Relaxed validation: allow empty keywords or empty location because
-    some scrapers (or mock fallback) can work with only one.
-    """
+    """Run specific scraper based on platform."""
     if not SCRAPERS_AVAILABLE or platform not in scraper_functions:
         app.logger.warning(f"Scraper not available for platform: {platform}")
         return []
 
-    # Allow empty keywords/location — sanitized to '' for scrapers
+    # Allow empty keywords/location
     keywords = (keywords or '').strip()
     location = (location or '').strip()
 
@@ -354,20 +353,14 @@ def index():
 @app.route("/extract", methods=["POST"])
 @user_login_required
 def start_extraction():
-    """
-    Start extraction job.
-    Supports:
-        - application/json
-        - multipart/form-data
-    All errors return structured JSON.
-    """
-    global EXTRACTION_THREAD, EXTRACTING, EXTRACTION_DATA
+    """Start extraction job."""
+    global EXTRACTION_THREAD, EXTRACTING, EXTRACTION_DATA, EXTRACTION_STOP_EVENT
 
     # Prevent parallel jobs
     if EXTRACTING:
         return jsonify({"error": "Extraction already running"}), 400
 
-    # ------------------ Parse request ------------------
+    # Parse request
     content_type = (request.content_type or "").lower()
 
     if "application/json" in content_type:
@@ -377,7 +370,6 @@ def start_extraction():
 
         keywords = (body.get("keywords") or "").strip()
         location = (body.get("location") or "").strip()
-
         raw_platforms = body.get("platforms")
         if isinstance(raw_platforms, list):
             platforms = raw_platforms
@@ -385,32 +377,30 @@ def start_extraction():
             platforms = [raw_platforms]
         else:
             platforms = []
-
     else:
-        # Handles form-data AND unknown content types safely
         keywords = (request.form.get("keywords") or "").strip()
         location = (
-            request.form.get("location")
-            or request.form.get("state")
-            or request.form.get("country")
-            or ""
+            request.form.get("location") or
+            request.form.get("state") or
+            request.form.get("country") or ""
         ).strip()
         platforms = request.form.getlist("platforms[]") or []
 
-    # ------------------ Validate ------------------
+    # Validation
     if not keywords and not location:
         return jsonify({"error": "Either keywords or location is required."}), 400
 
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
-    # ------------------ Clean slate ------------------
+    # Clean slate
     with DATA_LOCK:
         EXTRACTION_DATA.clear()
 
-    EXTRACTING = True  # <-- prevent race condition
+    EXTRACTION_STOP_EVENT.clear()
+    EXTRACTING = True
 
-    # ------------------ Start thread ------------------
+    # Start thread
     EXTRACTION_THREAD = Thread(
         target=start_extraction_worker,
         args=(keywords, location, platforms),
@@ -422,8 +412,7 @@ def start_extraction():
         f"[EXTRACT] Started | keywords={keywords} | location={location} | platforms={platforms}"
     )
 
-    return jsonify({"status": "started"})
-
+    return jsonify({"status": "Extraction started"})
 
 @limiter.limit("10 per minute")
 @app.route('/stop-extraction', methods=['POST'])
@@ -432,12 +421,13 @@ def stop_extraction():
     """Stop ongoing extraction"""
     global EXTRACTING
     EXTRACTING = False
+    EXTRACTION_STOP_EVENT.set()
     app.logger.info("Extraction stopped by user")
     return jsonify({"status": "Extraction stopped"})
 
 @app.route('/view-extraction', methods=['GET'])
 def view_extraction():
-    """Get current extraction results - simplified auth check"""
+    """Get current extraction results"""
     if not session.get('user_logged_in'):
         return jsonify({"error": "Authentication required"}), 403
     
@@ -517,29 +507,11 @@ def admin_dashboard():
     
     now_aware = datetime.now(timezone.utc)
     
-    licenses_with_status = []
-    for lic in licenses:
-        if lic.expiry:
-            if lic.expiry.tzinfo is None:
-                expiry_aware = lic.expiry.replace(tzinfo=timezone.utc)
-            else:
-                expiry_aware = lic.expiry
-            
-            is_expired = expiry_aware < now_aware
-        else:
-            is_expired = False
-            
-        licenses_with_status.append({
-            'license': lic,
-            'is_expired': is_expired
-        })
-    
     return render_template(
         "admin.html",
         extraction_active=extraction_active,
         extracted_count=extracted_count,
         user_count=user_count,
-        licenses_with_status=licenses_with_status,
         licenses=licenses,
         users=users,
         timezone=timezone,
@@ -622,34 +594,34 @@ def revoke_license(license_key):
 def stream_extraction():
     def event_stream():
         last_index = 0
+        start_time = time.time()
+        timeout = 300  # 5 minutes timeout
 
-        while True:
-            time.sleep(0.3)
-
-            global EXTRACTION_DATA, EXTRACTING
-
-            # Send new items
+        while EXTRACTING and not EXTRACTION_STOP_EVENT.is_set():
+            if time.time() - start_time > timeout:
+                break
+                
+            time.sleep(1)
+            
             with DATA_LOCK:
+                current_count = len(EXTRACTION_DATA)
                 new_items = EXTRACTION_DATA[last_index:]
-                last_index = len(EXTRACTION_DATA)
+                last_index = current_count
 
             for item in new_items:
                 yield f"data: {json.dumps(item)}\n\n"
 
-            # Extraction finished + all data sent
-            if not EXTRACTING and last_index >= len(EXTRACTION_DATA):
-                yield "event: done\ndata: {}\n\n"
-                break
+            # Send count update
+            yield f"data: COUNT:{current_count}\n\n"
+
+        # Extraction finished
+        yield "data: END:stopped\n\n"
 
     return Response(event_stream(), mimetype="text/event-stream")
 
-@app.route("/health", methods=["GET"])
-def health():
-    return jsonify({"status": "ok"}), 200
-
 @app.route('/user-login', methods=['POST'])
 def user_login():
-    """User login with license key - Fixed version"""
+    """User login with license key"""
     try:
         license_key = request.form.get('license_key', '').strip().upper()
         
@@ -679,13 +651,10 @@ def user_login():
         
         db.session.commit()
         
-        # Enhanced session setup
+        # Session setup
         session['user_logged_in'] = True
         session['license_key'] = license_key
         session.permanent = True
-        
-        # EXPLICITLY SAVE THE SESSION
-        session.modified = True
         
         app.logger.info(f"User successfully logged in with license: {license_key}")
         
@@ -696,17 +665,12 @@ def user_login():
         app.logger.error(f"Error during user login: {str(e)}")
         return jsonify({"success": False, "error": "Server error occurred. Please try again."})
 
-# Add a simple session check that won't fail
 @app.route('/check-auth')
 def check_auth():
     """Simple authentication check"""
-    try:
-        return jsonify({
-            'authenticated': session.get('user_logged_in', False)
-        })
-    except Exception as e:
-        app.logger.error(f"Error in check-auth: {e}")
-        return jsonify({'authenticated': False})
+    return jsonify({
+        'authenticated': session.get('user_logged_in', False)
+    })
 
 @app.route('/user-logout', methods=['POST'])
 def user_logout():
@@ -811,39 +775,28 @@ def start_extraction_worker(keywords, location, platforms):
     global EXTRACTING, EXTRACTION_DATA
 
     try:
-        from playwright.sync_api import sync_playwright
-
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-
-            # Example navigation — replace with your scraper logic
-            page.goto("https://example.com")
-            time.sleep(1)
-
-            # Simulate multiple extracted items
-            for i in range(5):
-                time.sleep(1)
-
-                item = {
-                    "number": f"555-{i}{i}{i}-{int(time.time())}",
-                    "name": f"Lead {i}",
-                    "address": f"Address {i}",
-                    "source": "debug-source",
-                }
-
-                with DATA_LOCK:
-                    EXTRACTION_DATA.append(item)
-
-            browser.close()
-
+        for platform in platforms:
+            if not EXTRACTING or EXTRACTION_STOP_EVENT.is_set():
+                break
+                
+            app.logger.info(f"Starting extraction from {platform}")
+            
+            # Run scraper for this platform
+            results = run_scraper(platform, keywords, location)
+            
+            # Add results to global data
+            with DATA_LOCK:
+                EXTRACTION_DATA.extend(results)
+            
+            # Small delay between platforms
+            time.sleep(2)
+            
     except Exception as e:
-        # Append error for SSE stream
-        with DATA_LOCK:
-            EXTRACTION_DATA.append({"error": str(e)})
-
+        app.logger.error(f"Extraction worker error: {str(e)}")
+        
     finally:
         EXTRACTING = False
+        EXTRACTION_STOP_EVENT.clear()
 
 # -----------------------
 # Enhanced Health Check
@@ -887,16 +840,6 @@ def after_request(response):
 @app.route('/favicon.ico')
 def favicon():
     return '', 204
-
-@app.route('/debug-session')
-def debug_session():
-    """Debug endpoint to check session state"""
-    return jsonify({
-        'session_data': dict(session),
-        'user_logged_in': session.get('user_logged_in', False),
-        'license_key': session.get('license_key'),
-        'session_id': session.sid if session else None
-    })
 
 # -----------------------
 # Run Application
