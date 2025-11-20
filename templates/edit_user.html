@@ -1,11 +1,153 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit User</title>
+    <title>Edit User - Enhanced Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4361ee;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4361ee;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .primary-btn {
+            background: #4361ee;
+            color: white;
+        }
+        .primary-btn:hover {
+            background: #3a56d4;
+        }
+        .outline-btn {
+            background: transparent;
+            border: 2px solid #4361ee;
+            color: #4361ee;
+        }
+        .outline-btn:hover {
+            background: #4361ee;
+            color: white;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Edit User: {{ user.username }}</h1>
-    <p>User edit functionality coming soon...</p>
-    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    <div class="container">
+        <h1><i class="fas fa-user-edit"></i> Edit User: {{ user.username }}</h1>
+        
+        <div class="user-info">
+            <p><strong>User ID:</strong> {{ user.id }}</p>
+            <p><strong>Created:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}</p>
+            <p><strong>Last Login:</strong> {{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else 'Never' }}</p>
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="email" name="email" value="{{ user.email or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="new_password"><i class="fas fa-lock"></i> New Password (leave blank to keep current)</label>
+                <input type="password" id="new_password" name="new_password" placeholder="Enter new password">
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="is_active" name="is_active" {{ 'checked' if user.is_active }}>
+                    <label for="is_active">Active User</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="is_admin" name="is_admin" {{ 'checked' if user.is_admin }}>
+                    <label for="is_admin">Administrator Access</label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary-btn">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn outline-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <a href="{{ url_for('user_sessions', user_id=user.id) }}" class="btn outline-btn">
+                    <i class="fas fa-history"></i> View Sessions
+                </a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

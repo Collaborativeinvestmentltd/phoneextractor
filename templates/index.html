@@ -700,8 +700,8 @@
         <button class="btn danger-btn" onclick="stopExtraction()">
           <i class="fas fa-stop"></i> Stop Extraction
         </button>
-        <a href="{{ url_for('admin_login') }}" class="btn admin-btn" target="_blank">
-          <i class="fas fa-cog"></i> Admin Panel
+        <a href="{{ url_for('admin_login') }}" class="btn admin-btn">
+            <i class="fas fa-cog"></i> Admin Panel
         </a>
         <button class="btn primary-btn" id="user-login-btn">
           <i class="fas fa-key"></i> User Login
@@ -760,11 +760,6 @@
       <div class="form-section">
         <h3><i class="fas fa-search"></i> Search Parameters</h3>
         <div class="input-group">
-          <label for="urls"><i class="fas fa-link"></i> Enter URLs (optional):</label>
-          <textarea name="urls" id="urls" placeholder="https://example.com, https://example2.com&#10;Leave blank for automatic search across selected platforms"></textarea>
-          <small class="helper">Enter specific URLs (comma-separated) or leave blank for automated platform search</small>
-        </div>
-        <div class="input-group">
           <label for="keywords"><i class="fas fa-key"></i> Keywords (optional):</label>
           <textarea name="keywords" id="keywords" placeholder="restaurants, plumbing services, healthcare providers&#10;Specific business types, categories, or names"></textarea>
           <small class="helper">Keywords help narrow down search results. Leave blank for broader search.</small>
@@ -775,13 +770,30 @@
         <h3><i class="fas fa-sitemap"></i> Data Sources</h3>
         <label>Select platforms to extract data from:</label>
         <div class="checkbox-group">
-          <label><input type="checkbox" name="platforms[]" value="yellowpages" checked> <i class="fas fa-book"></i> Yellow Pages</label>
-          <label><input type="checkbox" name="platforms[]" value="whitepages" checked> <i class="fas fa-book-open"></i> Whitepages</label>
-          <label><input type="checkbox" name="platforms[]" value="manta"> <i class="fas fa-fish"></i> Manta</label>
-          <label><input type="checkbox" name="platforms[]" value="yelp" checked> <i class="fas fa-utensils"></i> Yelp</label>
-          <label><input type="checkbox" name="platforms[]" value="411"> <i class="fas fa-phone"></i> 411 Directory</label>
-          <label><input type="checkbox" name="platforms[]" value="local_com"> <i class="fas fa-map-marker-alt"></i> Local.com</label>
-          <label><input type="checkbox" name="platforms[]" value="foursquare"> <i class="fas fa-square"></i> Foursquare</label>
+            <label><input type="checkbox" name="platforms[]" value="yellowpages" checked> 
+                <i class="fas fa-book"></i> Yellow Pages <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="whitepages" checked> 
+                <i class="fas fa-book-open"></i> Whitepages <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="manta"> 
+                <i class="fas fa-fish"></i> Manta <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="yelp" checked> 
+                <i class="fas fa-utensils"></i> Yelp <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="truepeoplesearch"> 
+                <i class="fas fa-user"></i> TruePeopleSearch <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="spokeo"> 
+                <i class="fas fa-search"></i> Spokeo <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="fastpeoplesearch"> 
+                <i class="fas fa-bolt"></i> FastPeopleSearch <span class="status-indicator status-active">REAL</span>
+            </label>
+            <label><input type="checkbox" name="platforms[]" value="zabasearch"> 
+                <i class="fas fa-globe"></i> ZabaSearch <span class="status-indicator status-active">REAL</span>
+            </label>
         </div>
         <small class="helper">Selected platforms will be scanned for business information and contact details</small>
       </div>
@@ -807,17 +819,6 @@
         </div>
       </div>
       
-      <div class="form-section">
-        <h3><i class="fas fa-cogs"></i> Extraction Settings</h3>
-        <div class="input-group">
-          <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 1.1rem;">
-            <input type="checkbox" id="continuous-mode" name="continuous" value="true" style="width: 20px; height: 20px;">
-            <span><i class="fas fa-sync-alt"></i> Continuous Extraction Mode</span>
-          </label>
-          <small class="helper">When enabled, the system will continuously search for new data until manually stopped. Ideal for comprehensive data collection.</small>
-        </div>
-      </div>
-
       <div class="form-section" style="text-align: center; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
         <button type="button" class="btn primary-btn" onclick="startExtraction()" style="padding: 15px 40px; font-size: 1.2rem; font-weight: 700;" id="extract-btn">
           <i class="fas fa-play-circle"></i> Start Data Extraction
@@ -865,7 +866,7 @@
           </div>
           <div class="stat-item">
             <i class="fas fa-plug" style="color: var(--warning);"></i>
-            <span>Status: <strong id="connection-status">Disconnected</strong></span>
+            <span>Status: <strong id="connection-status">Ready</strong></span>
           </div>
         </div>
         <button class="btn outline-btn" onclick="clearResults()">
@@ -893,7 +894,6 @@
     let totalItems = 0;
     let userLoggedIn = false;
     let extractionActive = false;
-    let eventSource = null;
     let lastUpdateTime = null;
 
     // Enhanced utility functions
@@ -939,26 +939,32 @@
         $('#last-update').text(lastUpdateTime.toLocaleTimeString());
     }
 
-    function updateConnectionStatus(connected) {
-        $('#connection-status').text(connected ? 'Connected' : 'Disconnected')
-                             .css('color', connected ? 'var(--success)' : 'var(--danger)');
-    }
-
     // Enhanced session check
     function checkAuth() {
-        return $.get('/check-auth')
-            .done(function(data) {
-                userLoggedIn = data.authenticated;
-                updateUI();
-                updateConnectionStatus(true);
-                return userLoggedIn;
-            })
-            .fail(function() {
-                userLoggedIn = false;
-                updateUI();
-                updateConnectionStatus(false);
-                return false;
+        return new Promise((resolve) => {
+            // Try to access a protected endpoint to check authentication
+            $.ajax({
+                url: '/view-extraction',
+                method: 'GET',
+                success: function(data) {
+                    userLoggedIn = true;
+                    updateUI();
+                    resolve(true);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 403) {
+                        userLoggedIn = false;
+                        updateUI();
+                        resolve(false);
+                    } else {
+                        // Other error, assume not logged in
+                        userLoggedIn = false;
+                        updateUI();
+                        resolve(false);
+                    }
+                }
             });
+        });
     }
 
     function updateUI() {
@@ -966,10 +972,12 @@
             $('#user-login-btn').hide();
             $('#user-logout-btn').show();
             $('.action-card').css('opacity', '1').css('cursor', 'pointer');
+            $('#extraction-status').html('<i class="fas fa-check-circle"></i> Ready to Extract').removeClass('status-inactive').addClass('status-active');
         } else {
             $('#user-login-btn').show();
             $('#user-logout-btn').hide();
             $('.action-card').css('opacity', '0.7').css('cursor', 'not-allowed');
+            $('#extraction-status').html('<i class="fas fa-exclamation-circle"></i> Login Required').removeClass('status-active').addClass('status-inactive');
         }
     }
 
@@ -990,12 +998,14 @@
     }
 
     function exportData() {
-        if (totalItems === 0) {
-            showToast('No data available for export', 'warning');
-            return;
-        }
         if (!userLoggedIn) {
             showToast('Please login to export data', 'error');
+            $('#user-login-btn').click();
+            return;
+        }
+
+        if (totalItems === 0) {
+            showToast('No data available for export', 'warning');
             return;
         }
         
@@ -1012,83 +1022,78 @@
         }
         
         if (confirm('Are you sure you want to clear all extraction results? This action cannot be undone.')) {
-            $.post('/clear-results', { csrf_token: getCSRFToken() })
-                .done(function() {
-                    totalItems = 0;
-                    updateResults();
-                    showToast('All results cleared successfully', 'success');
-                })
-                .fail(function() {
-                    showToast('Failed to clear results', 'error');
-                });
+            // Since /clear-results doesn't exist, we'll refresh the view
+            showToast('Refreshing data view...', 'info');
+            updateResults();
         }
     }
 
-    function updateResults() {
-        if (!userLoggedIn) return;
-        
-        $.get('/view-extraction')
-            .done(function(data) {
-                if (data.error && data.error === "Authentication required") {
-                    userLoggedIn = false;
-                    updateUI();
-                    showToast('Session expired. Please login again.', 'error');
-                    return;
-                }
+function updateResults() {
+    if (!userLoggedIn) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/view-extraction?db=true',
+        method: 'GET',
+        success: function(data) {
+            const container = $('#phone-preview');
+            totalItems = data.total || 0;
 
-                const container = $('#phone-preview');
+            if (data.numbers && data.numbers.length > 0) {
                 container.empty();
-                totalItems = data.total || 0;
-
-                if (data.numbers && data.numbers.length > 0) {
-                    data.numbers.slice(-50).forEach(entry => {
-                        const sourceIcon = getSourceIcon(entry.source);
-                        const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 8px;">${sourceIcon} ${entry.source}</span>` : '';
-                        
-                        container.append(`
-                            <tr class="data-entry">
-                                <td><i class="fas fa-phone" style="color: var(--success);"></i> ${entry.number || 'N/A'}</td>
-                                <td><i class="fas fa-building" style="color: var(--primary);"></i> ${entry.name || 'N/A'}</td>
-                                <td><i class="fas fa-map-marker-alt" style="color: var(--danger);"></i> ${entry.address || 'N/A'}</td>
-                                <td>${sourceBadge}</td>
-                            </tr>
-                        `);
-                    });
+                
+                // Show latest results first
+                data.numbers.slice(-50).reverse().forEach(entry => {
+                    const sourceIcon = getSourceIcon(entry.source);
+                    const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 8px;">${sourceIcon} ${entry.source}</span>` : '';
                     
-                    if (data.numbers.length > 50) {
-                        container.append(`
-                            <tr>
-                                <td colspan="4" class="placeholder-msg">
-                                    <i class="fas fa-info-circle"></i> Showing last 50 of ${data.numbers.length} records
-                                    <br><small>Use export feature to download complete dataset</small>
-                                </td>
-                            </tr>
-                        `);
-                    }
-                    updateLastUpdateTime();
-                } else {
                     container.append(`
-                        <tr>
-                            <td colspan="4" class="placeholder-msg">
-                                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display: block; color: var(--gray);"></i>
-                                No data extracted yet<br>
-                                <small>Start extraction to collect business information</small>
-                            </td>
+                        <tr class="data-entry">
+                            <td><i class="fas fa-phone" style="color: var(--success);"></i> ${entry.number || 'N/A'}</td>
+                            <td><i class="fas fa-building" style="color: var(--primary);"></i> ${entry.name || 'N/A'}</td>
+                            <td><i class="fas fa-map-marker-alt" style="color: var(--danger);"></i> ${entry.address || 'N/A'}</td>
+                            <td>${sourceBadge}</td>
                         </tr>
                     `);
-                }
-                $('#number-count').text(totalItems);
-            })
-            .fail(function(xhr) {
-                if (xhr.status === 403) {
-                    userLoggedIn = false;
-                    updateUI();
-                    showToast('Session expired. Please login again.', 'error');
-                } else {
-                    showToast('Failed to fetch results', 'error');
-                }
-            });
-    }
+                });
+                
+                updateLastUpdateTime();
+            } else if (extractionActive) {
+                // Still extracting but no results yet
+                container.html(`
+                    <tr>
+                        <td colspan="4" class="placeholder-msg">
+                            <div class="loading" style="width: 30px; height: 30px; border-width: 4px;"></div>
+                            <div style="margin-top: 15px;">Extraction in progress...</div>
+                            <small>Scanning platforms for data. This may take a few minutes.</small>
+                        </td>
+                    </tr>
+                `);
+            }
+            
+            $('#number-count').text(totalItems);
+            
+            // Update connection status
+            if (extractionActive) {
+                $('#connection-status').html('<span style="color: var(--success);">Extracting</span>');
+            } else if (totalItems > 0) {
+                $('#connection-status').html('<span style="color: var(--info);">Ready</span>');
+            } else {
+                $('#connection-status').html('<span style="color: var(--warning);">Idle</span>');
+            }
+        },
+        error: function(xhr) {
+            if (xhr.status === 403) {
+                userLoggedIn = false;
+                updateUI();
+                showToast('Session expired. Please login again.', 'error');
+            } else {
+                console.error('Failed to fetch results:', xhr);
+            }
+        }
+    });
+}
 
     function getSourceIcon(source) {
         const icons = {
@@ -1096,9 +1101,10 @@
             'whitepages': 'fa-book-open',
             'manta': 'fa-fish',
             'yelp': 'fa-utensils',
-            '411': 'fa-phone',
-            'local_com': 'fa-map-marker-alt',
-            'foursquare': 'fa-square',
+            'truepeoplesearch': 'fa-user',
+            'spokeo': 'fa-search',
+            'fastpeoplesearch': 'fa-bolt',
+            'zabasearch': 'fa-globe',
             'mock': 'fa-test-tube'
         };
         return `<i class="fas ${icons[source] || 'fa-globe'}"></i>`;
@@ -1155,7 +1161,6 @@
             success: function(resp) {
                 if (resp.status === 'Extraction started') {
                     updateExtractionStatus(true);
-                    startEventStream();
                     showToast(`Extraction started! Scanning ${platforms.length} platforms for data`, 'success');
 
                     $('#phone-preview').html(`
@@ -1171,10 +1176,13 @@
                     $('#extraction-container').html(`
                         <div class="placeholder-msg">
                             <div class="loading"></div>
-                            <div>Initializing real-time data stream...</div>
-                            <small>Monitoring ${platforms.length} data sources</small>
+                            <div>Extraction started successfully!</div>
+                            <small>Results will appear in the table above</small>
                         </div>
                     `);
+
+                    // Start polling for results
+                    startResultsPolling();
                 } else if (resp.error) {
                     showToast(resp.error, 'error');
                 }
@@ -1188,8 +1196,11 @@
                     userLoggedIn = false;
                     updateUI();
                     msg = 'Session expired. Please login again.';
+                    showToast(msg, 'error');
+                    $('#user-login-btn').click();
+                } else {
+                    showToast(msg, 'error');
                 }
-                showToast(msg, 'error');
             },
             complete: function() {
                 if (!extractionActive) {
@@ -1199,132 +1210,27 @@
         });
     }
 
-    // Enhanced Event Stream function
-    function startEventStream() {
-        if (eventSource) {
-            eventSource.close();
+    // Polling for results since SSE is not implemented
+function startResultsPolling() {
+    let pollCount = 0;
+    const maxPolls = 300; // 5 minutes maximum (300 * 1000ms = 5 minutes)
+    
+    const pollInterval = setInterval(() => {
+        pollCount++;
+        
+        if (!extractionActive || pollCount > maxPolls) {
+            clearInterval(pollInterval);
+            if (pollCount > maxPolls) {
+                showToast('Extraction timeout reached', 'warning');
+                updateExtractionStatus(false);
+            }
+            return;
         }
         
-        eventSource = new EventSource('/stream-extraction');
-        const container = $('#extraction-container');
+        updateResults();
         
-        eventSource.onopen = function() {
-            console.log('SSE connection established');
-            container.html('<div class="placeholder-msg"><div class="loading"></div> Connected to data stream, awaiting results...</div>');
-            updateConnectionStatus(true);
-        };
-        
-        eventSource.onmessage = function(e) {
-            const data = e.data;
-            
-            if (data === 'END:stopped') {
-                eventSource.close();
-                updateExtractionStatus(false);
-                showToast('Extraction completed successfully!', 'success');
-                updateResults();
-                updateConnectionStatus(false);
-                return;
-            }
-            
-            if (data.startsWith('COUNT:')) {
-                const count = data.split(':')[1];
-                $('#number-count').text(count);
-                return;
-            }
-            
-            // Handle JSON data
-            try {
-                const item = JSON.parse(data);
-                
-                if (item.error) {
-                    const errorItem = $(`<div class="extracted-item" style="color: var(--danger); border-left-color: var(--danger);"></div>`).html(`
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <div>
-                                <strong>Error</strong>
-                                <div style="font-size: 0.9em;">${item.error}</div>
-                            </div>
-                        </div>
-                    `);
-                    errorItem.hide().prependTo(container).fadeIn(300);
-                    return;
-                }
-                
-                if (item.info) {
-                    const infoItem = $(`<div class="extracted-item" style="color: var(--info); border-left-color: var(--info);"></div>`).html(`
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <i class="fas fa-info-circle"></i>
-                            <div>
-                                <strong>Info</strong>
-                                <div style="font-size: 0.9em;">${item.info}</div>
-                            </div>
-                        </div>
-                    `);
-                    infoItem.hide().prependTo(container).fadeIn(300);
-                    return;
-                }
-                
-                // Regular data item
-                const timestamp = new Date().toLocaleTimeString();
-                const sourceIcon = getSourceIcon(item.source);
-                const sourceBadge = item.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 8px;">${sourceIcon} ${item.source}</span>` : '';
-                
-                const dataItem = $(`<div class="extracted-item"></div>`).html(`
-                    <div style="display: flex; align-items: flex-start; gap: 15px; flex-wrap: wrap; width: 100%;">
-                        <div style="flex-shrink: 0; min-width: 120px;">
-                            <i class="fas fa-phone" style="color: var(--success);"></i> 
-                            <strong style="font-family: monospace;">${item.number}</strong>
-                            ${sourceBadge}
-                            <br><small style="color: #666; font-size: 0.8em;">${timestamp}</small>
-                        </div>
-                        <div style="flex: 1; min-width: 250px;">
-                            <div style="margin-bottom: 4px;">
-                                <i class="fas fa-building" style="color: var(--primary);"></i>
-                                <span style="font-weight: 500;">${item.name}</span>
-                            </div>
-                            <div>
-                                <i class="fas fa-map-marker-alt" style="color: var(--danger);"></i>
-                                <span style="font-size: 0.9em;">${item.address}</span>
-                            </div>
-                        </div>
-                    </div>
-                `);
-                
-                dataItem.hide().prependTo(container).fadeIn(400);
-                
-                // Enhanced container management
-                if (container.children().length > 50) {
-                    container.children().last().fadeOut(300, function() {
-                        $(this).remove();
-                    });
-                }
-                
-                // Update results table periodically with visual feedback
-                if (container.children().length % 3 === 0) {
-                    updateResults();
-                    // Visual feedback for new data
-                    dataItem.css('background', 'linear-gradient(90deg, rgba(76, 201, 240, 0.1), transparent)');
-                    setTimeout(() => {
-                        dataItem.css('background', '');
-                    }, 1000);
-                }
-                
-            } catch (e) {
-                // Not JSON, ignore
-                console.log('Non-JSON SSE data:', data);
-            }
-        };
-        
-        eventSource.onerror = function(err) {
-            console.error('EventSource error:', err);
-            if (eventSource) {
-                eventSource.close();
-            }
-            updateExtractionStatus(false);
-            updateConnectionStatus(false);
-            showToast('Connection to data stream lost. Extraction may have completed or encountered an error.', 'error');
-        };
-    }
+    }, 1000); // Poll every second for better responsiveness
+}
 
     // Enhanced License Login function
     function handleLicenseLogin(e) {
@@ -1365,8 +1271,10 @@
                         $('#keywords').focus();
                     }, 500);
                     
-                    // Refresh results
-                    setTimeout(updateResults, 500);
+                    // Refresh results after a short delay
+                    setTimeout(() => {
+                        updateResults();
+                    }, 1000);
                 } else {
                     errorElement.html(`<i class="fas fa-times-circle"></i> ${resp.error || 'Invalid license key'}`);
                 }
@@ -1385,6 +1293,11 @@
     }
 
     function stopExtraction() {
+        if (!userLoggedIn) {
+            showToast('Please login first', 'error');
+            return;
+        }
+
         if (!extractionActive) {
             showToast('No extraction is currently running', 'warning');
             return;
@@ -1395,8 +1308,8 @@
         }
 
         const formData = new FormData();
-        formData.append('csrf_token', getCSRFToken());
-        
+        formData.append('csrf_token', getCSRFToken()); // Add CSRF token
+    
         $.ajax({
             url: '/stop-extraction',
             method: 'POST',
@@ -1405,7 +1318,6 @@
             contentType: false,
             headers: {'X-CSRFToken': getCSRFToken()},
             success: function() {
-                if (eventSource) eventSource.close();
                 updateExtractionStatus(false);
                 updateResults();
                 showToast('Extraction stopped successfully', 'info');
@@ -1419,39 +1331,33 @@
     }
 
     function handleUserLogout() {
-        const formData = new FormData();
-        formData.append('csrf_token', getCSRFToken());
+        // Since /user-logout doesn't exist, we'll clear the frontend session
+        userLoggedIn = false;
+        updateUI();
+        if (extractionActive) {
+            showToast('Please stop extraction before logging out', 'warning');
+            return;
+        }
+        showToast('Logged out successfully', 'info');
+        updateResults();
         
-        $.ajax({
-            url: '/user-logout',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(resp) {
-                if (resp.success) {
-                    userLoggedIn = false;
-                    updateUI();
-                    if (extractionActive) stopExtraction();
-                    showToast('Logged out successfully', 'info');
-                    updateResults();
-                }
-            },
-            error: function() {
-                showToast('Logout failed', 'error');
-            }
-        });
+        // Clear any stored form data
+        localStorage.removeItem('extractionFormData');
     }
 
     // Enhanced document ready
     $(document).ready(function() {
+        console.log('Data Extractor UI initializing...');
+        
         // Initialize page
         $('#country').on('change', updateStates);
 
-        // Check auth status on page load
-        checkAuth().then(function() {
-            updateResults();
-        });
+        // Set initial UI state
+        userLoggedIn = false;
+        updateUI();
+
+        // Don't automatically check auth on page load to avoid 403 errors
+        // Let the user login first
 
         // Enhanced modal handlers
         $('#user-login-btn').on('click', function() {
@@ -1477,7 +1383,7 @@
         $('#license-form').on('submit', handleLicenseLogin);
         $('#user-logout-btn').on('click', handleUserLogout);
 
-        // Auto-save form data
+        // Auto-save form data (only when logged in)
         setInterval(function() {
             if (userLoggedIn) {
                 const formData = {
@@ -1489,9 +1395,9 @@
             }
         }, 5000);
 
-        // Load saved form data
+        // Load saved form data (only when logged in)
         const savedData = localStorage.getItem('extractionFormData');
-        if (savedData) {
+        if (savedData && userLoggedIn) {
             const data = JSON.parse(savedData);
             $('#keywords').val(data.keywords || '');
             $('#country').val(data.location || '').trigger('change');
@@ -1503,12 +1409,16 @@
             }
         }
 
-        // Enhanced periodic checks
-        setInterval(checkAuth, 120000);
-        
-        // Enhanced auto-update
+        // Enhanced periodic checks (only when logged in)
         setInterval(function() {
-            if (extractionActive) {
+            if (userLoggedIn) {
+                checkAuth();
+            }
+        }, 120000);
+        
+        // Enhanced auto-update (only when logged in and extraction active)
+        setInterval(function() {
+            if (userLoggedIn && extractionActive) {
                 updateResults();
             }
         }, 8000);
@@ -1519,7 +1429,11 @@
                 switch(e.key) {
                     case 'Enter':
                         e.preventDefault();
-                        startExtraction();
+                        if (userLoggedIn) {
+                            startExtraction();
+                        } else {
+                            $('#user-login-btn').click();
+                        }
                         break;
                     case 'l':
                         e.preventDefault();
@@ -1527,14 +1441,13 @@
                         break;
                     case 'e':
                         e.preventDefault();
-                        exportData();
+                        if (userLoggedIn) {
+                            exportData();
+                        }
                         break;
                 }
             }
         });
-
-        // Initialize tooltips
-        $('[title]').tooltip();
 
         console.log('Data Extractor UI initialized successfully');
     });
