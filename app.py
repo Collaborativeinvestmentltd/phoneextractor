@@ -40,7 +40,7 @@ except ImportError as e:
 from flask_migrate import Migrate
 
 # -----------------------
-# Import scrapers
+# Import scrapers - FIXED VERSION
 # -----------------------
 SCRAPERS_AVAILABLE = False
 scraper_functions = {}
@@ -62,14 +62,16 @@ try:
         'foursquare': safe_scrape_foursquare
     }
     SCRAPERS_AVAILABLE = True
-    print("[OK] Scrapers integrated successfully")
+    print("✅ REAL Scrapers integrated successfully")
+    print(f"✅ Available scrapers: {list(scraper_functions.keys())}")
 except ImportError as e:
-    print(f"[WARN] Scrapers not available: {e}")
+    print(f"❌ Scrapers import failed: {e}")
     SCRAPERS_AVAILABLE = False
 
-# Mock scraper functions for deployment
+# Mock scraper function - ONLY used as fallback
 def mock_scraper(keywords, location):
-    time.sleep(2)  # Simulate scraping delay
+    print(f"⚠️ USING MOCK SCRAPER (this shouldn't happen!) - {keywords} in {location}")
+    time.sleep(2)
     return [{
         'number': f"555-{int(time.time()) % 10000:04d}",
         'name': f'Sample Business {int(time.time()) % 1000}',
@@ -77,10 +79,13 @@ def mock_scraper(keywords, location):
         'source': 'mock'
     }]
 
-# Replace unavailable scrapers with mock functions
-for platform in ['yellowpages', 'whitepages', 'manta', '411', 'local_com', 'yelp', 'foursquare']:
-    if platform not in scraper_functions:
+# ONLY use mock if real scrapers completely failed to import
+if not SCRAPERS_AVAILABLE:
+    print("⚠️ REAL scrapers failed - falling back to MOCK scrapers")
+    for platform in ['yellowpages', 'whitepages', 'manta', '411', 'local_com', 'yelp', 'foursquare']:
         scraper_functions[platform] = mock_scraper
+else:
+    print("🎯 REAL scrapers are ready to use!")
 
 # -----------------------
 # Configuration
@@ -180,27 +185,60 @@ def create_app(config_class=Config):
     return app
 
 def configure_logging(app):
-    import os
-    from logging.handlers import RotatingFileHandler
-    
-    log_path = '/tmp/app.log'  # <-- Render allows writing here
+    """Set up logging with rotation"""
+    try:
+        log_dir = 'logs'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+            print(f"✅ Created {log_dir}/ directory")
 
-    file_handler = RotatingFileHandler(
-        log_path,
-        maxBytes=10240,
-        backupCount=5
-    )
-    file_handler.setLevel(app.config.get("LOG_LEVEL", "INFO"))
+        class SafeFormatter(logging.Formatter):
+            def format(self, record):
+                if hasattr(record, 'msg') and isinstance(record.msg, str):
+                    record.msg = (record.msg
+                        .replace('✅', '[OK]')
+                        .replace('❌', '[ERROR]')
+                        .replace('⚠️', '[WARN]')
+                        .replace('🚀', '[START]'))
+                return super().format(record)
 
-    formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(message)s'
-    )
-    file_handler.setFormatter(formatter)
+        file_handler = RotatingFileHandler(
+            os.path.join(log_dir, 'app.log'),
+            maxBytes=app.config['LOG_MAX_BYTES'],
+            backupCount=app.config['LOG_BACKUP_COUNT'],
+            encoding='utf-8'
+        )
 
-    app.logger.addHandler(file_handler)
-    app.logger.setLevel(app.config.get("LOG_LEVEL", "INFO"))
+        formatter = SafeFormatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        )
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
 
-    print(f"[OK] Logging to {log_path}")
+        # Also add console handler for immediate feedback
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        console_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+
+        logging.basicConfig(
+            level=getattr(logging, app.config['LOG_LEVEL']),
+            format='%(asctime)s %(levelname)s: %(message)s',
+            handlers=[file_handler, console_handler]  # Both file and console
+        )
+
+        app.logger.addHandler(file_handler)
+        app.logger.addHandler(console_handler)
+        app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+        app.logger.info('Application startup')
+        
+    except Exception as e:
+        # Fallback to console-only logging if file logging fails
+        print(f"⚠️ File logging failed: {e}, using console logging only")
+        logging.basicConfig(
+            level=getattr(logging, app.config['LOG_LEVEL']),
+            format='%(asctime)s %(levelname)s: %(message)s',
+            handlers=[logging.StreamHandler()]
+        )
 
 
 # Create app instance
@@ -272,12 +310,16 @@ with app.app_context():
     app.logger.info("Database tables created")
 
 # -----------------------
-# Scraper Integration
+# Scraper Integration - FIXED VERSION
 # -----------------------
 def run_scraper(platform, keywords, location):
     """Run specific scraper based on platform."""
-    if not SCRAPERS_AVAILABLE or platform not in scraper_functions:
-        app.logger.warning(f"Scraper not available for platform: {platform}")
+    if not SCRAPERS_AVAILABLE:
+        app.logger.warning(f"❌ Scrapers not available, using mock for: {platform}")
+        return mock_scraper(keywords, location)
+    
+    if platform not in scraper_functions:
+        app.logger.warning(f"❌ Scraper not found for platform: {platform}")
         return []
 
     # Allow empty keywords/location
@@ -286,15 +328,29 @@ def run_scraper(platform, keywords, location):
 
     try:
         scraper_func = scraper_functions[platform]
-        safe_log_info(f"Running scraper: {platform} for '{keywords or '<<no-keywords>>'}' in '{location or '<<no-location>>'}'")
+        app.logger.info(f"🚀 Running REAL scraper: {platform} for '{keywords or '<<no-keywords>>'}' in '{location or '<<no-location>>'}'")
+        
+        # Call the real scraper
         results = scraper_func(keywords, location)
+        
         if not isinstance(results, list):
-            safe_log_error(f"Scraper {platform} returned non-list result, coerced to [].")
+            app.logger.error(f"❌ Scraper {platform} returned non-list result: {type(results)}")
             return []
-        safe_log_info(f"[OK] Scraper {platform} returned {len(results)} results")
+        
+        app.logger.info(f"✅ REAL Scraper {platform} returned {len(results)} REAL results")
+        
+        # Log first few results to verify they're real
+        for i, result in enumerate(results[:3]):
+            if result.get('source') == 'mock':
+                app.logger.warning(f"⚠️ Result {i} from {platform} has 'mock' source - this shouldn't happen!")
+            else:
+                app.logger.info(f"📞 Real result: {result.get('name', 'N/A')} - {result.get('number', 'N/A')}")
+        
         return results
+        
     except Exception as e:
-        safe_log_error(f"[ERROR] Scraper {platform} failed: {str(e)}")
+        app.logger.error(f"❌ REAL Scraper {platform} failed: {str(e)}")
+        # Don't fall back to mock - return empty list instead
         return []
 
 # -----------------------
@@ -370,15 +426,12 @@ def parse_extract_request(req):
 def start_extraction_worker(keywords, location, platforms):
     """
     Worker that runs in a background thread.
-    - Appends results using append_result()
-    - Sets EXTRACTING to False on exit
-    - Respects EXTRACTION_STOP_EVENT to stop early
     """
     global EXTRACTING
 
     try:
-        # Optionally log start
-        app.logger.info(f"[WORKER] Worker started for keywords='{keywords}' location='{location}' platforms={platforms}")
+        app.logger.info(f"🚀 WORKER STARTED - Using {'REAL' if SCRAPERS_AVAILABLE else 'MOCK'} scrapers")
+        app.logger.info(f"🔍 Keywords: '{keywords}', Location: '{location}', Platforms: {platforms}")
 
         # Loop per platform so results stream in progressively
         for platform in platforms:
@@ -386,18 +439,28 @@ def start_extraction_worker(keywords, location, platforms):
                 app.logger.info("[WORKER] Stop requested; exiting early")
                 break
 
-            app.logger.info(f"[WORKER] Running scraper for platform: {platform}")
+            app.logger.info(f"🔄 WORKER: Running {platform} scraper")
 
-            # Use your existing run_scraper function (will call real scrapers or mocks)
             try:
                 results = run_scraper(platform, keywords, location)
+                app.logger.info(f"📊 {platform}: Got {len(results)} results")
+                
             except Exception as e:
-                app.logger.exception(f"[WORKER] Exception running scraper {platform}: {e}")
+                app.logger.exception(f"❌ WORKER: Exception running scraper {platform}: {e}")
                 results = [{"error": f"Scraper {platform} failed: {str(e)}"}]
 
             # Normalize and append results
             if isinstance(results, list) and results:
+                real_results_count = 0
+                mock_results_count = 0
+                
                 for item in results:
+                    # Count real vs mock results
+                    if item.get('source') == 'mock':
+                        mock_results_count += 1
+                    else:
+                        real_results_count += 1
+                    
                     # Ensure expected keys exist
                     safe_item = {
                         "number": str(item.get("number", "")).strip(),
@@ -406,6 +469,9 @@ def start_extraction_worker(keywords, location, platforms):
                         "source": item.get("source", platform)
                     }
                     append_result(safe_item)
+                
+                app.logger.info(f"📈 {platform}: {real_results_count} real, {mock_results_count} mock results")
+                
             else:
                 # Append an empty indicator so frontend knows we're alive
                 append_result({"info": f"No results from {platform}", "source": platform})
@@ -413,18 +479,17 @@ def start_extraction_worker(keywords, location, platforms):
             # short pause between platforms to avoid bursts
             time.sleep(0.5)
 
-        app.logger.info("[WORKER] Finished scraping platforms")
+        app.logger.info("✅ WORKER: Finished scraping platforms")
 
     except Exception as e:
-        app.logger.exception(f"[WORKER] Unexpected error: {e}")
-        # Surface error to frontend
+        app.logger.exception(f"❌ WORKER: Unexpected error: {e}")
         append_result({"error": f"Extraction worker error: {str(e)}"})
 
     finally:
         # Clear the stop event and mark extraction as finished
         EXTRACTION_STOP_EVENT.clear()
         EXTRACTING = False
-        app.logger.info("[WORKER] Worker exiting; EXTRACTING set to False")
+        app.logger.info("🛑 WORKER: Worker exiting; EXTRACTING set to False")
 
 # Route: start extraction (thread-safe, prevents races)
 @limiter.limit("10/minute")
@@ -825,6 +890,44 @@ def delete_user(username):
         flash("User not found", "error")
     
     return redirect(url_for("admin_dashboard"))
+
+@app.route('/test-scrapers')
+def test_scrapers():
+    """Test route to verify scrapers are working"""
+    test_results = {}
+    
+    # Test a few scrapers
+    test_cases = [
+        ('yellowpages', 'pizza', 'New York'),
+        ('whitepages', 'restaurant', 'Los Angeles'),
+    ]
+    
+    for platform, keywords, location in test_cases:
+        try:
+            start_time = time.time()
+            results = run_scraper(platform, keywords, location)
+            end_time = time.time()
+            
+            test_results[platform] = {
+                'status': 'success',
+                'time_taken': round(end_time - start_time, 2),
+                'results_count': len(results),
+                'sample_results': results[:2] if results else [],
+                'using_real_scraper': SCRAPERS_AVAILABLE and platform in scraper_functions
+            }
+            
+        except Exception as e:
+            test_results[platform] = {
+                'status': 'error',
+                'error': str(e),
+                'using_real_scraper': SCRAPERS_AVAILABLE and platform in scraper_functions
+            }
+    
+    return jsonify({
+        'scrapers_available': SCRAPERS_AVAILABLE,
+        'available_platforms': list(scraper_functions.keys()) if SCRAPERS_AVAILABLE else [],
+        'test_results': test_results
+    })
 
 @app.route('/get-csrf')
 def get_csrf():
