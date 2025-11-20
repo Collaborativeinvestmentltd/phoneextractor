@@ -9,7 +9,681 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-    /* ... (keep existing styles) ... */
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header Styles */
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 20px 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      border-left: 4px solid var(--primary);
+    }
+
+    .main-header h1 {
+      color: var(--primary);
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Button Styles */
+    .btn {
+      padding: 12px 18px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      text-decoration: none;
+      font-size: 0.95rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    .primary-btn:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    }
+
+    .success-btn {
+      background: linear-gradient(135deg, var(--success), #38b2ac);
+      color: white;
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, var(--danger), #e11d48);
+      color: white;
+    }
+
+    .warning-btn {
+      background: linear-gradient(135deg, var(--warning), #ea580c);
+      color: white;
+    }
+
+    .admin-btn {
+      background: linear-gradient(135deg, var(--secondary), #6b21a8);
+      color: white;
+    }
+
+    .outline-btn {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    /* Form Styles */
+    .form-section {
+      background: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-bottom: 20px;
+      border-left: 3px solid var(--primary);
+      transition: var(--transition);
+    }
+
+    .form-section:hover {
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+    }
+
+    .form-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--gray-light);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .helper {
+      display: block;
+      margin-top: 6px;
+      color: var(--gray);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* Enhanced Checkbox Group */
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      border: 2px solid transparent;
+      background: var(--light);
+    }
+
+    .checkbox-group label:hover {
+      background: var(--gray-light);
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+
+    /* Enhanced Results Section */
+    .results-section {
+      background: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-top: 20px;
+      border-left: 3px solid var(--success);
+    }
+
+    .results-section h2 {
+      margin-bottom: 20px;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+    }
+
+    .results-container {
+      max-height: 500px;
+      overflow-y: auto;
+      border: 2px solid var(--gray-light);
+      border-radius: var(--border-radius);
+      position: relative;
+    }
+
+    .results-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .results-container::-webkit-scrollbar-track {
+      background: var(--gray-light);
+      border-radius: 4px;
+    }
+
+    .results-container::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .data-table th {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      position: sticky;
+      top: 0;
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    .data-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-light);
+      vertical-align: top;
+    }
+
+    .data-entry:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .data-entry:hover {
+      background-color: #e3f2fd;
+      transform: scale(1.01);
+      transition: var(--transition);
+    }
+
+    .placeholder-msg {
+      text-align: center;
+      color: var(--gray);
+      padding: 40px 20px;
+      font-style: italic;
+    }
+
+    .progress-stats {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--light), var(--gray-light));
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stats-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    /* Enhanced Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 500px;
+      width: 90%;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: modalSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-top: 4px solid var(--primary);
+    }
+
+    @keyframes modalSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-50px) scale(0.9); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--gray-light);
+    }
+
+    .modal-header h2 {
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--gray);
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .close-modal:hover {
+      color: var(--danger);
+      background: var(--gray-light);
+    }
+
+    /* Enhanced Toast Notification */
+    .toast {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      padding: 18px 24px;
+      border-radius: var(--border-radius);
+      color: white;
+      z-index: 1100;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(150%);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 400px;
+      border-left: 4px solid;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      background: var(--success);
+      border-left-color: #38b2ac;
+    }
+
+    .toast.error {
+      background: var(--danger);
+      border-left-color: #e11d48;
+    }
+
+    .toast.warning {
+      background: var(--warning);
+      border-left-color: #ea580c;
+    }
+
+    /* Enhanced Status Indicators */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-active {
+      background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(56, 178, 172, 0.2));
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status-inactive {
+      background: rgba(108, 117, 125, 0.1);
+      color: var(--gray);
+      border: 1px solid var(--gray);
+    }
+
+    /* Enhanced Extraction Panel */
+    .extraction-panel {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 20px;
+      margin-top: 25px;
+      max-height: 400px;
+      overflow-y: auto;
+      border-left: 3px solid var(--info);
+    }
+
+    .extraction-panel h3 {
+      color: var(--info);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .extracted-item {
+      padding: 15px;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .extracted-item:hover {
+      background: var(--light);
+      border-left-color: var(--success);
+      transform: translateX(5px);
+    }
+
+    .extracted-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Quick Actions Panel */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .action-card {
+      background: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      border-top: 4px solid var(--primary);
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-card i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Pulse animation for active extraction */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(76, 201, 240, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(76, 201, 240, 0); }
+    }
+
+    .extracting-pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      .main-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 15px 20px;
+      }
+
+      .header-controls {
+        justify-content: center;
+      }
+
+      .checkbox-group {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .data-table {
+        font-size: 0.85rem;
+      }
+
+      .data-table th, .data-table td {
+        padding: 8px 6px;
+      }
+
+      .stats-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .toast {
+        right: 15px;
+        left: 15px;
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
+
+      .form-section {
+        padding: 15px;
+      }
+
+      .modal-content {
+        padding: 20px;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        color: #e2e8f0;
+      }
+
+      .form-section, .results-section, .extraction-panel, .action-card {
+        background: #2d3748;
+        color: #e2e8f0;
+      }
+
+      input, select, textarea {
+        background: #4a5568;
+        border-color: #718096;
+        color: #e2e8f0;
+      }
+
+      .checkbox-group label {
+        background: #4a5568;
+      }
+
+      .data-entry:nth-child(even) {
+        background-color: #4a5568;
+      }
+
+      .data-entry:hover {
+        background-color: #5a6578;
+      }
+    }
   </style>
 </head>
 <body>
@@ -38,6 +712,25 @@
       </div>
     </header>
 
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="action-card" onclick="$('#keywords').focus()">
+        <i class="fas fa-bolt"></i>
+        <h4>Quick Start</h4>
+        <p>Begin extraction instantly</p>
+      </div>
+      <div class="action-card" onclick="$('#license-key').focus(); $('#user-login-btn').click();">
+        <i class="fas fa-rocket"></i>
+        <h4>Fast Login</h4>
+        <p>Quick license access</p>
+      </div>
+      <div class="action-card" onclick="updateResults()">
+        <i class="fas fa-sync-alt"></i>
+        <h4>Refresh Data</h4>
+        <p>Update results view</p>
+      </div>
+    </div>
+
     <!-- License Login Modal -->
     <div id="license-login" class="modal">
       <div class="modal-content">
@@ -48,48 +741,55 @@
         <form id="license-form">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <div class="input-group">
-            <label for="license-key">Enter Your License Key:</label>
+            <label for="license-key"><i class="fas fa-id-card"></i> Enter Your License Key:</label>
             <input type="text" id="license-key" name="license_key" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+            <small class="helper">Enter your valid license key to access extraction features</small>
           </div>
           <button type="submit" class="btn primary-btn" style="width: 100%;">
-            <i class="fas fa-sign-in-alt"></i> Login
+            <i class="fas fa-sign-in-alt"></i> Login & Start Extracting
           </button>
         </form>
-        <div id="license-error" style="color: var(--danger); margin-top: 10px; text-align: center;"></div>
+        <div id="license-error" style="color: var(--danger); margin-top: 15px; text-align: center; font-weight: 500;"></div>
       </div>
     </div>
 
     <!-- Main Form -->
     <form method="POST" id="phone-extractor-form">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      
       <div class="form-section">
+        <h3><i class="fas fa-search"></i> Search Parameters</h3>
         <div class="input-group">
           <label for="urls"><i class="fas fa-link"></i> Enter URLs (optional):</label>
-          <textarea name="urls" id="urls" placeholder="Optional: Enter specific URLs separated by commas"></textarea>
-          <small class="helper">Leave blank to let the scraper search the selected sites automatically.</small>
+          <textarea name="urls" id="urls" placeholder="https://example.com, https://example2.com&#10;Leave blank for automatic search across selected platforms"></textarea>
+          <small class="helper">Enter specific URLs (comma-separated) or leave blank for automated platform search</small>
         </div>
         <div class="input-group">
           <label for="keywords"><i class="fas fa-key"></i> Keywords (optional):</label>
-          <textarea name="keywords" id="keywords" placeholder="Keywords, categories or business names (optional)"></textarea>
+          <textarea name="keywords" id="keywords" placeholder="restaurants, plumbing services, healthcare providers&#10;Specific business types, categories, or names"></textarea>
+          <small class="helper">Keywords help narrow down search results. Leave blank for broader search.</small>
         </div>
       </div>
 
       <div class="form-section">
-        <label><i class="fas fa-sitemap"></i> Select Source Sites:</label>
+        <h3><i class="fas fa-sitemap"></i> Data Sources</h3>
+        <label>Select platforms to extract data from:</label>
         <div class="checkbox-group">
-          <label><input type="checkbox" name="platforms[]" value="yellowpages"> <i class="fas fa-book"></i> Yellow Pages</label>
-          <label><input type="checkbox" name="platforms[]" value="whitepages"> <i class="fas fa-book-open"></i> Whitepages</label>
+          <label><input type="checkbox" name="platforms[]" value="yellowpages" checked> <i class="fas fa-book"></i> Yellow Pages</label>
+          <label><input type="checkbox" name="platforms[]" value="whitepages" checked> <i class="fas fa-book-open"></i> Whitepages</label>
           <label><input type="checkbox" name="platforms[]" value="manta"> <i class="fas fa-fish"></i> Manta</label>
-          <label><input type="checkbox" name="platforms[]" value="yelp"> <i class="fas fa-utensils"></i> Yelp</label>
-          <label><input type="checkbox" name="platforms[]" value="411"> <i class="fas fa-phone"></i> 411</label>
+          <label><input type="checkbox" name="platforms[]" value="yelp" checked> <i class="fas fa-utensils"></i> Yelp</label>
+          <label><input type="checkbox" name="platforms[]" value="411"> <i class="fas fa-phone"></i> 411 Directory</label>
           <label><input type="checkbox" name="platforms[]" value="local_com"> <i class="fas fa-map-marker-alt"></i> Local.com</label>
           <label><input type="checkbox" name="platforms[]" value="foursquare"> <i class="fas fa-square"></i> Foursquare</label>
         </div>
+        <small class="helper">Selected platforms will be scanned for business information and contact details</small>
       </div>
 
       <div class="form-section">
+        <h3><i class="fas fa-globe-americas"></i> Geographic Targeting</h3>
         <div class="input-group">
-          <label for="country"><i class="fas fa-globe"></i> Select Country:</label>
+          <label for="country"><i class="fas fa-flag"></i> Select Country:</label>
           <select id="country" name="country">
             <option value="">-- Select Country --</option>
             {% for country in countries %}
@@ -99,55 +799,78 @@
         </div>
 
         <div class="input-group">
-          <label for="state"><i class="fas fa-map"></i> Select State / Region (optional):</label>
+          <label for="state"><i class="fas fa-map-marked-alt"></i> Select State / Region (optional):</label>
           <select id="state" name="state">
             <option value="">-- Select State --</option>
           </select>
+          <small class="helper">Specify region for more targeted results. Country selection is required.</small>
         </div>
       </div>
       
       <div class="form-section">
-          <div class="input-group">
-              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                  <input type="checkbox" id="continuous-mode" name="continuous" value="true">
-                  <span><i class="fas fa-sync-alt"></i> Continuous Extraction Mode</span>
-              </label>
-              <small class="helper">When enabled, extraction will continue running until manually stopped. Data will be accumulated across iterations.</small>
-          </div>
+        <h3><i class="fas fa-cogs"></i> Extraction Settings</h3>
+        <div class="input-group">
+          <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 1.1rem;">
+            <input type="checkbox" id="continuous-mode" name="continuous" value="true" style="width: 20px; height: 20px;">
+            <span><i class="fas fa-sync-alt"></i> Continuous Extraction Mode</span>
+          </label>
+          <small class="helper">When enabled, the system will continuously search for new data until manually stopped. Ideal for comprehensive data collection.</small>
+        </div>
       </div>
 
-      <div class="form-section" style="text-align: center;">
-        <button type="button" class="btn primary-btn" onclick="startExtraction()" style="padding: 12px 30px; font-size: 1.1rem;">
-          <i class="fas fa-play"></i> Start Extraction
+      <div class="form-section" style="text-align: center; background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+        <button type="button" class="btn primary-btn" onclick="startExtraction()" style="padding: 15px 40px; font-size: 1.2rem; font-weight: 700;" id="extract-btn">
+          <i class="fas fa-play-circle"></i> Start Data Extraction
         </button>
-        <div id="extraction-status" class="status-indicator status-inactive" style="margin-top: 10px;">
+        <div id="extraction-status" class="status-indicator status-inactive" style="margin-top: 15px;">
           <i class="fas fa-circle"></i> Extraction Inactive
         </div>
+        <small class="helper" style="display: block; margin-top: 10px;">Ensure you're logged in and have selected at least one data source</small>
       </div>
     </form>
 
     <!-- Results Section -->
     <section class="results-section">
-      <h2><i class="fas fa-list"></i> Live Extraction Results</h2>
+      <h2><i class="fas fa-database"></i> Extraction Results</h2>
       <div class="results-container">
         <table class="data-table">
           <thead>
             <tr>
-              <th>Phone Number</th>
-              <th>Full Name</th>
-              <th>Address</th>
-              <th>Source</th>
+              <th><i class="fas fa-phone"></i> Phone Number</th>
+              <th><i class="fas fa-building"></i> Business Name</th>
+              <th><i class="fas fa-map-marker-alt"></i> Address</th>
+              <th><i class="fas fa-source"></i> Source</th>
             </tr>
           </thead>
           <tbody id="phone-preview">
             <tr>
-              <td colspan="4" class="placeholder-msg">No data extracted yet. Click "Start Extraction" to begin.</td>
+              <td colspan="4" class="placeholder-msg">
+                <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 15px; display: block; color: var(--gray);"></i>
+                No data extracted yet<br>
+                <small>Click "Start Data Extraction" to begin collecting business information</small>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="progress-stats">
-        <p><i class="fas fa-database"></i> Records found: <span id="number-count">0</span></p>
+        <div class="stats-group">
+          <div class="stat-item">
+            <i class="fas fa-database" style="color: var(--success);"></i>
+            <span>Total Records: <strong id="number-count">0</strong></span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-clock" style="color: var(--info);"></i>
+            <span>Last Update: <strong id="last-update">Never</strong></span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-plug" style="color: var(--warning);"></i>
+            <span>Status: <strong id="connection-status">Disconnected</strong></span>
+          </div>
+        </div>
+        <button class="btn outline-btn" onclick="clearResults()">
+          <i class="fas fa-trash"></i> Clear Results
+        </button>
       </div>
     </section>
 
@@ -155,57 +878,85 @@
     <div class="extraction-panel">
       <h3><i class="fas fa-bolt"></i> Live Extraction Feed</h3>
       <div id="extraction-container">
-        <div class="placeholder-msg">Live extraction results will appear here</div>
+        <div class="placeholder-msg">
+          <i class="fas fa-satellite-dish" style="font-size: 2rem; margin-bottom: 10px; display: block; color: var(--info);"></i>
+          Live extraction feed will appear here<br>
+          <small>Real-time updates from selected data sources</small>
+        </div>
       </div>
     </div>
   </div>
 
 <script>
-    // Global variables
+    // Enhanced global variables
     const countryStates = JSON.parse('{{ country_states | tojson | safe }}');
     let totalItems = 0;
     let userLoggedIn = false;
     let extractionActive = false;
     let eventSource = null;
+    let lastUpdateTime = null;
 
-    // Utility functions
+    // Enhanced utility functions
     function getCSRFToken() {
         return $('meta[name="csrf-token"]').attr('content');
     }
 
     function showToast(message, type = 'success') {
         const toast = $('#toast');
+        const icon = type === 'success' ? 'check-circle' : 
+                    type === 'error' ? 'exclamation-triangle' : 
+                    'info-circle';
+        
         toast.removeClass('success error warning').addClass(type).html(`
-            <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
-            ${message}
+            <i class="fas fa-${icon}"></i>
+            <div>
+                <strong>${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+                <div style="font-size: 0.9em; opacity: 0.9;">${message}</div>
+            </div>
         `).addClass('show');
         
         setTimeout(() => {
             toast.removeClass('show');
-        }, 4000);
+        }, 5000);
     }
 
     function updateExtractionStatus(active) {
         extractionActive = active;
         const statusElement = $('#extraction-status');
+        const extractBtn = $('#extract-btn');
+        
         if (active) {
             statusElement.html('<i class="fas fa-sync-alt fa-spin"></i> Extraction Active').removeClass('status-inactive').addClass('status-active');
+            extractBtn.addClass('extracting-pulse').html('<div class="loading"></div> Extraction Running...').prop('disabled', true);
         } else {
             statusElement.html('<i class="fas fa-circle"></i> Extraction Inactive').removeClass('status-active').addClass('status-inactive');
+            extractBtn.removeClass('extracting-pulse').html('<i class="fas fa-play-circle"></i> Start Data Extraction').prop('disabled', false);
         }
     }
 
-    // Simple session check
+    function updateLastUpdateTime() {
+        lastUpdateTime = new Date();
+        $('#last-update').text(lastUpdateTime.toLocaleTimeString());
+    }
+
+    function updateConnectionStatus(connected) {
+        $('#connection-status').text(connected ? 'Connected' : 'Disconnected')
+                             .css('color', connected ? 'var(--success)' : 'var(--danger)');
+    }
+
+    // Enhanced session check
     function checkAuth() {
         return $.get('/check-auth')
             .done(function(data) {
                 userLoggedIn = data.authenticated;
                 updateUI();
+                updateConnectionStatus(true);
                 return userLoggedIn;
             })
             .fail(function() {
                 userLoggedIn = false;
                 updateUI();
+                updateConnectionStatus(false);
                 return false;
             });
     }
@@ -214,13 +965,15 @@
         if (userLoggedIn) {
             $('#user-login-btn').hide();
             $('#user-logout-btn').show();
+            $('.action-card').css('opacity', '1').css('cursor', 'pointer');
         } else {
             $('#user-login-btn').show();
             $('#user-logout-btn').hide();
+            $('.action-card').css('opacity', '0.7').css('cursor', 'not-allowed');
         }
     }
 
-    // Form handling functions
+    // Enhanced form handling functions
     function updateStates() {
         const country = $('#country').val();
         const stateSelect = $('#state');
@@ -230,28 +983,56 @@
             countryStates[country].forEach(state => {
                 stateSelect.append(`<option value="${state}">${state}</option>`);
             });
+            stateSelect.prop('disabled', false);
+        } else {
+            stateSelect.prop('disabled', true);
         }
     }
 
     function exportData() {
         if (totalItems === 0) {
-            showToast('No data to export', 'warning');
+            showToast('No data available for export', 'warning');
             return;
         }
         if (!userLoggedIn) {
-            showToast('Please login first', 'error');
+            showToast('Please login to export data', 'error');
             return;
         }
-        window.location.href = '/export-data?format=csv';
+        
+        showToast('Preparing export file...', 'info');
+        setTimeout(() => {
+            window.location.href = '/export-data?format=csv';
+        }, 1000);
+    }
+
+    function clearResults() {
+        if (!userLoggedIn) {
+            showToast('Please login to manage results', 'error');
+            return;
+        }
+        
+        if (confirm('Are you sure you want to clear all extraction results? This action cannot be undone.')) {
+            $.post('/clear-results', { csrf_token: getCSRFToken() })
+                .done(function() {
+                    totalItems = 0;
+                    updateResults();
+                    showToast('All results cleared successfully', 'success');
+                })
+                .fail(function() {
+                    showToast('Failed to clear results', 'error');
+                });
+        }
     }
 
     function updateResults() {
+        if (!userLoggedIn) return;
+        
         $.get('/view-extraction')
             .done(function(data) {
                 if (data.error && data.error === "Authentication required") {
                     userLoggedIn = false;
                     updateUI();
-                    showToast('Please login to view results', 'error');
+                    showToast('Session expired. Please login again.', 'error');
                     return;
                 }
 
@@ -261,12 +1042,14 @@
 
                 if (data.numbers && data.numbers.length > 0) {
                     data.numbers.slice(-50).forEach(entry => {
-                        const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${entry.source}</span>` : '';
+                        const sourceIcon = getSourceIcon(entry.source);
+                        const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 8px;">${sourceIcon} ${entry.source}</span>` : '';
+                        
                         container.append(`
                             <tr class="data-entry">
-                                <td><i class="fas fa-phone"></i> ${entry.number}</td>
-                                <td><i class="fas fa-user"></i> ${entry.name || 'N/A'}</td>
-                                <td><i class="fas fa-map-marker-alt"></i> ${entry.address || 'N/A'}</td>
+                                <td><i class="fas fa-phone" style="color: var(--success);"></i> ${entry.number || 'N/A'}</td>
+                                <td><i class="fas fa-building" style="color: var(--primary);"></i> ${entry.name || 'N/A'}</td>
+                                <td><i class="fas fa-map-marker-alt" style="color: var(--danger);"></i> ${entry.address || 'N/A'}</td>
                                 <td>${sourceBadge}</td>
                             </tr>
                         `);
@@ -277,14 +1060,20 @@
                             <tr>
                                 <td colspan="4" class="placeholder-msg">
                                     <i class="fas fa-info-circle"></i> Showing last 50 of ${data.numbers.length} records
+                                    <br><small>Use export feature to download complete dataset</small>
                                 </td>
                             </tr>
                         `);
                     }
+                    updateLastUpdateTime();
                 } else {
                     container.append(`
                         <tr>
-                            <td colspan="4" class="placeholder-msg">No data extracted yet. Click "Start Extraction" to begin.</td>
+                            <td colspan="4" class="placeholder-msg">
+                                <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display: block; color: var(--gray);"></i>
+                                No data extracted yet<br>
+                                <small>Start extraction to collect business information</small>
+                            </td>
                         </tr>
                     `);
                 }
@@ -301,10 +1090,24 @@
             });
     }
 
+    function getSourceIcon(source) {
+        const icons = {
+            'yellowpages': 'fa-book',
+            'whitepages': 'fa-book-open',
+            'manta': 'fa-fish',
+            'yelp': 'fa-utensils',
+            '411': 'fa-phone',
+            'local_com': 'fa-map-marker-alt',
+            'foursquare': 'fa-square',
+            'mock': 'fa-test-tube'
+        };
+        return `<i class="fas ${icons[source] || 'fa-globe'}"></i>`;
+    }
+
     // Enhanced startExtraction function
     function startExtraction() {
         if (!userLoggedIn) {
-            showToast('You must login with a valid license first!', 'error');
+            showToast('Authentication required. Please login with your license key.', 'error');
             $('#user-login-btn').click();
             return;
         }
@@ -316,12 +1119,17 @@
             .get();
 
         if (!keywords && !location) {
-            showToast('Please provide either keywords or a location', 'warning');
+            showToast('Please provide either keywords or a location to search', 'warning');
             return;
         }
 
         if (platforms.length === 0) {
-            showToast('Please select at least one platform', 'warning');
+            showToast('Please select at least one data source platform', 'warning');
+            return;
+        }
+
+        if (!$('#country').val()) {
+            showToast('Please select a country for geographic targeting', 'warning');
             return;
         }
 
@@ -333,9 +1141,9 @@
         });
         formData.append('csrf_token', getCSRFToken());
 
-        // Show loading state
-        const extractBtn = $('.primary-btn');
-        extractBtn.prop('disabled', true).html(`<div class="loading"></div> Starting extraction...`);
+        // Enhanced loading state
+        const extractBtn = $('#extract-btn');
+        extractBtn.prop('disabled', true).html(`<div class="loading"></div> Initializing Extraction...`);
 
         $.ajax({
             url: '/extract',
@@ -348,22 +1156,23 @@
                 if (resp.status === 'Extraction started') {
                     updateExtractionStatus(true);
                     startEventStream();
-                    showToast(`Extraction started! Scanning: ${platforms.join(', ')}`);
+                    showToast(`Extraction started! Scanning ${platforms.length} platforms for data`, 'success');
 
                     $('#phone-preview').html(`
                         <tr>
                             <td colspan="4" class="placeholder-msg">
-                                <div class="loading"></div> Extraction in progress... 
-                        <br><small>Live results will appear below and in the extraction feed</small>
+                                <div class="loading" style="width: 30px; height: 30px; border-width: 4px;"></div>
+                                <div style="margin-top: 15px;">Extraction in progress...</div>
+                                <small>Scanning: ${platforms.join(', ')}</small>
                             </td>
                         </tr>
                     `);
 
                     $('#extraction-container').html(`
                         <div class="placeholder-msg">
-                            <div class="loading"></div> 
-                            <div>Starting real-time extraction...</div>
-                            <small>Monitoring: ${platforms.join(', ')}</small>
+                            <div class="loading"></div>
+                            <div>Initializing real-time data stream...</div>
+                            <small>Monitoring ${platforms.length} data sources</small>
                         </div>
                     `);
                 } else if (resp.error) {
@@ -383,12 +1192,14 @@
                 showToast(msg, 'error');
             },
             complete: function() {
-                extractBtn.prop('disabled', false).html('<i class="fas fa-play"></i> Start Extraction');
+                if (!extractionActive) {
+                    extractBtn.prop('disabled', false).html('<i class="fas fa-play-circle"></i> Start Data Extraction');
+                }
             }
         });
     }
 
-    // Event Stream function - FIXED
+    // Enhanced Event Stream function
     function startEventStream() {
         if (eventSource) {
             eventSource.close();
@@ -399,7 +1210,8 @@
         
         eventSource.onopen = function() {
             console.log('SSE connection established');
-            container.html('<div class="placeholder-msg"><div class="loading"></div> Connected, waiting for data...</div>');
+            container.html('<div class="placeholder-msg"><div class="loading"></div> Connected to data stream, awaiting results...</div>');
+            updateConnectionStatus(true);
         };
         
         eventSource.onmessage = function(e) {
@@ -408,8 +1220,9 @@
             if (data === 'END:stopped') {
                 eventSource.close();
                 updateExtractionStatus(false);
-                showToast('Extraction completed!');
+                showToast('Extraction completed successfully!', 'success');
                 updateResults();
+                updateConnectionStatus(false);
                 return;
             }
             
@@ -424,11 +1237,13 @@
                 const item = JSON.parse(data);
                 
                 if (item.error) {
-                    // Show error in feed
-                    const errorItem = $(`<div class="extracted-item" style="color: var(--danger);"></div>`).html(`
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                    const errorItem = $(`<div class="extracted-item" style="color: var(--danger); border-left-color: var(--danger);"></div>`).html(`
+                        <div style="display: flex; align-items: center; gap: 12px;">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <div>${item.error}</div>
+                            <div>
+                                <strong>Error</strong>
+                                <div style="font-size: 0.9em;">${item.error}</div>
+                            </div>
                         </div>
                     `);
                     errorItem.hide().prependTo(container).fadeIn(300);
@@ -436,11 +1251,13 @@
                 }
                 
                 if (item.info) {
-                    // Show info message
-                    const infoItem = $(`<div class="extracted-item" style="color: var(--info);"></div>`).html(`
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                    const infoItem = $(`<div class="extracted-item" style="color: var(--info); border-left-color: var(--info);"></div>`).html(`
+                        <div style="display: flex; align-items: center; gap: 12px;">
                             <i class="fas fa-info-circle"></i>
-                            <div>${item.info}</div>
+                            <div>
+                                <strong>Info</strong>
+                                <div style="font-size: 0.9em;">${item.info}</div>
+                            </div>
                         </div>
                     `);
                     infoItem.hide().prependTo(container).fadeIn(300);
@@ -449,31 +1266,47 @@
                 
                 // Regular data item
                 const timestamp = new Date().toLocaleTimeString();
-                const sourceBadge = item.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 6px;">${item.source}</span>` : '';
+                const sourceIcon = getSourceIcon(item.source);
+                const sourceBadge = item.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 8px;">${sourceIcon} ${item.source}</span>` : '';
                 
                 const dataItem = $(`<div class="extracted-item"></div>`).html(`
-                    <div style="display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; width: 100%;">
-                        <div style="flex-shrink: 0;">
-                            <i class="fas fa-phone text-success"></i> <strong>${item.number}</strong> ${sourceBadge}
-                            <br><small style="color: #666;">${timestamp}</small>
+                    <div style="display: flex; align-items: flex-start; gap: 15px; flex-wrap: wrap; width: 100%;">
+                        <div style="flex-shrink: 0; min-width: 120px;">
+                            <i class="fas fa-phone" style="color: var(--success);"></i> 
+                            <strong style="font-family: monospace;">${item.number}</strong>
+                            ${sourceBadge}
+                            <br><small style="color: #666; font-size: 0.8em;">${timestamp}</small>
                         </div>
-                        <div style="flex: 1; min-width: 200px;">
-                            <div><small><i class="fas fa-user"></i> ${item.name}</small></div>
-                            <div><small><i class="fas fa-map-marker-alt"></i> ${item.address}</small></div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <div style="margin-bottom: 4px;">
+                                <i class="fas fa-building" style="color: var(--primary);"></i>
+                                <span style="font-weight: 500;">${item.name}</span>
+                            </div>
+                            <div>
+                                <i class="fas fa-map-marker-alt" style="color: var(--danger);"></i>
+                                <span style="font-size: 0.9em;">${item.address}</span>
+                            </div>
                         </div>
                     </div>
                 `);
                 
-                dataItem.hide().prependTo(container).fadeIn(300);
+                dataItem.hide().prependTo(container).fadeIn(400);
                 
-                // Limit container size
-                if (container.children().length > 100) {
-                    container.children().last().remove();
+                // Enhanced container management
+                if (container.children().length > 50) {
+                    container.children().last().fadeOut(300, function() {
+                        $(this).remove();
+                    });
                 }
                 
-                // Update results table periodically
-                if (container.children().length % 5 === 0) {
+                // Update results table periodically with visual feedback
+                if (container.children().length % 3 === 0) {
                     updateResults();
+                    // Visual feedback for new data
+                    dataItem.css('background', 'linear-gradient(90deg, rgba(76, 201, 240, 0.1), transparent)');
+                    setTimeout(() => {
+                        dataItem.css('background', '');
+                    }, 1000);
                 }
                 
             } catch (e) {
@@ -488,27 +1321,27 @@
                 eventSource.close();
             }
             updateExtractionStatus(false);
-            showToast('Connection to extraction stream lost', 'error');
+            updateConnectionStatus(false);
+            showToast('Connection to data stream lost. Extraction may have completed or encountered an error.', 'error');
         };
     }
 
-    // License Login function - FIXED
+    // Enhanced License Login function
     function handleLicenseLogin(e) {
         e.preventDefault();
 
-        const key = $('#license-key').val().trim();
+        const key = $('#license-key').val().trim().toUpperCase();
         const errorElement = $('#license-error');
 
         if (!key) {
-            errorElement.text('License key is required');
+            errorElement.html('<i class="fas fa-exclamation-circle"></i> License key is required');
             return;
         }
 
         errorElement.text('');
         const $btn = $('#license-form button');
-        $btn.prop('disabled', true).html('<div class="loading"></div> Verifying...');
+        $btn.prop('disabled', true).html('<div class="loading"></div> Verifying License...');
 
-        // Create form data properly
         const formData = new FormData();
         formData.append('license_key', key);
         formData.append('csrf_token', getCSRFToken());
@@ -524,24 +1357,29 @@
                     $('#license-login').fadeOut(300);
                     userLoggedIn = true;
                     updateUI();
-                    showToast('License verified! You can now start extraction.');
-                    $('#license-key').val(''); // Clear the input
+                    showToast('License verified successfully! You can now start data extraction.', 'success');
+                    $('#license-key').val('');
                     
-                    // Refresh results after successful login
+                    // Auto-focus on keywords after successful login
+                    setTimeout(() => {
+                        $('#keywords').focus();
+                    }, 500);
+                    
+                    // Refresh results
                     setTimeout(updateResults, 500);
                 } else {
-                    errorElement.text(resp.error || 'Invalid license key.');
+                    errorElement.html(`<i class="fas fa-times-circle"></i> ${resp.error || 'Invalid license key'}`);
                 }
             },
             error: function(xhr) {
-                let msg = 'Login failed. Please try again.';
+                let msg = 'Login failed. Please check your connection and try again.';
                 if (xhr.responseJSON && xhr.responseJSON.error) {
                     msg = xhr.responseJSON.error;
                 }
-                errorElement.text(msg);
+                errorElement.html(`<i class="fas fa-exclamation-triangle"></i> ${msg}`);
             },
             complete: function() {
-                $btn.prop('disabled', false).html('<i class="fas fa-sign-in-alt"></i> Login');
+                $btn.prop('disabled', false).html('<i class="fas fa-sign-in-alt"></i> Login & Start Extracting');
             }
         });
     }
@@ -549,6 +1387,10 @@
     function stopExtraction() {
         if (!extractionActive) {
             showToast('No extraction is currently running', 'warning');
+            return;
+        }
+
+        if (!confirm('Are you sure you want to stop the current extraction?')) {
             return;
         }
 
@@ -566,7 +1408,7 @@
                 if (eventSource) eventSource.close();
                 updateExtractionStatus(false);
                 updateResults();
-                showToast('Extraction stopped successfully!');
+                showToast('Extraction stopped successfully', 'info');
             },
             error: function(xhr) {
                 let errorMsg = 'Failed to stop extraction';
@@ -591,7 +1433,7 @@
                     userLoggedIn = false;
                     updateUI();
                     if (extractionActive) stopExtraction();
-                    showToast('Logged out successfully!');
+                    showToast('Logged out successfully', 'info');
                     updateResults();
                 }
             },
@@ -601,7 +1443,7 @@
         });
     }
 
-    // Document ready
+    // Enhanced document ready
     $(document).ready(function() {
         // Initialize page
         $('#country').on('change', updateStates);
@@ -611,7 +1453,7 @@
             updateResults();
         });
 
-        // Modal handlers
+        // Enhanced modal handlers
         $('#user-login-btn').on('click', function() {
             $('#license-login').fadeIn(300);
             $('#license-key').focus();
@@ -631,19 +1473,70 @@
             }
         });
 
-        // Form submissions
+        // Enhanced form submissions
         $('#license-form').on('submit', handleLicenseLogin);
         $('#user-logout-btn').on('click', handleUserLogout);
 
-        // Check auth every 2 minutes
+        // Auto-save form data
+        setInterval(function() {
+            if (userLoggedIn) {
+                const formData = {
+                    keywords: $('#keywords').val(),
+                    location: $('#country').val(),
+                    platforms: $('input[name="platforms[]"]:checked').map(function() { return this.value; }).get()
+                };
+                localStorage.setItem('extractionFormData', JSON.stringify(formData));
+            }
+        }, 5000);
+
+        // Load saved form data
+        const savedData = localStorage.getItem('extractionFormData');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            $('#keywords').val(data.keywords || '');
+            $('#country').val(data.location || '').trigger('change');
+            if (data.platforms) {
+                $('input[name="platforms[]"]').prop('checked', false);
+                data.platforms.forEach(platform => {
+                    $(`input[name="platforms[]"][value="${platform}"]`).prop('checked', true);
+                });
+            }
+        }
+
+        // Enhanced periodic checks
         setInterval(checkAuth, 120000);
         
-        // Auto-update results every 10 seconds when extraction is active
+        // Enhanced auto-update
         setInterval(function() {
             if (extractionActive) {
                 updateResults();
             }
-        }, 10000);
+        }, 8000);
+
+        // Add keyboard shortcuts
+        $(document).on('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'Enter':
+                        e.preventDefault();
+                        startExtraction();
+                        break;
+                    case 'l':
+                        e.preventDefault();
+                        $('#user-login-btn').click();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportData();
+                        break;
+                }
+            }
+        });
+
+        // Initialize tooltips
+        $('[title]').tooltip();
+
+        console.log('Data Extractor UI initialized successfully');
     });
 </script>
 </body>
