@@ -1,0 +1,23 @@
+# setup.py
+from setuptools import setup, find_packages
+
+setup(
+    name="data-extractor",
+    version="1.0.0",
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=[
+        "Flask==2.3.3",
+        "Flask-SQLAlchemy==3.0.5",
+        "Flask-Migrate==4.0.5",
+        "Flask-Limiter==3.3.0",
+        "Flask-WTF==1.1.1",
+        "Werkzeug==2.3.7",
+        "playwright==1.39.0",
+        "requests==2.31.0",
+        "beautifulsoup4==4.12.2",
+        "lxml==4.9.3",
+        "python-dotenv==1.0.0",
+        "gunicorn==21.2.0",
+    ],
+)

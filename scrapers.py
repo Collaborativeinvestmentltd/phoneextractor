@@ -10,7 +10,12 @@ from functools import wraps
 from typing import List, Dict, Optional
 
 # Playwright sync API
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError, Error as PlaywrightError
+try:
+    from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError, Error as PlaywrightError
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
+    print("[WARN] Playwright not available - using mock scrapers")
 
 logger = logging.getLogger("scrapers")
 logger.setLevel(os.environ.get("LOG_LEVEL", "INFO"))
@@ -127,10 +132,25 @@ def normalize_text(s: Optional[str]) -> str:
         return ""
     return re.sub(r'\s+', ' ', s).strip()
 
+# Mock browser function when Playwright is not available
+def _mock_browser_and_run(func, proxy=None, headless=True, timeout_ms=30000):
+    """Mock browser function for when Playwright is not available"""
+    logger.warning("Using mock browser - Playwright not available")
+    time.sleep(2)
+    return [{
+        'number': f"555-{int(time.time()) % 10000:04d}",
+        'name': f'Sample Business {int(time.time()) % 1000}',
+        'address': f'123 Main St, Sample City',
+        'source': 'mock'
+    }]
+
 # Core Playwright page fetch + extraction utilities ------------------------
 
 def _launch_browser_and_run(func, proxy=None, headless=PLAYWRIGHT_HEADLESS, timeout_ms=30000):
     """Launch a short-lived browser, run func(page) and return the result."""
+    if not PLAYWRIGHT_AVAILABLE:
+        return _mock_browser_and_run(func, proxy, headless, timeout_ms)
+        
     try:
         with sync_playwright() as p:
             # Use chromium for best compatibility

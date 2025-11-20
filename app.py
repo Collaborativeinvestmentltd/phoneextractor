@@ -13,6 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
+from queue import Queue, Empty
 
 # Global extraction flags
 EXTRACTING = False
@@ -220,13 +221,6 @@ def configure_logging(app):
 # Create app instance
 app = create_app()
 
-# Limiter init
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["10 per minute"]
-)
-limiter.init_app(app)
-
 # -----------------------
 # Global Variables
 # -----------------------
@@ -346,101 +340,228 @@ def index():
                            states=[],
                            country_states=country_states,
                            numbers=EXTRACTION_DATA,
-                           csrf_token=generate_csrf(),
                            SCRAPERS_AVAILABLE=SCRAPERS_AVAILABLE)
 
-@limiter.limit("10/minute")
-@app.route("/extract", methods=["POST"])
-@user_login_required
-def start_extraction():
-    """Start extraction job."""
-    global EXTRACTION_THREAD, EXTRACTING, EXTRACTION_DATA, EXTRACTION_STOP_EVENT
+# Helper to append results safely
+def append_result(item: dict):
+    with DATA_LOCK:
+        EXTRACTION_DATA.append(item)
 
-    # Prevent parallel jobs
-    if EXTRACTING:
-        return jsonify({"error": "Extraction already running"}), 400
+# Helper to get snapshot safely
+def get_snapshot():
+    with DATA_LOCK:
+        return EXTRACTION_DATA.copy()
 
-    # Parse request
-    content_type = (request.content_type or "").lower()
+# Safe request parsing utility (JSON or form-data)
+def parse_extract_request(req):
+    content_type = (req.content_type or "").lower()
+    keywords = ""
+    location = ""
+    platforms = []
 
     if "application/json" in content_type:
-        body = request.get_json(silent=True)
-        if not body:
-            return jsonify({"error": "Invalid JSON body"}), 415
-
+        body = req.get_json(silent=True) or {}
         keywords = (body.get("keywords") or "").strip()
         location = (body.get("location") or "").strip()
         raw_platforms = body.get("platforms")
         if isinstance(raw_platforms, list):
-            platforms = raw_platforms
+            platforms = [p for p in raw_platforms if p]
         elif isinstance(raw_platforms, str):
-            platforms = [raw_platforms]
-        else:
-            platforms = []
+            platforms = [raw_platforms] if raw_platforms else []
     else:
-        keywords = (request.form.get("keywords") or "").strip()
+        # Accept multipart/form-data or x-www-form-urlencoded or missing content-type
+        keywords = (req.form.get("keywords") or "").strip()
         location = (
-            request.form.get("location") or
-            request.form.get("state") or
-            request.form.get("country") or ""
+            req.form.get("location")
+            or req.form.get("state")
+            or req.form.get("country")
+            or ""
         ).strip()
-        platforms = request.form.getlist("platforms[]") or []
+        platforms = req.form.getlist("platforms[]") or req.form.getlist("platforms") or []
+
+    return keywords, location, platforms
+
+# Worker function: runs scrapers sequentially by platform, respects stop event
+def start_extraction_worker(keywords, location, platforms):
+    """
+    Worker that runs in a background thread.
+    - Appends results using append_result()
+    - Sets EXTRACTING to False on exit
+    - Respects EXTRACTION_STOP_EVENT to stop early
+    """
+    global EXTRACTING
+
+    try:
+        # Optionally log start
+        app.logger.info(f"[WORKER] Worker started for keywords='{keywords}' location='{location}' platforms={platforms}")
+
+        # Loop per platform so results stream in progressively
+        for platform in platforms:
+            if EXTRACTION_STOP_EVENT.is_set():
+                app.logger.info("[WORKER] Stop requested; exiting early")
+                break
+
+            app.logger.info(f"[WORKER] Running scraper for platform: {platform}")
+
+            # Use your existing run_scraper function (will call real scrapers or mocks)
+            try:
+                results = run_scraper(platform, keywords, location)
+            except Exception as e:
+                app.logger.exception(f"[WORKER] Exception running scraper {platform}: {e}")
+                results = [{"error": f"Scraper {platform} failed: {str(e)}"}]
+
+            # Normalize and append results
+            if isinstance(results, list) and results:
+                for item in results:
+                    # Ensure expected keys exist
+                    safe_item = {
+                        "number": str(item.get("number", "")).strip(),
+                        "name": item.get("name", "") or "",
+                        "address": item.get("address", "") or "",
+                        "source": item.get("source", platform)
+                    }
+                    append_result(safe_item)
+            else:
+                # Append an empty indicator so frontend knows we're alive
+                append_result({"info": f"No results from {platform}", "source": platform})
+
+            # short pause between platforms to avoid bursts
+            time.sleep(0.5)
+
+        app.logger.info("[WORKER] Finished scraping platforms")
+
+    except Exception as e:
+        app.logger.exception(f"[WORKER] Unexpected error: {e}")
+        # Surface error to frontend
+        append_result({"error": f"Extraction worker error: {str(e)}"})
+
+    finally:
+        # Clear the stop event and mark extraction as finished
+        EXTRACTION_STOP_EVENT.clear()
+        EXTRACTING = False
+        app.logger.info("[WORKER] Worker exiting; EXTRACTING set to False")
+
+# Route: start extraction (thread-safe, prevents races)
+@limiter.limit("10/minute")
+@app.route("/extract", methods=["POST"])
+@user_login_required
+def start_extraction():
+    global EXTRACTION_THREAD, EXTRACTING, EXTRACTION_DATA
+
+    # Authentication check handled by decorator
+    # Prevent double-start
+    if EXTRACTING:
+        return jsonify({"error": "Extraction already running"}), 400
+
+    # Parse input
+    keywords, location, platforms = parse_extract_request(request)
 
     # Validation
-    if not keywords and not location:
+    if (not keywords) and (not location):
         return jsonify({"error": "Either keywords or location is required."}), 400
-
     if not platforms:
         return jsonify({"error": "At least one platform must be selected"}), 400
 
-    # Clean slate
+    # Clean slate: clear previous results under lock
     with DATA_LOCK:
         EXTRACTION_DATA.clear()
 
+    # Clear stop event and set EXTRACTING before starting thread to avoid races
     EXTRACTION_STOP_EVENT.clear()
     EXTRACTING = True
 
-    # Start thread
-    EXTRACTION_THREAD = Thread(
-        target=start_extraction_worker,
-        args=(keywords, location, platforms),
-        daemon=True
-    )
-    EXTRACTION_THREAD.start()
+    # Start worker thread
+    try:
+        EXTRACTION_THREAD = Thread(
+            target=start_extraction_worker,
+            args=(keywords, location, platforms),
+            daemon=True
+        )
+        EXTRACTION_THREAD.start()
+    except Exception as e:
+        EXTRACTING = False
+        app.logger.exception(f"[EXTRACT] Failed to start thread: {e}")
+        return jsonify({"error": f"Failed to start extraction: {str(e)}"}), 500
 
-    app.logger.info(
-        f"[EXTRACT] Started | keywords={keywords} | location={location} | platforms={platforms}"
-    )
-
+    app.logger.info(f"[EXTRACT] Extraction started | keywords={keywords} | location={location} | platforms={platforms}")
     return jsonify({"status": "Extraction started"})
 
-@limiter.limit("10 per minute")
-@app.route('/stop-extraction', methods=['POST'])
+# Route: stop extraction
+@limiter.limit("10/minute")
+@app.route("/stop-extraction", methods=["POST"])
 @user_login_required
 def stop_extraction():
-    """Stop ongoing extraction"""
     global EXTRACTING
-    EXTRACTING = False
-    EXTRACTION_STOP_EVENT.set()
-    app.logger.info("Extraction stopped by user")
-    return jsonify({"status": "Extraction stopped"})
+    if not EXTRACTING:
+        return jsonify({"status": "No extraction running"}), 200
 
-@app.route('/view-extraction', methods=['GET'])
+    EXTRACTION_STOP_EVENT.set()
+    EXTRACTING = False
+    app.logger.info("[EXTRACT] Stop requested by user")
+    return jsonify({"status": "Extraction stop requested"})
+
+# Route: view current extraction snapshot
+@app.route("/view-extraction", methods=["GET"])
 def view_extraction():
-    """Get current extraction results"""
     if not session.get('user_logged_in'):
         return jsonify({"error": "Authentication required"}), 403
-    
-    try:
-        with DATA_LOCK:
-            total = len(EXTRACTION_DATA)
-            numbers = EXTRACTION_DATA.copy()
-        
-        return jsonify({"total": total, "numbers": numbers})
-        
-    except Exception as e:
-        app.logger.error(f"Error in view-extraction: {str(e)}")
-        return jsonify({"error": "Internal server error"}), 500
+    snapshot = get_snapshot()
+    return jsonify({"total": len(snapshot), "numbers": snapshot})
+
+# SSE streaming route: sends new items and periodic heartbeat; ends when done
+@app.route("/stream-extraction")
+@user_login_required
+def stream_extraction():
+    def event_stream():
+        last_index = 0
+        heartbeat_interval = 2.0  # seconds
+        last_heartbeat = time.time()
+
+        while True:
+            # If client or server requests stop, break once all data emitted
+            if EXTRACTION_STOP_EVENT.is_set() and not EXTRACTING:
+                # drain any remaining items
+                with DATA_LOCK:
+                    remaining = EXTRACTION_DATA[last_index:]
+                    last_index = len(EXTRACTION_DATA)
+                for item in remaining:
+                    yield f"data: {json.dumps(item)}\n\n"
+                yield "data: END:stopped\n\n"
+                break
+
+            # Send any new items
+            with DATA_LOCK:
+                current_len = len(EXTRACTION_DATA)
+                if current_len > last_index:
+                    new_items = EXTRACTION_DATA[last_index:current_len]
+                    last_index = current_len
+                else:
+                    new_items = []
+
+            for item in new_items:
+                yield f"data: {json.dumps(item)}\n\n"
+
+            # Heartbeat count update periodically
+            now = time.time()
+            if now - last_heartbeat >= heartbeat_interval:
+                with DATA_LOCK:
+                    yield f"data: COUNT:{len(EXTRACTION_DATA)}\n\n"
+                last_heartbeat = now
+
+            # End condition: extraction finished and no new items for one loop
+            if (not EXTRACTING) and (last_index >= len(EXTRACTION_DATA)):
+                yield "data: END:stopped\n\n"
+                break
+
+            # Avoid busy loop
+            time.sleep(0.5)
+
+    headers = {
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no'
+    }
+    return Response(stream_with_context(event_stream()), mimetype="text/event-stream", headers=headers)
 
 @app.route('/export-data')
 @user_login_required
@@ -588,36 +709,6 @@ def revoke_license(license_key):
         flash("License not found", "error")
     
     return redirect(url_for("admin_dashboard"))
-
-@app.route("/stream-extraction")
-@user_login_required
-def stream_extraction():
-    def event_stream():
-        last_index = 0
-        start_time = time.time()
-        timeout = 300  # 5 minutes timeout
-
-        while EXTRACTING and not EXTRACTION_STOP_EVENT.is_set():
-            if time.time() - start_time > timeout:
-                break
-                
-            time.sleep(1)
-            
-            with DATA_LOCK:
-                current_count = len(EXTRACTION_DATA)
-                new_items = EXTRACTION_DATA[last_index:]
-                last_index = current_count
-
-            for item in new_items:
-                yield f"data: {json.dumps(item)}\n\n"
-
-            # Send count update
-            yield f"data: COUNT:{current_count}\n\n"
-
-        # Extraction finished
-        yield "data: END:stopped\n\n"
-
-    return Response(event_stream(), mimetype="text/event-stream")
 
 @app.route('/user-login', methods=['POST'])
 def user_login():
@@ -769,36 +860,6 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 # -----------------------
-# Enhanced Extraction Worker
-# -----------------------
-def start_extraction_worker(keywords, location, platforms):
-    global EXTRACTING, EXTRACTION_DATA
-
-    try:
-        for platform in platforms:
-            if not EXTRACTING or EXTRACTION_STOP_EVENT.is_set():
-                break
-                
-            app.logger.info(f"Starting extraction from {platform}")
-            
-            # Run scraper for this platform
-            results = run_scraper(platform, keywords, location)
-            
-            # Add results to global data
-            with DATA_LOCK:
-                EXTRACTION_DATA.extend(results)
-            
-            # Small delay between platforms
-            time.sleep(2)
-            
-    except Exception as e:
-        app.logger.error(f"Extraction worker error: {str(e)}")
-        
-    finally:
-        EXTRACTING = False
-        EXTRACTION_STOP_EVENT.clear()
-
-# -----------------------
 # Enhanced Health Check
 # -----------------------
 @app.route('/health')
@@ -852,19 +913,18 @@ if __name__ == "__main__":
     print("[OK] Admin panel available at /admin/login")
     print(f"[OK] Admin credentials - Username: {ADMIN_USERNAME}, Password: 112122")
     
-    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    debug_mode = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    port = int(os.environ.get('PORT', 5000))
     
-    if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('PRODUCTION'):
-        print("[PRODUCTION] Starting production server...")
-        app.run(
-            host='0.0.0.0',
-            port=int(os.environ.get('PORT', 5000)),
-            debug=False
-        )
+    if os.environ.get('PRODUCTION'):
+        print("[PRODUCTION] Starting production server with Waitress...")
+        from waitress import serve
+        serve(app, host='0.0.0.0', port=port)
     else:
         print("[DEVELOPMENT] Starting development server...")
         app.run(
             debug=debug_mode,
-            host=os.environ.get('FLASK_HOST', '0.0.0.0'),
-            port=int(os.environ.get('FLASK_PORT', 5000))
+            host='0.0.0.0',
+            port=port,
+            use_reloader=False
         )

@@ -16028,3 +16028,2092 @@ truck driver' in 'Florida' [in C:\Users\HP\desktop\pe\app.py:250]
 2025-11-19 23:46:07,818 INFO: 127.0.0.1 - - [19/Nov/2025 23:46:07] "[31m[1mGET /admin/logs HTTP/1.1[0m" 429 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
 2025-11-19 23:46:09,507 INFO: ratelimit 10 per 1 minute (127.0.0.1) exceeded at endpoint: admin_logs [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_limiter\_extension.py:1082]
 2025-11-19 23:46:09,511 INFO: 127.0.0.1 - - [19/Nov/2025 23:46:09] "[31m[1mGET /admin/logs HTTP/1.1[0m" 429 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:12,390 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:218]
+2025-11-19 23:54:12,390 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:218]
+2025-11-19 23:54:12,599 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:293]
+2025-11-19 23:54:12,599 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:293]
+2025-11-19 23:54:12,673 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:12,673 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:15,894 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:15] "GET / HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:16,288 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:16] "[36mGET /static/styles.css HTTP/1.1[0m" 304 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:16,464 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:16] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:16,800 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:16] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:16,809 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:16] "[31m[1mGET /view-extraction HTTP/1.1[0m" 403 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:19,820 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:19] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:21,508 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:21] "[32mGET /admin/logs HTTP/1.1[0m" 302 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:21,845 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:21] "GET /admin/login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:44,999 INFO: User successfully logged in with license: B87919F1F2725268 [in C:\Users\HP\desktop\pe\app.py:659]
+2025-11-19 23:54:44,999 INFO: User successfully logged in with license: B87919F1F2725268 [in C:\Users\HP\desktop\pe\app.py:659]
+2025-11-19 23:54:44,999 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:44] "POST /user-login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:45,836 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:45] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:57,667 INFO: Starting extraction from yellowpages [in C:\Users\HP\desktop\pe\app.py:782]
+2025-11-19 23:54:57,667 INFO: Starting extraction from yellowpages [in C:\Users\HP\desktop\pe\app.py:782]
+2025-11-19 23:54:57,667 INFO: [EXTRACT] Started | keywords=welder | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:411]
+2025-11-19 23:54:57,667 INFO: [EXTRACT] Started | keywords=welder | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:411]
+2025-11-19 23:54:57,668 INFO: Running scraper: yellowpages for 'welder' in 'United States' [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:54:57,668 INFO: Running scraper: yellowpages for 'welder' in 'United States' [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:54:57,668 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:57] "POST /extract HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:54:58,919 INFO: 127.0.0.1 - - [19/Nov/2025 23:54:58] "GET /stream-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:55:01,296 INFO: [playwright] Visiting https://www.yellowpages.com/search?search_terms=welder&geo_location_terms=United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:316]
+2025-11-19 23:55:11,354 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:55:11,354 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:55:13,367 INFO: Starting extraction from whitepages [in C:\Users\HP\desktop\pe\app.py:782]
+2025-11-19 23:55:13,367 INFO: Starting extraction from whitepages [in C:\Users\HP\desktop\pe\app.py:782]
+2025-11-19 23:55:13,367 INFO: Running scraper: whitepages for 'welder' in 'United States' [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:55:13,367 INFO: Running scraper: whitepages for 'welder' in 'United States' [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:55:16,373 INFO: [playwright] Visiting https://www.whitepages.com/business/welder/United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:316]
+2025-11-19 23:55:19,300 INFO: [OK] Scraper whitepages returned 1 results [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:55:19,300 INFO: [OK] Scraper whitepages returned 1 results [in C:\Users\HP\desktop\pe\app.py:278]
+2025-11-19 23:55:21,819 INFO: 127.0.0.1 - - [19/Nov/2025 23:55:21] "[32mGET /admin/logs HTTP/1.1[0m" 302 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:55:22,088 INFO: 127.0.0.1 - - [19/Nov/2025 23:55:22] "GET /admin/login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:55:22,303 INFO: 127.0.0.1 - - [19/Nov/2025 23:55:22] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:02,843 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:242]
+2025-11-19 23:56:02,843 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:242]
+2025-11-19 23:56:03,065 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:323]
+2025-11-19 23:56:03,065 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:323]
+2025-11-19 23:56:03,124 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:03,124 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:16,822 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:16] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:18,199 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:18] "GET / HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:18,786 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:18] "GET /static/styles.css HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:19,060 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:19] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:19,390 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:19] "[31m[1mGET /view-extraction HTTP/1.1[0m" 403 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:19,764 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:19] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:19,818 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:19] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:21,504 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:21] "[32mGET /admin/logs HTTP/1.1[0m" 302 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:21,862 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:21] "GET /admin/login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:30,050 INFO: User successfully logged in with license: B87919F1F2725268 [in C:\Users\HP\desktop\pe\app.py:718]
+2025-11-19 23:56:30,050 INFO: User successfully logged in with license: B87919F1F2725268 [in C:\Users\HP\desktop\pe\app.py:718]
+2025-11-19 23:56:30,050 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:30] "POST /user-login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:30,574 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:30] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:46,837 INFO: Extraction iteration 1 started [in C:\Users\HP\desktop\pe\app.py:840]
+2025-11-19 23:56:46,837 INFO: Extraction iteration 1 started [in C:\Users\HP\desktop\pe\app.py:840]
+2025-11-19 23:56:46,837 INFO: [EXTRACT] Started single mode | keywords=welder | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:459]
+2025-11-19 23:56:46,837 INFO: [EXTRACT] Started single mode | keywords=welder | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:459]
+2025-11-19 23:56:46,837 INFO: Extracting from yellowpages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:56:46,837 INFO: Extracting from yellowpages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:56:46,837 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:46] "POST /extract HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:46,837 INFO: Running scraper: yellowpages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:56:46,837 INFO: Running scraper: yellowpages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:56:50,352 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:50] "[31m[1mPOST /extract HTTP/1.1[0m" 400 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:50,457 INFO: [playwright] Visiting https://www.yellowpages.com/search?search_terms=welder&geo_location_terms=United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:316]
+2025-11-19 23:56:52,735 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:52] "[31m[1mPOST /extract HTTP/1.1[0m" 400 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:54,138 INFO: 127.0.0.1 - - [19/Nov/2025 23:56:54] "[31m[1mPOST /extract HTTP/1.1[0m" 400 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:56:58,020 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:56:58,020 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:00,024 INFO: Extracting from whitepages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:57:00,024 INFO: Extracting from whitepages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:57:00,024 INFO: Running scraper: whitepages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:00,024 INFO: Running scraper: whitepages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:01,468 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:01] "[31m[1mPOST /extract HTTP/1.1[0m" 400 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:03,482 INFO: [playwright] Visiting https://www.whitepages.com/business/welder/United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:316]
+2025-11-19 23:57:06,569 INFO: [OK] Scraper whitepages returned 2 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:06,569 INFO: [OK] Scraper whitepages returned 2 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:08,576 INFO: Extraction worker stopped [in C:\Users\HP\desktop\pe\app.py:877]
+2025-11-19 23:57:08,576 INFO: Extraction worker stopped [in C:\Users\HP\desktop\pe\app.py:877]
+2025-11-19 23:57:21,836 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:21] "[32mGET /admin/logs HTTP/1.1[0m" 302 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:22,079 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:22] "GET /admin/login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:40,428 INFO: Extraction iteration 1 started [in C:\Users\HP\desktop\pe\app.py:840]
+2025-11-19 23:57:40,428 INFO: Extraction iteration 1 started [in C:\Users\HP\desktop\pe\app.py:840]
+2025-11-19 23:57:40,428 INFO: [EXTRACT] Started single mode | keywords=welder | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:459]
+2025-11-19 23:57:40,428 INFO: [EXTRACT] Started single mode | keywords=welder | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:459]
+2025-11-19 23:57:40,428 INFO: Extracting from yellowpages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:57:40,428 INFO: Extracting from yellowpages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:57:40,443 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:40] "POST /extract HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:40,444 INFO: Running scraper: yellowpages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:40,444 INFO: Running scraper: yellowpages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:43,050 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:43] "GET / HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:43,299 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:43] "GET /static/styles.css HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:43,538 INFO: [playwright] Visiting https://www.yellowpages.com/search?search_terms=welder&geo_location_terms=United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:316]
+2025-11-19 23:57:43,848 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:43] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:44,170 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:44] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:44,490 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:44] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:51,419 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:51,419 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:53,421 INFO: Extracting from whitepages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:57:53,421 INFO: Extracting from whitepages (iteration 1) [in C:\Users\HP\desktop\pe\app.py:846]
+2025-11-19 23:57:53,421 INFO: Running scraper: whitepages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:53,421 INFO: Running scraper: whitepages for 'welder' in 'United States' (iteration 1) [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:57:56,726 INFO: 127.0.0.1 - - [19/Nov/2025 23:57:56] "[31m[1mPOST /extract HTTP/1.1[0m" 400 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-19 23:57:56,738 INFO: [playwright] Visiting https://www.whitepages.com/business/welder/United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:316]
+2025-11-19 23:58:00,028 INFO: [OK] Scraper whitepages returned 1 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:58:00,028 INFO: [OK] Scraper whitepages returned 1 results [in C:\Users\HP\desktop\pe\app.py:308]
+2025-11-19 23:58:02,031 INFO: Extraction worker stopped [in C:\Users\HP\desktop\pe\app.py:877]
+2025-11-19 23:58:02,031 INFO: Extraction worker stopped [in C:\Users\HP\desktop\pe\app.py:877]
+2025-11-20 00:28:50,984 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 00:28:50,984 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 00:28:51,216 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 00:28:51,216 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 00:28:51,285 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:28:51,285 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:03,166 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:03,166 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:03,183 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:03,183 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:03,190 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:03] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:04,049 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:04,049 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:04,055 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:04,055 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:04,057 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:04] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:04,369 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:04] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:07,466 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:07,466 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:07,466 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:07,466 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:07,466 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:07] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:07,881 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:07] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:08,852 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:08,852 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:08,852 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:08,852 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:08,852 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:08] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:09,072 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:09] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:09,838 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:09,838 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:09,842 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:09,842 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:09,844 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:09] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:10,151 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:10] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:10,736 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:10,736 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:10,736 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:10,736 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:10,736 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:10] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:11,001 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:11] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:11,483 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:11,483 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:11,485 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:11,485 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:11,485 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:11] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:11,800 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:11] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:24,683 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:24,683 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:24,683 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:24,683 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:24,683 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:24] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:25,084 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:25,084 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:875]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 00:29:25,088 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:25,088 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 00:29:25,088 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:25] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 00:29:25,398 INFO: 127.0.0.1 - - [20/Nov/2025 00:29:25] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:97]
+2025-11-20 01:02:06,266 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:02:06,266 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:02:06,933 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:02:06,933 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:02:06,984 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:02:06,984 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:02:17,351 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:02:17,351 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:02:17,361 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:02:17,361 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:02:17,366 INFO: 127.0.0.1 - - [20/Nov/2025 01:02:17] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:02:17,464 INFO: 127.0.0.1 - - [20/Nov/2025 01:02:17] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:02:19,979 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:02:19,979 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:02:19,982 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:02:19,982 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:02:19,984 INFO: 127.0.0.1 - - [20/Nov/2025 01:02:19] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:02:21,365 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:02:21,365 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:02:21,373 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:02:21,373 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:02:21,373 INFO: 127.0.0.1 - - [20/Nov/2025 01:02:21] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:02:21,594 INFO: 127.0.0.1 - - [20/Nov/2025 01:02:21] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:09:10,591 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:09:10,591 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:09:11,428 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:09:11,428 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:10:19,507 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:10:19,507 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:10:20,275 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:10:20,275 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:10:20,299 INFO: Serving on http://0.0.0.0:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\waitress\wasyncore.py:486]
+2025-11-20 01:10:37,370 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:10:37,370 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:10:37,373 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:10:37,373 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:10:56,927 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:10:56,927 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:10:56,927 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:10:56,927 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:11:58,460 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:11:58,460 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:11:58,463 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:11:58,463 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:03,339 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:16:03,339 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:16:04,297 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:16:04,297 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:16:04,318 INFO: Serving on http://0.0.0.0:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\waitress\wasyncore.py:486]
+2025-11-20 01:16:12,906 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:12,906 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:12,918 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:12,918 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:13,546 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:13,546 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:13,548 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:13,548 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:16,525 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:16,525 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:16,531 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:16,531 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:23,979 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:23,979 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:28,477 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:28,477 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:28,485 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:28,485 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:28,592 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:28,592 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:30,364 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:30,364 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:30,370 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:30,370 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:30,462 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:30,462 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:31,546 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:31,546 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:31,546 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:31,546 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:31,640 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:31,640 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:32,178 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:32,178 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:32,178 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:32,178 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:32,267 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:32,267 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:33,393 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:33,393 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:16:33,393 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:33,393 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:16:33,504 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:16:33,504 WARNING: 404 Not Found: http://localhost:5000/.well-known/appspecific/com.chrome.devtools.json [in C:\Users\HP\desktop\pe\app.py:853]
+2025-11-20 01:18:01,839 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:18:01,839 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:18:03,106 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:18:03,106 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:18:03,172 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:18:03,172 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:18:03,176 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:18:03,176 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:19:07,833 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:19:07,833 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:19:08,840 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:19:08,840 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:19:08,908 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:19:08,908 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:22,657 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:28:22,657 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:28:23,579 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:28:23,579 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:28:23,648 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:23,648 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:23,650 INFO:  * Restarting with stat [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:25,391 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:28:25,391 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:28:26,446 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:28:26,446 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:28:40,993 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:28:40,993 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:28:41,003 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:28:41,003 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:28:41,013 INFO: 127.0.0.1 - - [20/Nov/2025 01:28:41] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:41,223 INFO: 127.0.0.1 - - [20/Nov/2025 01:28:41] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:42,309 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:28:42,309 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:28:42,321 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:28:42,321 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:28:42,321 INFO: 127.0.0.1 - - [20/Nov/2025 01:28:42] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:28:42,582 INFO: 127.0.0.1 - - [20/Nov/2025 01:28:42] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:30:41,203 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:30:41,203 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:30:42,029 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:30:42,029 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:30:42,108 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:30:42,108 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:30:42,108 INFO:  * Restarting with stat [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:30:43,599 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:30:43,599 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:30:44,668 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:30:44,668 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:30:47,800 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:30:47,800 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:30:47,812 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:30:47,812 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:30:47,816 INFO: 127.0.0.1 - - [20/Nov/2025 01:30:47] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:30:48,449 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:30:48,449 ERROR: Exception on / [GET] [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py:1414]
+Traceback (most recent call last):
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\desktop\pe\app.py", line 338, in index
+    return render_template("index.html",
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\HP\desktop\pe\templates\index.html", line 6, in top-level template code
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'str' object is not callable
+2025-11-20 01:30:48,453 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:30:48,453 ERROR: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. [in C:\Users\HP\desktop\pe\app.py:859]
+2025-11-20 01:30:48,456 INFO: 127.0.0.1 - - [20/Nov/2025 01:30:48] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:30:48,762 INFO: 127.0.0.1 - - [20/Nov/2025 01:30:48] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:01,027 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:33:01,027 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:33:01,959 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:33:01,959 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:33:02,018 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:02,018 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:07,160 INFO: 127.0.0.1 - - [20/Nov/2025 01:33:07] "[35m[1mGET / HTTP/1.1[0m" 500 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:07,579 INFO: 127.0.0.1 - - [20/Nov/2025 01:33:07] "GET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:07,743 INFO: 127.0.0.1 - - [20/Nov/2025 01:33:07] "GET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:08,146 INFO: 127.0.0.1 - - [20/Nov/2025 01:33:08] "GET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:33:08,413 INFO: 127.0.0.1 - - [20/Nov/2025 01:33:08] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:08,894 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:36:08,894 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:219]
+2025-11-20 01:36:09,678 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:36:09,678 INFO: Database tables created [in C:\Users\HP\desktop\pe\app.py:287]
+2025-11-20 01:36:09,762 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:09,762 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:14,051 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:14] "GET / HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:14,363 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:14] "GET /static/styles.css HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:15,574 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:15] "GET /check-auth HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:15,937 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:15] "[31m[1mGET /view-extraction HTTP/1.1[0m" 403 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:16,303 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:16] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 204 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:21,563 INFO: User successfully logged in with license: B87919F1F2725268 [in C:\Users\HP\desktop\pe\app.py:750]
+2025-11-20 01:36:21,563 INFO: User successfully logged in with license: B87919F1F2725268 [in C:\Users\HP\desktop\pe\app.py:750]
+2025-11-20 01:36:21,563 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:21] "POST /user-login HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:22,101 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:22] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:45,278 INFO: [WORKER] Worker started for keywords='plumber' location='United States' platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:396]
+2025-11-20 01:36:45,278 INFO: [WORKER] Worker started for keywords='plumber' location='United States' platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:396]
+2025-11-20 01:36:45,278 INFO: [EXTRACT] Extraction started | keywords=plumber | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:486]
+2025-11-20 01:36:45,278 INFO: [EXTRACT] Extraction started | keywords=plumber | location=United States | platforms=['yellowpages', 'whitepages'] [in C:\Users\HP\desktop\pe\app.py:486]
+2025-11-20 01:36:45,278 INFO: [WORKER] Running scraper for platform: yellowpages [in C:\Users\HP\desktop\pe\app.py:404]
+2025-11-20 01:36:45,278 INFO: [WORKER] Running scraper for platform: yellowpages [in C:\Users\HP\desktop\pe\app.py:404]
+2025-11-20 01:36:45,284 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:45] "POST /extract HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:45,285 INFO: Running scraper: yellowpages for 'plumber' in 'United States' [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:36:45,285 INFO: Running scraper: yellowpages for 'plumber' in 'United States' [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:36:45,639 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:45] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:47,532 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:47] "GET /stream-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:36:53,643 INFO: [playwright] Visiting https://www.yellowpages.com/search?search_terms=plumber&geo_location_terms=United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:336]
+2025-11-20 01:36:55,577 INFO: 127.0.0.1 - - [20/Nov/2025 01:36:55] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:05,881 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:05] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:12,743 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:37:12,743 INFO: [OK] Scraper yellowpages returned 30 results [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:37:13,246 INFO: [WORKER] Running scraper for platform: whitepages [in C:\Users\HP\desktop\pe\app.py:404]
+2025-11-20 01:37:13,246 INFO: [WORKER] Running scraper for platform: whitepages [in C:\Users\HP\desktop\pe\app.py:404]
+2025-11-20 01:37:13,246 INFO: Running scraper: whitepages for 'plumber' in 'United States' [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:37:13,246 INFO: Running scraper: whitepages for 'plumber' in 'United States' [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:37:13,476 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:13] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:13,785 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:13] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:14,094 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:14] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:14,409 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:14] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:14,728 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:14] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:15,040 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:15] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:15,881 INFO: 127.0.0.1 - - [20/Nov/2025 01:37:15] "GET /view-extraction HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-20 01:37:17,945 INFO: [playwright] Visiting https://www.whitepages.com/business/plumber/United%20States (proxy=no) [in C:\Users\HP\desktop\pe\scrapers.py:336]
+2025-11-20 01:37:21,726 INFO: [OK] Scraper whitepages returned 1 results [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:37:21,726 INFO: [OK] Scraper whitepages returned 1 results [in C:\Users\HP\desktop\pe\app.py:272]
+2025-11-20 01:37:22,230 INFO: [WORKER] Finished scraping platforms [in C:\Users\HP\desktop\pe\app.py:431]
+2025-11-20 01:37:22,230 INFO: [WORKER] Finished scraping platforms [in C:\Users\HP\desktop\pe\app.py:431]
+2025-11-20 01:37:22,230 INFO: [WORKER] Worker exiting; EXTRACTING set to False [in C:\Users\HP\desktop\pe\app.py:442]
+2025-11-20 01:37:22,230 INFO: [WORKER] Worker exiting; EXTRACTING set to False [in C:\Users\HP\desktop\pe\app.py:442]
