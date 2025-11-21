@@ -160,7 +160,6 @@ class License(db.Model):
         """Check if license is expired (timezone-safe)"""
         if not self.expiry:
             return False
-        # Convert both to UTC for comparison
         expiry_utc = self.expiry
         if expiry_utc.tzinfo is None:
             expiry_utc = expiry_utc.replace(tzinfo=timezone.utc)
@@ -321,16 +320,51 @@ def init_database():
         # First, create all tables
         db.create_all()
         
-        # Run manual migration for existing installations
+        # Run migrations
         try:
             from migrations import migrate_database
             migrate_database()
-        except ImportError:
-            print("⚠️ Migration module not available, continuing with basic setup")
+        except ImportError as e:
+            print(f"⚠️ Migration module not available: {e}")
+            # Try to create tables with current schema
+            db.create_all()
         
         # Create default admin user if not exists
-        admin_user = UserData.query.filter_by(username="Admin").first()
-        if not admin_user:
+        try:
+            admin_user = UserData.query.filter_by(username="Admin").first()
+            if not admin_user:
+                admin_user = UserData(
+                    username="Admin",
+                    password_hash=generate_password_hash("112122"),
+                    email="admin@example.com",
+                    is_admin=True
+                )
+                db.session.add(admin_user)
+                db.session.commit()
+                app.logger.info("Default admin user created")
+            else:
+                # Ensure admin user has admin privileges
+                if not admin_user.is_admin:
+                    admin_user.is_admin = True
+                    db.session.commit()
+                    app.logger.info("Updated existing admin user privileges")
+        except Exception as e:
+            app.logger.error(f"Error creating admin user: {e}")
+            db.session.rollback()
+        
+        app.logger.info("Database tables created and initialized")
+        
+    except Exception as e:
+        app.logger.error(f"Database initialization failed: {e}")
+        # Try to create tables individually if bulk creation fails
+        try:
+            db.session.rollback()
+            # Drop and recreate all tables
+            db.drop_all()
+            db.create_all()
+            app.logger.info("Database recreated successfully")
+            
+            # Create admin user after recreation
             admin_user = UserData(
                 username="Admin",
                 password_hash=generate_password_hash("112122"),
@@ -339,45 +373,9 @@ def init_database():
             )
             db.session.add(admin_user)
             db.session.commit()
-            # app may not be available in some init contexts; use logging instead
-            try:
-                app.logger.info("Default admin user created")
-            except Exception:
-                logging.getLogger(__name__).info("Default admin user created")
-        else:
-            # Ensure admin user has admin privileges
-            if not admin_user.is_admin:
-                admin_user.is_admin = True
-                db.session.commit()
-                try:
-                    app.logger.info("Updated existing admin user privileges")
-                except Exception:
-                    logging.getLogger(__name__).info("Updated existing admin user privileges")
-        
-        try:
-            app.logger.info("Database tables created and initialized")
-        except Exception:
-            logging.getLogger(__name__).info("Database tables created and initialized")
-        
-    except Exception as e:
-        try:
-            app.logger.error(f"Database initialization failed: {e}")
-        except Exception:
-            logging.getLogger(__name__).error(f"Database initialization failed: {e}")
-        # Try to create tables individually if bulk creation fails
-        try:
-            db.session.remove()
-            db.drop_all()
-            db.create_all()
-            try:
-                app.logger.info("Database recreated successfully")
-            except Exception:
-                logging.getLogger(__name__).info("Database recreated successfully")
+            
         except Exception as e2:
-            try:
-                app.logger.error(f"Database recovery failed: {e2}")
-            except Exception:
-                logging.getLogger(__name__).error(f"Database recovery failed: {e2}")
+            app.logger.error(f"Database recovery failed: {e2}")
 
 # Create app instance
 app = create_app()
