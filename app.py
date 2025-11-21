@@ -104,7 +104,7 @@ try:
         'spokeo': scrape_spokeo,
         'fastpeoplesearch': scrape_fastpeoplesearch,
         'zabasearch': scrape_zabasearch,
-        'yellowpages': scrape_yellowpages,
+        'yellowpages': scrape_yellowpages,  # Use the regular version
         'whitepages': scrape_whitepages,
         'manta': scrape_manta,
         'yelp': safe_scrape_yelp
@@ -545,6 +545,7 @@ def run_scrapers_concurrently(platforms, keywords, location, session_id):
         except Exception as e:
             app.logger.error(f"❌ {platform} scraper thread failed: {str(e)}")
     
+    app.logger.info(f"🎯 TOTAL RESULTS: {len(all_results)} from {len(platforms)} platforms")
     return all_results
 
 def update_extraction_session(session_id, results_count):

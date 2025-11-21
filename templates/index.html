@@ -1042,12 +1042,12 @@ function updateResults() {
 
             if (data.numbers && data.numbers.length > 0) {
                 container.empty();
-                
-                // Show latest results first
-                data.numbers.slice(-50).reverse().forEach(entry => {
+    
+                // Show ALL results in reverse order (newest first)
+                data.numbers.slice().reverse().forEach(entry => {
                     const sourceIcon = getSourceIcon(entry.source);
                     const sourceBadge = entry.source ? `<span class="status-indicator status-active" style="font-size: 0.7rem; padding: 2px 8px;">${sourceIcon} ${entry.source}</span>` : '';
-                    
+        
                     container.append(`
                         <tr class="data-entry">
                             <td><i class="fas fa-phone" style="color: var(--success);"></i> ${entry.number || 'N/A'}</td>
@@ -1057,8 +1057,20 @@ function updateResults() {
                         </tr>
                     `);
                 });
-                
+    
                 updateLastUpdateTime();
+            }
+            else if (totalItems === 0) {
+                // No results found
+                container.html(`
+                    <tr>
+                        <td colspan="4" class="placeholder-msg">
+                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 15px; display: block; color: var(--gray);"></i>
+                            No data extracted yet<br>
+                            <small>Click "Start Data Extraction" to begin collecting business information</small>
+                        </td>
+                    </tr>
+                `);
             } else if (extractionActive) {
                 // Still extracting but no results yet
                 container.html(`

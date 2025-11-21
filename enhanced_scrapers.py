@@ -312,7 +312,7 @@ def scrape_truepeoplesearch(keywords, location):
             cards = page.query_selector_all(".card, .result-card, .person-card, .search-result")
             logger.info(f"Found {len(cards)} cards on TruePeopleSearch")
             
-            for card in cards[:15]:
+            for card in cards:  # Process ALL cards
                 try:
                     # Name extraction
                     name_el = card.query_selector("h2, h3, .person-name, .name, [class*='name']")
@@ -373,7 +373,7 @@ def scrape_spokeo(keywords, location):
             cards = page.query_selector_all(".card, .person-card, .search-result, [data-testid*='result']")
             logger.info(f"Found {len(cards)} cards on Spokeo")
             
-            for card in cards[:15]:
+            for card in cards:  # Process ALL cards
                 try:
                     name_el = card.query_selector("h2, h3, .person-name, .name")
                     name_text = name_el.inner_text().strip() if name_el else ""
@@ -423,7 +423,7 @@ def scrape_fastpeoplesearch(keywords, location):
             cards = page.query_selector_all(".card, .person-info, .search-result, [class*='result']")
             logger.info(f"Found {len(cards)} cards on FastPeopleSearch")
             
-            for card in cards[:15]:
+            for card in cards:  # Process ALL cards
                 try:
                     name_el = card.query_selector("h2, h3, .person-name, .name")
                     name_text = name_el.inner_text().strip() if name_el else ""
@@ -473,7 +473,7 @@ def scrape_zabasearch(keywords, location):
             cards = page.query_selector_all(".result, .person, .search-result, [class*='listing']")
             logger.info(f"Found {len(cards)} cards on ZabaSearch")
             
-            for card in cards[:15]:
+            for card in cards:  # Process ALL cards
                 try:
                     name_el = card.query_selector("h2, h3, .name, [class*='name']")
                     name_text = name_el.inner_text().strip() if name_el else ""
@@ -504,7 +504,7 @@ def scrape_zabasearch(keywords, location):
 
 @retry(max_retries=2, delay_seconds=2)
 def scrape_yellowpages(keywords, location):
-    """Scrape YellowPages for business information"""
+    """Scrape YellowPages for business information - UNLIMITED RESULTS"""
     logger.info(f"🟡 Starting YellowPages scrape for '{keywords}' in '{location}'")
     q = quote(keywords) if keywords else "business"
     loc = quote(location) if location else "usa"
@@ -519,7 +519,8 @@ def scrape_yellowpages(keywords, location):
                 
             logger.info(f"Found {len(cards)} cards on YellowPages")
             
-            for card in cards[:20]:
+            # Process ALL cards - NO LIMIT
+            for card in cards:
                 try:
                     name_el = card.query_selector("a.business-name, h2 a, .business-name")
                     name_text = name_el.inner_text().strip() if name_el else ""
@@ -557,7 +558,7 @@ def scrape_yellowpages(keywords, location):
 
 @retry(max_retries=2, delay_seconds=2)
 def scrape_whitepages(keywords, location):
-    """Scrape WhitePages for business information"""
+    """Scrape WhitePages for business information - UNLIMITED RESULTS"""
     logger.info(f"⚪ Starting WhitePages scrape for '{keywords}' in '{location}'")
     q = quote(keywords) if keywords else "business"
     loc = quote(location) if location else "usa"
@@ -569,7 +570,7 @@ def scrape_whitepages(keywords, location):
             cards = page.query_selector_all(".card, .listing-card, .result, .business-card")
             logger.info(f"Found {len(cards)} cards on WhitePages")
             
-            for card in cards[:20]:
+            for card in cards:  # Process ALL cards
                 try:
                     name_el = card.query_selector(".name, .business-name, h2, h3")
                     name = name_el.inner_text().strip() if name_el else ""
@@ -605,7 +606,7 @@ def scrape_whitepages(keywords, location):
 
 @retry(max_retries=2, delay_seconds=2)
 def scrape_manta(keywords, location):
-    """Scrape Manta for business information"""
+    """Scrape Manta for business information - UNLIMITED RESULTS"""
     logger.info(f"🔵 Starting Manta scrape for '{keywords}' in '{location}'")
     q = quote(keywords) if keywords else "business"
     loc = quote(location) if location else "usa"
@@ -617,7 +618,7 @@ def scrape_manta(keywords, location):
             cards = page.query_selector_all(".result, .listing, .business-card, .search-result")
             logger.info(f"Found {len(cards)} cards on Manta")
             
-            for card in cards[:20]:
+            for card in cards:  # Process ALL cards
                 try:
                     name_el = card.query_selector("h2, h3, a, .business-name")
                     name_text = name_el.inner_text().strip() if name_el else ""
@@ -648,7 +649,7 @@ def scrape_manta(keywords, location):
 
 @retry(max_retries=2, delay_seconds=2)
 def safe_scrape_yelp(keywords, location):
-    """Scrape Yelp for business information"""
+    """Scrape Yelp for business information - UNLIMITED RESULTS"""
     logger.info(f"🔴 Starting Yelp scrape for '{keywords}' in '{location}'")
     q = quote(keywords) if keywords else "restaurant"
     loc = quote(location) if location else "usa"
@@ -660,7 +661,7 @@ def safe_scrape_yelp(keywords, location):
             cards = page.query_selector_all("article, .business-listing, .search-result, [class*='business']")
             logger.info(f"Found {len(cards)} cards on Yelp")
             
-            for card in cards[:15]:
+            for card in cards:  # Process ALL cards
                 try:
                     name_el = card.query_selector("h3, h4, a, [class*='business']")
                     name = name_el.inner_text().strip() if name_el else ""
@@ -687,7 +688,7 @@ def safe_scrape_yelp(keywords, location):
 # Export all scrapers
 __all__ = [
     'scrape_truepeoplesearch',
-    'scrape_spokeo',
+    'scrape_spokeo', 
     'scrape_fastpeoplesearch',
     'scrape_zabasearch',
     'scrape_yellowpages',
