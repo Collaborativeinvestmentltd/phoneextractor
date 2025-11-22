@@ -194,12 +194,59 @@ class ExtractedData(db.Model):
 # -----------------------
 # App Factory
 # -----------------------
+def configure_logging(app):
+    """Set up logging with rotation"""
+    try:
+        log_dir = 'logs'
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+            print(f"✅ Created {log_dir}/ directory")
+
+        # Simplified formatter without emoji replacement
+        formatter = logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        )
+
+        file_handler = RotatingFileHandler(
+            os.path.join(log_dir, 'app.log'),
+            maxBytes=app.config['LOG_MAX_BYTES'],
+            backupCount=app.config['LOG_BACKUP_COUNT'],
+            encoding='utf-8'
+        )
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+
+        # Console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(formatter)
+        console_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+
+        # Configure root logger
+        logging.basicConfig(
+            level=getattr(logging, app.config['LOG_LEVEL']),
+            handlers=[file_handler, console_handler]
+        )
+
+        app.logger.addHandler(file_handler)
+        app.logger.addHandler(console_handler)
+        app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+        app.logger.info('Application startup')
+        
+    except Exception as e:
+        print(f"⚠️ File logging failed: {e}, using console logging only")
+        logging.basicConfig(
+            level=getattr(logging, app.config['LOG_LEVEL']),
+            format='%(asctime)s %(levelname)s: %(message)s'
+        )
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Initialize extensions
-    # db, csrf and limiter were created at module import time; migrate may be the class reference
+    # Configure logging FIRST
+    configure_logging(app)
+    
+    # Then initialize extensions
     db.init_app(app)
     if migrate and callable(migrate):
         # instantiate Migrate if available
@@ -254,117 +301,18 @@ def create_app(config_class=Config):
     except Exception as e:
         app.logger.error(f"Failed to initialize database at app startup: {e}")
     
-    return app
-
-def configure_logging(app):
-    """Set up logging with rotation"""
-    try:
-        log_dir = 'logs'
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-            print(f"✅ Created {log_dir}/ directory")
-
-        class SafeFormatter(logging.Formatter):
-            def format(self, record):
-                if hasattr(record, 'msg') and isinstance(record.msg, str):
-                    record.msg = (record.msg
-                        .replace('✅', '[OK]')
-                        .replace('❌', '[ERROR]')
-                        .replace('⚠️', '[WARN]')
-                        .replace('🚀', '[START]'))
-                return super().format(record)
-
-        file_handler = RotatingFileHandler(
-            os.path.join(log_dir, 'app.log'),
-            maxBytes=app.config['LOG_MAX_BYTES'],
-            backupCount=app.config['LOG_BACKUP_COUNT'],
-            encoding='utf-8'
-        )
-
-        formatter = SafeFormatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        )
-        file_handler.setFormatter(formatter)
-        file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
-
-        # Also add console handler for immediate feedback
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-        console_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
-
-        logging.basicConfig(
-            level=getattr(logging, app.config['LOG_LEVEL']),
-            format='%(asctime)s %(levelname)s: %(message)s',
-            handlers=[file_handler, console_handler]  # Both file and console
-        )
-
-        app.logger.addHandler(file_handler)
-        app.logger.addHandler(console_handler)
-        app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL']))
-        app.logger.info('Application startup')
-        
-    except Exception as e:
-        # Fallback to console-only logging if file logging fails
-        print(f"⚠️ File logging failed: {e}, using console logging only")
-        logging.basicConfig(
-            level=getattr(logging, app.config['LOG_LEVEL']),
-            format='%(asctime)s %(levelname)s: %(message)s',
-            handlers=[logging.StreamHandler()]
-        )
-
-# Initialize Database with Migration Support
-# -----------------------
-def init_database():
-    """Initialize database with migration support"""
-    try:
-        # First, create all tables
-        db.create_all()
-        
-        # Run migrations
+    # MOVE THE reset-db ROUTE INSIDE THE APP FACTORY FUNCTION
+    @app.route('/reset-db')
+    def reset_db():
+        """Temporary route to reset database - REMOVE AFTER USE"""
         try:
-            from migrations import migrate_database
-            migrate_database()
-        except ImportError as e:
-            print(f"⚠️ Migration module not available: {e}")
-            # Try to create tables with current schema
-            db.create_all()
-        
-        # Create default admin user if not exists
-        try:
-            admin_user = UserData.query.filter_by(username="Admin").first()
-            if not admin_user:
-                admin_user = UserData(
-                    username="Admin",
-                    password_hash=generate_password_hash("112122"),
-                    email="admin@example.com",
-                    is_admin=True
-                )
-                db.session.add(admin_user)
-                db.session.commit()
-                app.logger.info("Default admin user created")
-            else:
-                # Ensure admin user has admin privileges
-                if not admin_user.is_admin:
-                    admin_user.is_admin = True
-                    db.session.commit()
-                    app.logger.info("Updated existing admin user privileges")
-        except Exception as e:
-            app.logger.error(f"Error creating admin user: {e}")
-            db.session.rollback()
-        
-        app.logger.info("Database tables created and initialized")
-        
-    except Exception as e:
-        app.logger.error(f"Database initialization failed: {e}")
-        # Try to create tables individually if bulk creation fails
-        try:
-            db.session.rollback()
-            # Drop and recreate all tables
+            # Drop all tables
             db.drop_all()
-            db.create_all()
-            app.logger.info("Database recreated successfully")
             
-            # Create admin user after recreation
+            # Create all tables with current schema
+            db.create_all()
+            
+            # Create admin user
             admin_user = UserData(
                 username="Admin",
                 password_hash=generate_password_hash("112122"),
@@ -372,10 +320,80 @@ def init_database():
                 is_admin=True
             )
             db.session.add(admin_user)
+            
+            # Create sample licenses
+            licenses = [
+                License(key="80595DCBA3ED05E9", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+                License(key="516C732CEB2F4F6D", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+                License(key="TEST123456789ABC", expiry=datetime.now(timezone.utc) + timedelta(days=365))
+            ]
+            
+            for license_obj in licenses:
+                db.session.add(license_obj)
+            
             db.session.commit()
             
+            return """
+            <h1>Database Reset Successfully!</h1>
+            <p>Available License Keys:</p>
+            <ul>
+                <li>80595DCBA3ED05E9</li>
+                <li>516C732CEB2F4F6D</li>
+                <li>TEST123456789ABC</li>
+            </ul>
+            <p>Admin Login: Admin / 112122</p>
+            <p><strong>REMEMBER TO REMOVE THIS ROUTE AFTER USE!</strong></p>
+            """
+            
+        except Exception as e:
+            return f"Error resetting database: {str(e)}"
+    
+    return app
+
+# Initialize Database with Migration Support
+# -----------------------
+def init_database():
+    """Initialize database - simplified for Render"""
+    try:
+        # First try to create all tables
+        db.create_all()
+        print("✅ Database tables created")
+        
+        # Check if admin user exists, if not create one
+        admin_user = UserData.query.filter_by(username="Admin").first()
+        if not admin_user:
+            admin_user = UserData(
+                username="Admin",
+                password_hash=generate_password_hash("112122"),
+                email="admin@example.com",
+                is_admin=True
+            )
+            db.session.add(admin_user)
+            print("✅ Admin user created")
+        
+        # Check if we have any licenses, if not create some
+        if License.query.count() == 0:
+            licenses = [
+                License(key="80595DCBA3ED05E9", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+                License(key="516C732CEB2F4F6D", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+            ]
+            for license_obj in licenses:
+                db.session.add(license_obj)
+            print("✅ Sample licenses created")
+        
+        db.session.commit()
+        print("✅ Database initialized successfully")
+        
+    except Exception as e:
+        print(f"❌ Database initialization error: {e}")
+        # Try to recover by dropping and recreating
+        try:
+            db.session.rollback()
+            db.drop_all()
+            db.create_all()
+            print("✅ Database recovered by recreating tables")
         except Exception as e2:
-            app.logger.error(f"Database recovery failed: {e2}")
+            print(f"❌ Database recovery failed: {e2}")
 
 # Create app instance
 app = create_app()
@@ -1044,13 +1062,14 @@ def user_register():
 # Enhanced user login
 @app.route('/user-login', methods=['POST'])
 def user_login():
-    """Enhanced user login with license validation - FIXED VERSION"""
+    """Enhanced user login with better error handling"""
     try:
         license_key = request.form.get('license_key', '').strip().upper()
         
         if not license_key:
             return jsonify({"success": False, "error": "License key is required."})
 
+        # Try to find the license
         license_obj = License.query.filter_by(key=license_key).first()
         
         if not license_obj:
@@ -1064,7 +1083,6 @@ def user_login():
             expiry = license_obj.expiry
             if expiry.tzinfo is None:
                 expiry = expiry.replace(tzinfo=timezone.utc)
-
             if expiry < datetime.now(timezone.utc):
                 return jsonify({"success": False, "error": "License has expired."})
 
@@ -1072,13 +1090,12 @@ def user_login():
         license_obj.last_used = datetime.now(timezone.utc)
         license_obj.usage_count += 1
         
-        # Get user associated with license
+        # Get or create user
         user = UserData.query.get(license_obj.user_id) if license_obj.user_id else None
         
-        # FIX: Always set user_id in session, create temporary user if needed
         if not user:
-            # Create a temporary user record for unassigned licenses
-            temp_username = f"temp_user_{license_key[:8]}"
+            # Create a temporary user for this license
+            temp_username = f"user_{license_key[:8]}"
             user = UserData.query.filter_by(username=temp_username).first()
             if not user:
                 user = UserData(
@@ -1087,12 +1104,12 @@ def user_login():
                     is_active=True
                 )
                 db.session.add(user)
-                db.session.flush()  # Get the user ID
+                db.session.flush()
             
-            # Assign license to this temporary user
+            # Assign license to user
             license_obj.user_id = user.id
         
-        # FIX: Set all required session variables
+        # Set session variables
         session['user_logged_in'] = True
         session['license_key'] = license_key
         session['user_id'] = user.id
@@ -1104,14 +1121,13 @@ def user_login():
         
         db.session.commit()
         
-        app.logger.info(f"User successfully logged in with license: {license_key}, user_id: {user.id}")
-        
+        print(f"✅ User login successful: {user.username} with license {license_key}")
         return jsonify({"success": True, "username": user.username})
         
     except Exception as e:
         db.session.rollback()
-        app.logger.error(f"Error during user login: {str(e)}")
-        return jsonify({"success": False, "error": "Server error occurred. Please try again."})
+        print(f"❌ Login error: {str(e)}")
+        return jsonify({"success": False, "error": "Database error. Please try again."})
 
 # Admin login route
 @app.route("/admin/login", methods=["GET", "POST"])
