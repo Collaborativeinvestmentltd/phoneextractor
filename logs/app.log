@@ -22619,3 +22619,10 @@ plumber' in 'United States' [in C:\Users\HP\desktop\pe\enhanced_scrapers.py:458]
 2025-11-22 07:59:16,855 INFO: 📊 Database view: 80 results from session 8 [in C:\Users\HP\desktop\pe\app.py:893]
 2025-11-22 07:59:16,855 INFO: 📊 Database view: 80 results from session 8 [in C:\Users\HP\desktop\pe\app.py:893]
 2025-11-22 07:59:16,864 INFO: 127.0.0.1 - - [22/Nov/2025 07:59:16] "GET /view-extraction?db=true HTTP/1.1" 200 - [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-22 08:29:48,093 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:233]
+2025-11-22 08:29:48,093 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:233]
+2025-11-22 08:29:48,924 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-22 08:29:48,924 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
