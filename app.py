@@ -395,6 +395,47 @@ def init_database():
         except Exception as e2:
             print(f"❌ Database recovery failed: {e2}")
 
+@app.route('/setup-db')
+def setup_db():
+    """Manual database setup for Render"""
+    try:
+        db.create_all()
+        
+        # Create admin if doesn't exist
+        admin = UserData.query.filter_by(username="Admin").first()
+        if not admin:
+            admin = UserData(
+                username="Admin",
+                password_hash=generate_password_hash("112122"),
+                email="admin@example.com",
+                is_admin=True
+            )
+            db.session.add(admin)
+        
+        # Create licenses if none exist
+        if License.query.count() == 0:
+            licenses = [
+                License(key="80595DCBA3ED05E9", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+                License(key="516C732CEB2F4F6D", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+                License(key="TEST123456789ABC", expiry=datetime.now(timezone.utc) + timedelta(days=365))
+            ]
+            for license_obj in licenses:
+                db.session.add(license_obj)
+        
+        db.session.commit()
+        return """
+        <h1>Database Setup Complete!</h1>
+        <p>Try logging in with these license keys:</p>
+        <ul>
+            <li>80595DCBA3ED05E9</li>
+            <li>516C732CEB2F4F6D</li>
+            <li>TEST123456789ABC</li>
+        </ul>
+        <p>Admin: Admin / 112122</p>
+        """
+    except Exception as e:
+        return f"Error: {str(e)}"
+
 # Create app instance
 app = create_app()
 
