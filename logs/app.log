@@ -22671,3 +22671,93 @@ plumber' in 'United States' [in C:\Users\HP\desktop\pe\enhanced_scrapers.py:458]
  * Running on http://127.0.0.1:5000
  * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
 2025-11-23 01:21:17,940 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 01:52:50,912 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:395]
+2025-11-23 01:52:50,912 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:395]
+2025-11-23 01:52:54,988 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:474]
+2025-11-23 01:52:54,988 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:474]
+2025-11-23 01:52:55,336 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 01:52:55,337 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 01:55:10,379 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:395]
+2025-11-23 01:55:10,379 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:395]
+2025-11-23 01:55:14,432 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:474]
+2025-11-23 01:55:14,432 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:474]
+2025-11-23 01:55:14,740 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 01:55:14,744 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:01:23,689 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:01:23,689 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:01:27,778 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:479]
+2025-11-23 02:01:27,778 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:479]
+2025-11-23 02:01:28,065 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:01:28,065 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:07:35,398 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:07:35,398 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:07:35,409 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:475]
+2025-11-23 02:07:35,409 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:475]
+2025-11-23 02:07:35,717 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:07:35,717 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:22:07,609 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:22:07,609 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:22:07,623 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:473]
+2025-11-23 02:22:07,623 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:473]
+2025-11-23 02:22:08,014 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:22:08,014 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:58:29,907 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:58:29,907 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:400]
+2025-11-23 02:58:29,926 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:473]
+2025-11-23 02:58:29,926 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:473]
+2025-11-23 02:58:30,266 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 02:58:30,266 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:05:23,724 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:422]
+2025-11-23 03:05:23,724 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:422]
+2025-11-23 03:05:23,733 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:499]
+2025-11-23 03:05:23,733 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:499]
+2025-11-23 03:05:24,060 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:05:24,060 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:06:32,537 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:422]
+2025-11-23 03:06:32,537 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:422]
+2025-11-23 03:06:32,551 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:499]
+2025-11-23 03:06:32,551 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:499]
+2025-11-23 03:06:32,840 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:06:32,840 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:16:23,487 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:422]
+2025-11-23 03:16:23,487 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:422]
+2025-11-23 03:16:23,503 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:499]
+2025-11-23 03:16:23,503 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:499]
+2025-11-23 03:16:24,488 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:16:24,490 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:30:39,227 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:423]
+2025-11-23 03:30:39,227 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:423]
+2025-11-23 03:30:39,242 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:504]
+2025-11-23 03:30:39,242 INFO: ✅ Redis connected successfully [in C:\Users\HP\desktop\pe\app.py:504]
+2025-11-23 03:30:41,333 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 03:30:41,337 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]

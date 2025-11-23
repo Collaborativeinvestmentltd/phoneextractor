@@ -1,3 +1,4 @@
+import os
 import logging
 import uuid
 from flask import Response, jsonify, request
@@ -15,6 +16,8 @@ from flask_wtf import CSRFProtect
 from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
 from queue import Queue, Empty
+from dotenv import load_dotenv
+load_dotenv()
 
 # pandas and redis are optional at runtime in some environments — import safely
 try:
@@ -30,6 +33,26 @@ import uuid
 import random
 from io import BytesIO
 
+# DEBUG: Check environment and MongoDB connection
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+print("=" * 50)
+print("🔍 DEBUG: Environment Check")
+print("=" * 50)
+print(f"MONGO_URI loaded: {bool(os.getenv('MONGO_URI'))}")
+print(f"MONGO_URI value: {os.getenv('MONGO_URI')}")
+
+if os.getenv('MONGO_URI'):
+    try:
+        from pymongo import MongoClient
+        client = MongoClient(os.getenv('MONGO_URI'))
+        client.admin.command('ping')
+        print("✅ Pre-check: MongoDB connection successful!")
+    except Exception as e:
+        print(f"❌ Pre-check: MongoDB connection failed: {e}")
+print("=" * 50)
 # Import CSRF with fallback
 try:
     from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -53,7 +76,6 @@ try:
     from pymongo import ASCENDING, DESCENDING
     from bson.objectid import ObjectId
     from bson.json_util import dumps, loads
-    import os
     MONGO_AVAILABLE = True
     print("✅ PyMongo successfully imported")
 except ImportError as e:
@@ -160,7 +182,8 @@ def get_db():
 
 def get_collection(collection_name):
     """Get collection from database"""
-    if not MONGO_AVAILABLE or not mongo_db:
+    # Fix: Use explicit None comparison instead of boolean check
+    if not MONGO_AVAILABLE or mongo_db is None:
         return DummyCollection()
     return mongo_db[collection_name]
 
@@ -364,8 +387,13 @@ def configure_logging(app):
     try:
         log_dir = 'logs'
         if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-            print(f"✅ Created {log_dir}/ directory")
+            try:
+                os.makedirs(log_dir, exist_ok=True)
+                print(f"✅ Created {log_dir}/ directory")
+            except PermissionError:
+                log_dir = '/tmp/logs'
+                os.makedirs(log_dir, exist_ok=True)
+                print(f"✅ Using alternative log directory: {log_dir}")
 
         formatter = logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -408,27 +436,33 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
+    # Load environment variables
+    from dotenv import load_dotenv
+    load_dotenv()
+    
     global mongo_client, mongo_db
     
     # Configure MongoDB with direct pymongo connection
     mongo_uri = os.environ.get("MONGO_URI")
     
+    # FIXED: Proper MongoDB connection with correct indentation
     if MONGO_AVAILABLE and mongo_uri:
         try:
-            # Connect to MongoDB with optimized settings
+            # For MongoDB Atlas (cloud) - use this connection approach
             mongo_client = MongoClient(
                 mongo_uri,
                 maxPoolSize=50,
-                wtimeoutMS=2500,
-                connectTimeoutMS=10000,
-                socketTimeoutMS=10000,
                 retryWrites=True,
+                w='majority',
                 appname="PhoneScraperApp"
             )
             
             # Get database name from URI or use default
-            if "/" in mongo_uri.rsplit("@", 1)[-1]:
-                db_name = mongo_uri.split("/")[-1].split("?")[0]
+            if "mongodb.net/" in mongo_uri:
+                # Extract database name from connection string
+                db_name = mongo_uri.split("mongodb.net/")[-1].split("?")[0]
+                if not db_name or db_name == mongo_uri:
+                    db_name = "phonescraper"
             else:
                 db_name = "phonescraper"
                 
@@ -436,14 +470,14 @@ def create_app(config_class=Config):
             
             # Test connection
             mongo_client.admin.command('ping')
-            app.logger.info(f"✅ MongoDB connected successfully to database: {db_name}")
+            app.logger.info(f"✅ MongoDB Atlas connected successfully to database: {db_name}")
             
         except Exception as e:
-            app.logger.error(f"❌ MongoDB connection failed: {e}")
+            app.logger.error(f"❌ MongoDB Atlas connection failed: {e}")
             mongo_client = None
             mongo_db = None
     else:
-        app.logger.warning("❌ MongoDB not enabled - MONGO_URI missing or PyMongo unavailable")
+        print(f"❌ MongoDB not configured - MONGO_AVAILABLE: {MONGO_AVAILABLE}, MONGO_URI: {bool(mongo_uri)}")
         mongo_client = None
         mongo_db = None
 
@@ -491,7 +525,9 @@ def create_app(config_class=Config):
 
 def init_mongodb():
     """Initialize MongoDB with sample data"""
-    if not MONGO_AVAILABLE or not mongo_db:
+    print(f"🔍 DEBUG init_mongodb: MONGO_AVAILABLE={MONGO_AVAILABLE}, mongo_db={mongo_db}")
+    
+    if not MONGO_AVAILABLE or mongo_db is None:
         print("❌ MongoDB not available - running in fallback mode")
         return
         
