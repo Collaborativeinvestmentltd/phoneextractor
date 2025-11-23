@@ -157,13 +157,20 @@ except ImportError as e:
 # Configuration
 # -----------------------
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-    # MongoDB configuration
+    # Required - will raise error if missing in production
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    if not SECRET_KEY:
+        raise ValueError("No SECRET_KEY set for Flask application")
+    
     MONGO_URI = os.environ.get('MONGO_URI')
-    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379/0'
+    if not MONGO_URI:
+        raise ValueError("No MONGO_URI set for MongoDB connection")
+    
+    # Optional with defaults
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'Admin')
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'change-in-production')
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
-    LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
-    LOG_BACKUP_COUNT = 5
 
 # -----------------------
 # MongoDB Collection Names
@@ -437,8 +444,12 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     
     # Load environment variables
-    from dotenv import load_dotenv
-    load_dotenv()
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        print("✅ dotenv loaded successfully")
+    except ImportError:
+        print("⚠️ python-dotenv not available, using environment variables directly")
     
     global mongo_client, mongo_db
     
