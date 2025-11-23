@@ -207,9 +207,10 @@ def get_user_by_id(user_id):
     except:
         return None
 
-def create_user(username, password_hash, email=None, is_admin=False):
+def create_user(username, password_hash, email=None, is_admin=False, is_active=True):
+    """Create a new user with all required fields"""
     if not MONGO_AVAILABLE:
-        return str(uuid.uuid4())  # Return a fake ID for fallback
+        return str(uuid.uuid4())
     
     user_data = {
         'username': username,
@@ -217,11 +218,17 @@ def create_user(username, password_hash, email=None, is_admin=False):
         'email': email,
         'created_at': datetime.now(timezone.utc),
         'last_login': None,
-        'is_active': True,
+        'is_active': is_active,
         'is_admin': is_admin
     }
-    result = get_collection(USERS_COLLECTION).insert_one(user_data)
-    return str(result.inserted_id)
+    
+    try:
+        result = get_collection(USERS_COLLECTION).insert_one(user_data)
+        print(f"✅ User created: {username} (Active: {is_active}, Admin: {is_admin})")
+        return str(result.inserted_id)
+    except Exception as e:
+        print(f"❌ Error creating user {username}: {e}")
+        return None
 
 def get_license_by_key(license_key):
     if not MONGO_AVAILABLE:
@@ -394,13 +401,12 @@ def configure_logging(app):
     try:
         log_dir = 'logs'
         if not os.path.exists(log_dir):
-            try:
-                os.makedirs(log_dir, exist_ok=True)
-                print(f"✅ Created {log_dir}/ directory")
-            except PermissionError:
-                log_dir = '/tmp/logs'
-                os.makedirs(log_dir, exist_ok=True)
-                print(f"✅ Using alternative log directory: {log_dir}")
+            os.makedirs(log_dir, exist_ok=True)
+
+        # Use app.config.get() with defaults to avoid KeyError
+        max_bytes = app.config.get('LOG_MAX_BYTES', 10 * 1024 * 1024)  # 10MB default
+        backup_count = app.config.get('LOG_BACKUP_COUNT', 5)  # 5 backups default
+        log_level = app.config.get('LOG_LEVEL', 'INFO')
 
         formatter = logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
@@ -408,31 +414,30 @@ def configure_logging(app):
 
         file_handler = RotatingFileHandler(
             os.path.join(log_dir, 'app.log'),
-            maxBytes=app.config['LOG_MAX_BYTES'],
-            backupCount=app.config['LOG_BACKUP_COUNT'],
+            maxBytes=max_bytes,
+            backupCount=backup_count,
             encoding='utf-8'
         )
         file_handler.setFormatter(formatter)
-        file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+        file_handler.setLevel(getattr(logging, log_level))
 
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
-        console_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
+        console_handler.setLevel(getattr(logging, log_level))
 
-        logging.basicConfig(
-            level=getattr(logging, app.config['LOG_LEVEL']),
-            handlers=[file_handler, console_handler]
-        )
-
+        # Clear any existing handlers
+        app.logger.handlers.clear()
+        
         app.logger.addHandler(file_handler)
         app.logger.addHandler(console_handler)
-        app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL']))
-        app.logger.info('Application startup')
+        app.logger.setLevel(getattr(logging, log_level))
+        
+        print("✅ Logging configured successfully")
         
     except Exception as e:
         print(f"⚠️ File logging failed: {e}, using console logging only")
         logging.basicConfig(
-            level=getattr(logging, app.config['LOG_LEVEL']),
+            level=getattr(logging, app.config.get('LOG_LEVEL', 'INFO')),
             format='%(asctime)s %(levelname)s: %(message)s'
         )
 
