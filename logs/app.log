@@ -22635,3 +22635,39 @@ plumber' in 'United States' [in C:\Users\HP\desktop\pe\enhanced_scrapers.py:458]
  * Running on http://127.0.0.1:5000
  * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
 2025-11-23 00:17:18,063 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:28:14,917 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:315]
+2025-11-23 00:28:14,917 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:315]
+2025-11-23 00:28:19,004 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:359]
+2025-11-23 00:28:19,004 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:359]
+2025-11-23 00:28:19,717 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:28:19,717 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:36:54,033 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:383]
+2025-11-23 00:36:54,033 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:383]
+2025-11-23 00:36:58,103 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:434]
+2025-11-23 00:36:58,103 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:434]
+2025-11-23 00:36:58,746 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:36:58,746 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:52:22,363 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:383]
+2025-11-23 00:52:22,363 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:383]
+2025-11-23 00:52:26,452 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:437]
+2025-11-23 00:52:26,452 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:437]
+2025-11-23 00:52:27,756 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:52:27,756 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 01:21:13,556 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:395]
+2025-11-23 01:21:13,556 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:395]
+2025-11-23 01:21:17,611 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:474]
+2025-11-23 01:21:17,611 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:474]
+2025-11-23 01:21:17,940 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]
+2025-11-23 01:21:17,940 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:224]

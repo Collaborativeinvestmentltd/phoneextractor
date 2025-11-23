@@ -15,8 +15,6 @@ from flask_wtf import CSRFProtect
 from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
 from queue import Queue, Empty
-from bson.objectid import ObjectId
-from bson.json_util import dumps, loads
 
 # pandas and redis are optional at runtime in some environments — import safely
 try:
@@ -45,14 +43,47 @@ except ImportError as e:
         return "dummy-csrf-token"
     CSRF_AVAILABLE = False
 
-# Import PyMongo for MongoDB
+# Import PyMongo for MongoDB with better error handling
+MONGO_AVAILABLE = False
+mongo_client = None
+mongo_db = None
+
 try:
-    from flask_pymongo import PyMongo
+    from pymongo import MongoClient
     from pymongo import ASCENDING, DESCENDING
+    from bson.objectid import ObjectId
+    from bson.json_util import dumps, loads
+    import os
     MONGO_AVAILABLE = True
+    print("✅ PyMongo successfully imported")
 except ImportError as e:
-    print(f"PyMongo not available: {e}")
-    MONGO_AVAILABLE = False
+    print(f"❌ PyMongo not available: {e}")
+    # Create dummy classes for fallback
+    class ObjectId:
+        def __init__(self, id=None):
+            self.id = id
+        def __str__(self):
+            return str(self.id)
+    class DummyMongoDB:
+        def __getitem__(self, name):
+            return DummyCollection()
+    class DummyCollection:
+        def find_one(self, *args, **kwargs): return None
+        def find(self, *args, **kwargs): return []
+        def insert_one(self, *args, **kwargs): return DummyResult()
+        def insert_many(self, *args, **kwargs): return DummyResult()
+        def update_one(self, *args, **kwargs): return DummyResult()
+        def update_many(self, *args, **kwargs): return DummyResult()
+        def count_documents(self, *args, **kwargs): return 0
+        def create_index(self, *args, **kwargs): pass
+        def command(self, *args, **kwargs): return {}
+    class DummyResult:
+        inserted_id = None
+        modified_count = 0
+
+# Initialize MongoDB variables
+mongo_client = None
+mongo_db = None
 
 # Instantiate extension objects
 try:
@@ -69,12 +100,6 @@ except Exception:
         def init_app(self, app):
             pass
     limiter = _NoopLimiter()
-
-# Initialize MongoDB safely
-if MONGO_AVAILABLE:
-    mongo = PyMongo()
-else:
-    mongo = None
 
 # -----------------------
 # Import enhanced scrapers - REAL IMPLEMENTATIONS
@@ -112,7 +137,7 @@ except ImportError as e:
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     # MongoDB configuration
-    MONGODB_URI = os.environ.get('MONGODB_URI') or 'mongodb://localhost:27017/phone_extractor'
+    MONGO_URI = os.environ.get('MONGO_URI')
     REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379/0'
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
     LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
@@ -127,18 +152,35 @@ SESSIONS_COLLECTION = 'sessions'
 EXTRACTED_DATA_COLLECTION = 'extracted_data'
 
 # -----------------------
-# MongoDB Helper Functions
+# MongoDB Helper Functions - FIXED for direct pymongo
 # -----------------------
+def get_db():
+    """Get database instance"""
+    return mongo_db
+
+def get_collection(collection_name):
+    """Get collection from database"""
+    if not MONGO_AVAILABLE or not mongo_db:
+        return DummyCollection()
+    return mongo_db[collection_name]
+
 def get_user_by_username(username):
-    return mongo.db[USERS_COLLECTION].find_one({'username': username})
+    if not MONGO_AVAILABLE:
+        return None
+    return get_collection(USERS_COLLECTION).find_one({'username': username})
 
 def get_user_by_id(user_id):
+    if not MONGO_AVAILABLE:
+        return None
     try:
-        return mongo.db[USERS_COLLECTION].find_one({'_id': ObjectId(user_id)})
+        return get_collection(USERS_COLLECTION).find_one({'_id': ObjectId(user_id)})
     except:
         return None
 
 def create_user(username, password_hash, email=None, is_admin=False):
+    if not MONGO_AVAILABLE:
+        return str(uuid.uuid4())  # Return a fake ID for fallback
+    
     user_data = {
         'username': username,
         'password_hash': password_hash,
@@ -148,14 +190,18 @@ def create_user(username, password_hash, email=None, is_admin=False):
         'is_active': True,
         'is_admin': is_admin
     }
-    result = mongo.db[USERS_COLLECTION].insert_one(user_data)
+    result = get_collection(USERS_COLLECTION).insert_one(user_data)
     return str(result.inserted_id)
 
 def get_license_by_key(license_key):
-    return mongo.db[LICENSES_COLLECTION].find_one({'key': license_key.upper()})
+    if not MONGO_AVAILABLE:
+        return None
+    return get_collection(LICENSES_COLLECTION).find_one({'key': license_key.upper()})
 
 def update_license_usage(license_key):
-    return mongo.db[LICENSES_COLLECTION].update_one(
+    if not MONGO_AVAILABLE:
+        return
+    return get_collection(LICENSES_COLLECTION).update_one(
         {'key': license_key.upper()},
         {
             '$set': {'last_used': datetime.now(timezone.utc)},
@@ -164,23 +210,27 @@ def update_license_usage(license_key):
     )
 
 def create_extraction_session(user_id, license_key, keywords, location, platforms):
-    session_data = {
-        'session_id': str(uuid.uuid4()),
-        'user_id': user_id,
-        'license_key': license_key,
-        'keywords': keywords,
-        'location': location,
-        'platforms': platforms,
-        'started_at': datetime.now(timezone.utc),
-        'finished_at': None,
-        'status': 'running',
-        'total_results': 0
-    }
-    result = mongo.db[SESSIONS_COLLECTION].insert_one(session_data)
-    return session_data['session_id']
+    session_id = str(uuid.uuid4())
+    
+    if MONGO_AVAILABLE:
+        session_data = {
+            'session_id': session_id,
+            'user_id': user_id,
+            'license_key': license_key,
+            'keywords': keywords,
+            'location': location,
+            'platforms': platforms,
+            'started_at': datetime.now(timezone.utc),
+            'finished_at': None,
+            'status': 'running',
+            'total_results': 0
+        }
+        get_collection(SESSIONS_COLLECTION).insert_one(session_data)
+    
+    return session_id
 
 def add_extracted_data(session_id, data_list):
-    if not data_list:
+    if not MONGO_AVAILABLE or not data_list:
         return
     
     documents = []
@@ -197,9 +247,12 @@ def add_extracted_data(session_id, data_list):
         documents.append(document)
     
     if documents:
-        mongo.db[EXTRACTED_DATA_COLLECTION].insert_many(documents)
+        get_collection(EXTRACTED_DATA_COLLECTION).insert_many(documents)
 
 def update_session_progress(session_id, total_results, status='running'):
+    if not MONGO_AVAILABLE:
+        return
+    
     update_data = {
         'total_results': total_results,
         'status': status
@@ -207,32 +260,42 @@ def update_session_progress(session_id, total_results, status='running'):
     if status in ['completed', 'failed', 'stopped']:
         update_data['finished_at'] = datetime.now(timezone.utc)
     
-    mongo.db[SESSIONS_COLLECTION].update_one(
+    get_collection(SESSIONS_COLLECTION).update_one(
         {'session_id': session_id},
         {'$set': update_data}
     )
 
 def get_user_sessions(user_id, limit=50):
-    return list(mongo.db[SESSIONS_COLLECTION].find(
+    if not MONGO_AVAILABLE:
+        return []
+    return list(get_collection(SESSIONS_COLLECTION).find(
         {'user_id': user_id}
     ).sort('started_at', DESCENDING).limit(limit))
 
 def get_session_data(session_id, limit=1000):
-    return list(mongo.db[EXTRACTED_DATA_COLLECTION].find(
+    if not MONGO_AVAILABLE:
+        return []
+    return list(get_collection(EXTRACTED_DATA_COLLECTION).find(
         {'session_id': session_id}
     ).sort('extracted_at', DESCENDING).limit(limit))
 
 def get_latest_user_session(user_id):
-    return mongo.db[SESSIONS_COLLECTION].find_one(
+    if not MONGO_AVAILABLE:
+        return None
+    return get_collection(SESSIONS_COLLECTION).find_one(
         {'user_id': user_id},
         sort=[('started_at', DESCENDING)]
     )
 
 def get_all_licenses():
-    return list(mongo.db[LICENSES_COLLECTION].find())
+    if not MONGO_AVAILABLE:
+        return []
+    return list(get_collection(LICENSES_COLLECTION).find())
 
 def get_all_users():
-    return list(mongo.db[USERS_COLLECTION].find())
+    if not MONGO_AVAILABLE:
+        return []
+    return list(get_collection(USERS_COLLECTION).find())
 
 def create_license(key, expiry_days=30, max_usage=1000, user_id=None):
     expiry = datetime.now(timezone.utc) + timedelta(days=expiry_days)
@@ -246,32 +309,49 @@ def create_license(key, expiry_days=30, max_usage=1000, user_id=None):
         'revoked': False,
         'user_id': user_id
     }
-    result = mongo.db[LICENSES_COLLECTION].insert_one(license_data)
+    
+    if MONGO_AVAILABLE:
+        get_collection(LICENSES_COLLECTION).insert_one(license_data)
+    
     return license_data
 
 def get_extracted_data_count():
-    return mongo.db[EXTRACTED_DATA_COLLECTION].count_documents({})
+    if not MONGO_AVAILABLE:
+        return 0
+    return get_collection(EXTRACTED_DATA_COLLECTION).count_documents({})
 
 def get_sessions_count():
-    return mongo.db[SESSIONS_COLLECTION].count_documents({})
+    if not MONGO_AVAILABLE:
+        return 0
+    return get_collection(SESSIONS_COLLECTION).count_documents({})
 
 def get_active_sessions_count():
-    return mongo.db[SESSIONS_COLLECTION].count_documents({'status': 'running'})
+    if not MONGO_AVAILABLE:
+        return 0
+    return get_collection(SESSIONS_COLLECTION).count_documents({'status': 'running'})
 
 def get_users_count():
-    return mongo.db[USERS_COLLECTION].count_documents({})
+    if not MONGO_AVAILABLE:
+        return 0
+    return get_collection(USERS_COLLECTION).count_documents({})
 
 def get_licenses_count():
-    return mongo.db[LICENSES_COLLECTION].count_documents({})
+    if not MONGO_AVAILABLE:
+        return 0
+    return get_collection(LICENSES_COLLECTION).count_documents({})
 
 def update_license(license_key, update_data):
-    return mongo.db[LICENSES_COLLECTION].update_one(
+    if not MONGO_AVAILABLE:
+        return DummyResult()
+    return get_collection(LICENSES_COLLECTION).update_one(
         {'key': license_key},
         {'$set': update_data}
     )
 
 def update_user(user_id, update_data):
-    return mongo.db[USERS_COLLECTION].update_one(
+    if not MONGO_AVAILABLE:
+        return DummyResult()
+    return get_collection(USERS_COLLECTION).update_one(
         {'_id': ObjectId(user_id)},
         {'$set': update_data}
     )
@@ -322,29 +402,64 @@ def configure_logging(app):
         )
 
 # -----------------------
-# App Factory
+# App Factory - FIXED MongoDB Connection
 # -----------------------
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Configure MongoDB
-    if MONGO_AVAILABLE and mongo is not None:
-        app.config["MONGO_URI"] = app.config['MONGODB_URI']
-        mongo.init_app(app)
+    global mongo_client, mongo_db
     
+    # Configure MongoDB with direct pymongo connection
+    mongo_uri = os.environ.get("MONGO_URI")
+    
+    if MONGO_AVAILABLE and mongo_uri:
+        try:
+            # Connect to MongoDB with optimized settings
+            mongo_client = MongoClient(
+                mongo_uri,
+                maxPoolSize=50,
+                wtimeoutMS=2500,
+                connectTimeoutMS=10000,
+                socketTimeoutMS=10000,
+                retryWrites=True,
+                appname="PhoneScraperApp"
+            )
+            
+            # Get database name from URI or use default
+            if "/" in mongo_uri.rsplit("@", 1)[-1]:
+                db_name = mongo_uri.split("/")[-1].split("?")[0]
+            else:
+                db_name = "phonescraper"
+                
+            mongo_db = mongo_client[db_name]
+            
+            # Test connection
+            mongo_client.admin.command('ping')
+            app.logger.info(f"✅ MongoDB connected successfully to database: {db_name}")
+            
+        except Exception as e:
+            app.logger.error(f"❌ MongoDB connection failed: {e}")
+            mongo_client = None
+            mongo_db = None
+    else:
+        app.logger.warning("❌ MongoDB not enabled - MONGO_URI missing or PyMongo unavailable")
+        mongo_client = None
+        mongo_db = None
+
     # Configure logging
     configure_logging(app)
     
     # Initialize other extensions
     try:
         csrf.init_app(app)
-    except Exception:
-        pass
+    except Exception as e:
+        app.logger.warning(f"CSRF initialization warning: {e}")
+    
     try:
         limiter.init_app(app)
-    except Exception:
-        pass
+    except Exception as e:
+        app.logger.warning(f"Limiter initialization warning: {e}")
     
     # Initialize Redis
     try:
@@ -376,16 +491,16 @@ def create_app(config_class=Config):
 
 def init_mongodb():
     """Initialize MongoDB with sample data"""
-    if not MONGO_AVAILABLE:
-        print("❌ MongoDB not available")
+    if not MONGO_AVAILABLE or not mongo_db:
+        print("❌ MongoDB not available - running in fallback mode")
         return
         
     try:
         # Create indexes
-        mongo.db[USERS_COLLECTION].create_index('username', unique=True)
-        mongo.db[LICENSES_COLLECTION].create_index('key', unique=True)
-        mongo.db[SESSIONS_COLLECTION].create_index('session_id', unique=True)
-        mongo.db[EXTRACTED_DATA_COLLECTION].create_index([('session_id', ASCENDING), ('extracted_at', DESCENDING)])
+        mongo_db[USERS_COLLECTION].create_index('username', unique=True)
+        mongo_db[LICENSES_COLLECTION].create_index('key', unique=True)
+        mongo_db[SESSIONS_COLLECTION].create_index('session_id', unique=True)
+        mongo_db[EXTRACTED_DATA_COLLECTION].create_index([('session_id', ASCENDING), ('extracted_at', DESCENDING)])
         
         # Create admin user if doesn't exist
         admin_user = get_user_by_username("Admin")
@@ -399,7 +514,7 @@ def init_mongodb():
             print("✅ Admin user created")
         
         # Create sample licenses if none exist
-        if mongo.db[LICENSES_COLLECTION].count_documents({}) == 0:
+        if get_licenses_count() == 0:
             sample_licenses = [
                 create_license("80595DCBA3ED05E9"),
                 create_license("516C732CEB2F4F6D"),
@@ -452,12 +567,9 @@ def admin_required(f):
 def user_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('user_logged_in'):
-            return jsonify({"error": "Please login first"}), 403
-
-        if not session.get('license_key') or not session.get('user_id'):
-            return jsonify({"error": "Invalid session. Please re-login"}), 403
-
+        if not session.get('user_logged_in') or not session.get('user_id'):
+            app.logger.warning(f"Authentication failed: user_logged_in={session.get('user_logged_in')}, user_id={session.get('user_id')}")
+            return jsonify({"error": "Authentication required"}), 403
         return f(*args, **kwargs)
     return decorated_function
 
@@ -794,10 +906,11 @@ def stop_extraction():
     
     # Update any active sessions
     try:
-        mongo.db[SESSIONS_COLLECTION].update_many(
-            {'status': 'running'},
-            {'$set': {'status': 'stopped', 'finished_at': datetime.now(timezone.utc)}}
-        )
+        if MONGO_AVAILABLE:
+            get_collection(SESSIONS_COLLECTION).update_many(
+                {'status': 'running'},
+                {'$set': {'status': 'stopped', 'finished_at': datetime.now(timezone.utc)}}
+            )
     except Exception as e:
         app.logger.error(f"Error updating stopped sessions: {e}")
     
@@ -812,7 +925,7 @@ def view_extraction():
     use_db = request.args.get('db', 'true').lower() == 'true'
     
     try:
-        if use_db:
+        if use_db and MONGO_AVAILABLE:
             # Get latest session for current user
             user_id = session.get('user_id')
             if user_id:
@@ -860,12 +973,12 @@ def export_data():
     user_id = session.get('user_id')
     
     try:
-        if export_type == 'historical' and user_id:
+        if export_type == 'historical' and user_id and MONGO_AVAILABLE:
             # Export all user data
             user_sessions = get_user_sessions(user_id, limit=1000)
             session_ids = [session['session_id'] for session in user_sessions]
             
-            extracted_data = list(mongo.db[EXTRACTED_DATA_COLLECTION].find(
+            extracted_data = list(get_collection(EXTRACTED_DATA_COLLECTION).find(
                 {'session_id': {'$in': session_ids}}
             ).sort('extracted_at', DESCENDING))
             
@@ -1047,7 +1160,7 @@ def user_login():
                 user_data = get_user_by_id(user_id)
             
             # Assign license to user
-            update_license(license_key, {'user_id': user_data['_id']})
+            update_license(license_key, {'user_id': str(user_data['_id'])})
             user = user_data
         
         # Set session variables
@@ -1379,7 +1492,7 @@ def health_check():
         'timestamp': datetime.now(timezone.utc).isoformat(),
         'extraction_active': EXTRACTING,
         'data_count': len(EXTRACTION_DATA),
-        'database_connected': MONGO_AVAILABLE,
+        'database_connected': MONGO_AVAILABLE and mongo_client is not None,
         'redis_connected': redis_client is not None,
         'thread_pool_active': thread_pool._threads is not None,
         'version': '2.0.0',
@@ -1388,8 +1501,8 @@ def health_check():
     
     try:
         # Test MongoDB connection
-        if MONGO_AVAILABLE:
-            mongo.db.command('ping')
+        if MONGO_AVAILABLE and mongo_client:
+            mongo_client.admin.command('ping')
         else:
             health_status['database_connected'] = False
             health_status['warning'] = 'MongoDB not available'
@@ -1418,7 +1531,7 @@ def health_check():
 if __name__ == "__main__":
     print("[START] Starting Enhanced Flask Application")
     print(f"[OK] CSRF protection: {'Enabled' if CSRF_AVAILABLE else 'Disabled'}")
-    print(f"[OK] MongoDB: {'Enabled' if MONGO_AVAILABLE else 'Disabled'}")
+    print(f"[OK] MongoDB: {'Enabled' if MONGO_AVAILABLE and mongo_client else 'Disabled (Fallback Mode)'}")
     print("[OK] Redis caching: Enabled" if redis_client else "[WARN] Redis caching: Disabled")
     print("[OK] Concurrent scraping enabled")
     print("[OK] Enhanced admin panel available")
