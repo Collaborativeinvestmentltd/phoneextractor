@@ -22626,3 +22626,12 @@ plumber' in 'United States' [in C:\Users\HP\desktop\pe\enhanced_scrapers.py:458]
  * Running on http://127.0.0.1:5000
  * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
 2025-11-22 08:29:48,924 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:17:13,465 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:315]
+2025-11-23 00:17:13,465 INFO: Application startup [in C:\Users\HP\desktop\pe\app.py:315]
+2025-11-23 00:17:17,556 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:359]
+2025-11-23 00:17:17,556 WARNING: ❌ Redis not available: Error 10061 connecting to localhost:6379. No connection could be made because the target machine actively refused it.. Using in-memory cache. [in C:\Users\HP\desktop\pe\app.py:359]
+2025-11-23 00:17:18,063 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.10.14:5000 [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]
+2025-11-23 00:17:18,063 INFO: [33mPress CTRL+C to quit[0m [in C:\Users\HP\AppData\Local\Programs\Python\Python312\Lib\site-packages\werkzeug\_internal.py:187]

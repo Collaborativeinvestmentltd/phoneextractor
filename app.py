@@ -1,5 +1,4 @@
 import logging
-from sqlalchemy.exc import SQLAlchemyError
 import uuid
 from flask import Response, jsonify, request
 from flask import make_response
@@ -11,12 +10,14 @@ from threading import Thread, Lock, Event
 from datetime import datetime, timedelta, timezone
 import json, os, time, secrets
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_wtf import CSRFProtect
 from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
 from queue import Queue, Empty
+from bson.objectid import ObjectId
+from bson.json_util import dumps, loads
+
 # pandas and redis are optional at runtime in some environments — import safely
 try:
     import pandas as pd
@@ -31,9 +32,6 @@ import uuid
 import random
 from io import BytesIO
 
-# Instantiate commonly used Flask extensions at module level so models/extensions can reference them safely
-db = SQLAlchemy()
-migrate = None  # will be set to a Migrate() instance if available after CSRF block
 # Import CSRF with fallback
 try:
     from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -47,21 +45,22 @@ except ImportError as e:
         return "dummy-csrf-token"
     CSRF_AVAILABLE = False
 
-# Import Migrate safely (may not be installed in minimal environments)
+# Import PyMongo for MongoDB
 try:
-    from flask_migrate import Migrate
-    migrate = Migrate  # keep reference to class for later instantiation
-except Exception:
-    Migrate = None
-    migrate = None
+    from flask_pymongo import PyMongo
+    from pymongo import ASCENDING, DESCENDING
+    MONGO_AVAILABLE = True
+except ImportError as e:
+    print(f"PyMongo not available: {e}")
+    MONGO_AVAILABLE = False
 
-# Instantiate extension objects now that CSRF class is available
+# Instantiate extension objects
 try:
     csrf = CSRFProtect()
 except Exception:
     csrf = CSRFProtect()
 
-# Instantiate limiter and db in a safe way — limiter needs get_remote_address from flask_limiter.util
+# Instantiate limiter
 try:
     limiter = Limiter(key_func=get_remote_address)
 except Exception:
@@ -71,20 +70,11 @@ except Exception:
             pass
     limiter = _NoopLimiter()
 
-# Import CSRF with fallback
-try:
-    from flask_wtf.csrf import CSRFProtect, generate_csrf
-    CSRF_AVAILABLE = True
-except ImportError as e:
-    print(f"CSRF not available: {e}")
-    class CSRFProtect:
-        def init_app(self, app):
-            self._app = app
-    def generate_csrf():
-        return "dummy-csrf-token"
-    CSRF_AVAILABLE = False
-
-from flask_migrate import Migrate
+# Initialize MongoDB safely
+if MONGO_AVAILABLE:
+    mongo = PyMongo()
+else:
+    mongo = None
 
 # -----------------------
 # Import enhanced scrapers - REAL IMPLEMENTATIONS
@@ -104,7 +94,7 @@ try:
         'spokeo': scrape_spokeo,
         'fastpeoplesearch': scrape_fastpeoplesearch,
         'zabasearch': scrape_zabasearch,
-        'yellowpages': scrape_yellowpages,  # Use the regular version
+        'yellowpages': scrape_yellowpages,
         'whitepages': scrape_whitepages,
         'manta': scrape_manta,
         'yelp': safe_scrape_yelp
@@ -121,78 +111,173 @@ except ImportError as e:
 # -----------------------
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///app.db'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # MongoDB configuration
+    MONGODB_URI = os.environ.get('MONGODB_URI') or 'mongodb://localhost:27017/phone_extractor'
     REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379/0'
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
     LOG_MAX_BYTES = 10 * 1024 * 1024  # 10MB
     LOG_BACKUP_COUNT = 5
 
 # -----------------------
-# Enhanced Database Models
+# MongoDB Collection Names
 # -----------------------
-class UserData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(120))
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    last_login = db.Column(db.DateTime)
-    is_active = db.Column(db.Boolean, default=True)
-    is_admin = db.Column(db.Boolean, default=False)
-    
-    licenses = db.relationship('License', backref='user', lazy=True, cascade='all, delete-orphan')
-    extraction_sessions = db.relationship('ExtractionSession', backref='user', lazy=True)
-
-class License(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    key = db.Column(db.String(64), unique=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    expiry = db.Column(db.DateTime)
-    max_usage = db.Column(db.Integer, default=1000)
-    usage_count = db.Column(db.Integer, default=0)
-    last_used = db.Column(db.DateTime)
-    revoked = db.Column(db.Boolean, default=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_data.id'))
-    
-    @property
-    def is_expired(self):
-        """Check if license is expired (timezone-safe)"""
-        if not self.expiry:
-            return False
-        expiry_utc = self.expiry
-        if expiry_utc.tzinfo is None:
-            expiry_utc = expiry_utc.replace(tzinfo=timezone.utc)
-        now_utc = datetime.now(timezone.utc)
-        return expiry_utc < now_utc
-
-class ExtractionSession(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.String(64), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_data.id'), nullable=False)
-    license_key = db.Column(db.String(64), nullable=False)
-    keywords = db.Column(db.String(500))
-    location = db.Column(db.String(200))
-    platforms = db.Column(db.Text)  # JSON string of platforms
-    started_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    finished_at = db.Column(db.DateTime)
-    status = db.Column(db.String(20), default='running')  # running, completed, failed, stopped
-    total_results = db.Column(db.Integer, default=0)
-    
-    extracted_data = db.relationship('ExtractedData', backref='session', lazy=True, cascade='all, delete-orphan')
-
-class ExtractedData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('extraction_session.id'), nullable=False)
-    phone_number = db.Column(db.String(50), nullable=False)
-    business_name = db.Column(db.String(500))
-    address = db.Column(db.String(1000))
-    source = db.Column(db.String(100), nullable=False)
-    extracted_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    is_valid = db.Column(db.Boolean, default=True)
+USERS_COLLECTION = 'users'
+LICENSES_COLLECTION = 'licenses'
+SESSIONS_COLLECTION = 'sessions'
+EXTRACTED_DATA_COLLECTION = 'extracted_data'
 
 # -----------------------
-# App Factory
+# MongoDB Helper Functions
+# -----------------------
+def get_user_by_username(username):
+    return mongo.db[USERS_COLLECTION].find_one({'username': username})
+
+def get_user_by_id(user_id):
+    try:
+        return mongo.db[USERS_COLLECTION].find_one({'_id': ObjectId(user_id)})
+    except:
+        return None
+
+def create_user(username, password_hash, email=None, is_admin=False):
+    user_data = {
+        'username': username,
+        'password_hash': password_hash,
+        'email': email,
+        'created_at': datetime.now(timezone.utc),
+        'last_login': None,
+        'is_active': True,
+        'is_admin': is_admin
+    }
+    result = mongo.db[USERS_COLLECTION].insert_one(user_data)
+    return str(result.inserted_id)
+
+def get_license_by_key(license_key):
+    return mongo.db[LICENSES_COLLECTION].find_one({'key': license_key.upper()})
+
+def update_license_usage(license_key):
+    return mongo.db[LICENSES_COLLECTION].update_one(
+        {'key': license_key.upper()},
+        {
+            '$set': {'last_used': datetime.now(timezone.utc)},
+            '$inc': {'usage_count': 1}
+        }
+    )
+
+def create_extraction_session(user_id, license_key, keywords, location, platforms):
+    session_data = {
+        'session_id': str(uuid.uuid4()),
+        'user_id': user_id,
+        'license_key': license_key,
+        'keywords': keywords,
+        'location': location,
+        'platforms': platforms,
+        'started_at': datetime.now(timezone.utc),
+        'finished_at': None,
+        'status': 'running',
+        'total_results': 0
+    }
+    result = mongo.db[SESSIONS_COLLECTION].insert_one(session_data)
+    return session_data['session_id']
+
+def add_extracted_data(session_id, data_list):
+    if not data_list:
+        return
+    
+    documents = []
+    for data in data_list:
+        document = {
+            'session_id': session_id,
+            'phone_number': data.get('number', ''),
+            'business_name': data.get('name', ''),
+            'address': data.get('address', ''),
+            'source': data.get('source', 'unknown'),
+            'extracted_at': datetime.now(timezone.utc),
+            'is_valid': True
+        }
+        documents.append(document)
+    
+    if documents:
+        mongo.db[EXTRACTED_DATA_COLLECTION].insert_many(documents)
+
+def update_session_progress(session_id, total_results, status='running'):
+    update_data = {
+        'total_results': total_results,
+        'status': status
+    }
+    if status in ['completed', 'failed', 'stopped']:
+        update_data['finished_at'] = datetime.now(timezone.utc)
+    
+    mongo.db[SESSIONS_COLLECTION].update_one(
+        {'session_id': session_id},
+        {'$set': update_data}
+    )
+
+def get_user_sessions(user_id, limit=50):
+    return list(mongo.db[SESSIONS_COLLECTION].find(
+        {'user_id': user_id}
+    ).sort('started_at', DESCENDING).limit(limit))
+
+def get_session_data(session_id, limit=1000):
+    return list(mongo.db[EXTRACTED_DATA_COLLECTION].find(
+        {'session_id': session_id}
+    ).sort('extracted_at', DESCENDING).limit(limit))
+
+def get_latest_user_session(user_id):
+    return mongo.db[SESSIONS_COLLECTION].find_one(
+        {'user_id': user_id},
+        sort=[('started_at', DESCENDING)]
+    )
+
+def get_all_licenses():
+    return list(mongo.db[LICENSES_COLLECTION].find())
+
+def get_all_users():
+    return list(mongo.db[USERS_COLLECTION].find())
+
+def create_license(key, expiry_days=30, max_usage=1000, user_id=None):
+    expiry = datetime.now(timezone.utc) + timedelta(days=expiry_days)
+    license_data = {
+        'key': key.upper(),
+        'created_at': datetime.now(timezone.utc),
+        'expiry': expiry,
+        'max_usage': max_usage,
+        'usage_count': 0,
+        'last_used': None,
+        'revoked': False,
+        'user_id': user_id
+    }
+    result = mongo.db[LICENSES_COLLECTION].insert_one(license_data)
+    return license_data
+
+def get_extracted_data_count():
+    return mongo.db[EXTRACTED_DATA_COLLECTION].count_documents({})
+
+def get_sessions_count():
+    return mongo.db[SESSIONS_COLLECTION].count_documents({})
+
+def get_active_sessions_count():
+    return mongo.db[SESSIONS_COLLECTION].count_documents({'status': 'running'})
+
+def get_users_count():
+    return mongo.db[USERS_COLLECTION].count_documents({})
+
+def get_licenses_count():
+    return mongo.db[LICENSES_COLLECTION].count_documents({})
+
+def update_license(license_key, update_data):
+    return mongo.db[LICENSES_COLLECTION].update_one(
+        {'key': license_key},
+        {'$set': update_data}
+    )
+
+def update_user(user_id, update_data):
+    return mongo.db[USERS_COLLECTION].update_one(
+        {'_id': ObjectId(user_id)},
+        {'$set': update_data}
+    )
+
+# -----------------------
+# Logging Configuration
 # -----------------------
 def configure_logging(app):
     """Set up logging with rotation"""
@@ -202,7 +287,6 @@ def configure_logging(app):
             os.makedirs(log_dir)
             print(f"✅ Created {log_dir}/ directory")
 
-        # Simplified formatter without emoji replacement
         formatter = logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
         )
@@ -216,12 +300,10 @@ def configure_logging(app):
         file_handler.setFormatter(formatter)
         file_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
 
-        # Console handler
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         console_handler.setLevel(getattr(logging, app.config['LOG_LEVEL']))
 
-        # Configure root logger
         logging.basicConfig(
             level=getattr(logging, app.config['LOG_LEVEL']),
             handlers=[file_handler, console_handler]
@@ -239,67 +321,22 @@ def configure_logging(app):
             format='%(asctime)s %(levelname)s: %(message)s'
         )
 
+# -----------------------
+# App Factory
+# -----------------------
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Initialize extensions
-    db.init_app(app)
+    # Configure MongoDB
+    if MONGO_AVAILABLE and mongo is not None:
+        app.config["MONGO_URI"] = app.config['MONGODB_URI']
+        mongo.init_app(app)
     
-    # Auto-initialize database
-    with app.app_context():
-        try:
-            db.create_all()
-            print("✅ Database tables created")
-            
-            # Create admin user if doesn't exist
-            admin_user = UserData.query.filter_by(username="Admin").first()
-            if not admin_user:
-                admin_user = UserData(
-                    username="Admin",
-                    password_hash=generate_password_hash("112122"),
-                    email="admin@example.com",
-                    is_admin=True
-                )
-                db.session.add(admin_user)
-                print("✅ Admin user created")
-            
-            # Create sample licenses if none exist
-            if License.query.count() == 0:
-                licenses = [
-                    License(key="80595DCBA3ED05E9", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
-                    License(key="516C732CEB2F4F6D", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
-                    License(key="TEST123456789ABC", expiry=datetime.now(timezone.utc) + timedelta(days=365))
-                ]
-                for license_obj in licenses:
-                    db.session.add(license_obj)
-                print("✅ Sample licenses created")
-            
-            db.session.commit()
-            print("✅ Database initialized successfully")
-            
-        except Exception as e:
-            print(f"❌ Database initialization error: {e}")
-            # Try to recover
-            try:
-                db.session.rollback()
-                db.drop_all()
-                db.create_all()
-                print("✅ Database recovered by recreating tables")
-            except Exception as e2:
-                print(f"❌ Database recovery failed: {e2}")
-
-    if migrate and callable(migrate):
-        # instantiate Migrate if available
-        try:
-            migrate_inst = migrate(app, db)
-        except Exception:
-            # fallback to using flask_migrate.Migrate().init_app if that pattern is needed
-            try:
-                migrate_inst = Migrate()
-                migrate_inst.init_app(app, db)
-            except Exception:
-                pass
+    # Configure logging
+    configure_logging(app)
+    
+    # Initialize other extensions
     try:
         csrf.init_app(app)
     except Exception:
@@ -307,7 +344,6 @@ def create_app(config_class=Config):
     try:
         limiter.init_app(app)
     except Exception:
-        # limiter may be a noop instance — ignore
         pass
     
     # Initialize Redis
@@ -323,9 +359,6 @@ def create_app(config_class=Config):
         app.logger.warning(f"❌ Redis not available: {e}. Using in-memory cache.")
         redis_client = None
     
-    # Configure logging
-    configure_logging(app)
-    
     # Add proxy fix for production
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     
@@ -335,106 +368,49 @@ def create_app(config_class=Config):
         session.permanent = True
         app.permanent_session_lifetime = timedelta(hours=24)
     
-    # Initialize database and run migrations if needed inside app context
-    try:
-        with app.app_context():
-            init_database()
-    except Exception as e:
-        app.logger.error(f"Failed to initialize database at app startup: {e}")
-    
-    # MOVE THE reset-db ROUTE INSIDE THE APP FACTORY FUNCTION
-    @app.route('/reset-db')
-    def reset_db():
-        """Temporary route to reset database - REMOVE AFTER USE"""
-        try:
-            # Drop all tables
-            db.drop_all()
-            
-            # Create all tables with current schema
-            db.create_all()
-            
-            # Create admin user
-            admin_user = UserData(
-                username="Admin",
-                password_hash=generate_password_hash("112122"),
-                email="admin@example.com",
-                is_admin=True
-            )
-            db.session.add(admin_user)
-            
-            # Create sample licenses
-            licenses = [
-                License(key="80595DCBA3ED05E9", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
-                License(key="516C732CEB2F4F6D", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
-                License(key="TEST123456789ABC", expiry=datetime.now(timezone.utc) + timedelta(days=365))
-            ]
-            
-            for license_obj in licenses:
-                db.session.add(license_obj)
-            
-            db.session.commit()
-            
-            return """
-            <h1>Database Reset Successfully!</h1>
-            <p>Available License Keys:</p>
-            <ul>
-                <li>80595DCBA3ED05E9</li>
-                <li>516C732CEB2F4F6D</li>
-                <li>TEST123456789ABC</li>
-            </ul>
-            <p>Admin Login: Admin / 112122</p>
-            <p><strong>REMEMBER TO REMOVE THIS ROUTE AFTER USE!</strong></p>
-            """
-            
-        except Exception as e:
-            return f"Error resetting database: {str(e)}"
+    # Initialize MongoDB with sample data
+    with app.app_context():
+        init_mongodb()
     
     return app
 
-# Initialize Database with Migration Support
-# -----------------------
-def init_database():
-    """Initialize database - simplified for Render"""
-    try:
-        # First try to create all tables
-        db.create_all()
-        print("✅ Database tables created")
+def init_mongodb():
+    """Initialize MongoDB with sample data"""
+    if not MONGO_AVAILABLE:
+        print("❌ MongoDB not available")
+        return
         
-        # Check if admin user exists, if not create one
-        admin_user = UserData.query.filter_by(username="Admin").first()
+    try:
+        # Create indexes
+        mongo.db[USERS_COLLECTION].create_index('username', unique=True)
+        mongo.db[LICENSES_COLLECTION].create_index('key', unique=True)
+        mongo.db[SESSIONS_COLLECTION].create_index('session_id', unique=True)
+        mongo.db[EXTRACTED_DATA_COLLECTION].create_index([('session_id', ASCENDING), ('extracted_at', DESCENDING)])
+        
+        # Create admin user if doesn't exist
+        admin_user = get_user_by_username("Admin")
         if not admin_user:
-            admin_user = UserData(
+            create_user(
                 username="Admin",
                 password_hash=generate_password_hash("112122"),
                 email="admin@example.com",
                 is_admin=True
             )
-            db.session.add(admin_user)
             print("✅ Admin user created")
         
-        # Check if we have any licenses, if not create some
-        if License.query.count() == 0:
-            licenses = [
-                License(key="80595DCBA3ED05E9", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
-                License(key="516C732CEB2F4F6D", expiry=datetime.now(timezone.utc) + timedelta(days=365)),
+        # Create sample licenses if none exist
+        if mongo.db[LICENSES_COLLECTION].count_documents({}) == 0:
+            sample_licenses = [
+                create_license("80595DCBA3ED05E9"),
+                create_license("516C732CEB2F4F6D"),
+                create_license("TEST123456789ABC")
             ]
-            for license_obj in licenses:
-                db.session.add(license_obj)
             print("✅ Sample licenses created")
         
-        db.session.commit()
-        print("✅ Database initialized successfully")
+        print("✅ MongoDB initialized successfully")
         
     except Exception as e:
-        print(f"❌ Database initialization error: {e}")
-        # Try to recover by dropping and recreating
-        try:
-            db.session.rollback()
-            db.drop_all()
-            db.create_all()
-            print("✅ Database recovered by recreating tables")
-        except Exception as e2:
-            print(f"❌ Database recovery failed: {e2}")
+        print(f"❌ MongoDB initialization error: {e}")
 
 # Create app instance
 app = create_app()
@@ -476,9 +452,12 @@ def admin_required(f):
 def user_login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('user_logged_in') or not session.get('user_id'):
-            app.logger.warning(f"Authentication failed: user_logged_in={session.get('user_logged_in')}, user_id={session.get('user_id')}")
-            return jsonify({"error": "Authentication required"}), 403
+        if not session.get('user_logged_in'):
+            return jsonify({"error": "Please login first"}), 403
+
+        if not session.get('license_key') or not session.get('user_id'):
+            return jsonify({"error": "Invalid session. Please re-login"}), 403
+
         return f(*args, **kwargs)
     return decorated_function
 
@@ -591,11 +570,7 @@ def run_scrapers_concurrently(platforms, keywords, location, session_id):
                 
                 # Update session progress in database
                 try:
-                    with app.app_context():
-                        session = ExtractionSession.query.filter_by(session_id=session_id).first()
-                        if session:
-                            session.total_results = len(all_results)
-                            db.session.commit()
+                    update_session_progress(session_id, len(all_results))
                 except Exception as e:
                     app.logger.error(f"Error updating session progress: {e}")
                     
@@ -604,18 +579,6 @@ def run_scrapers_concurrently(platforms, keywords, location, session_id):
     
     app.logger.info(f"🎯 TOTAL RESULTS: {len(all_results)} from {len(platforms)} platforms")
     return all_results
-
-def update_extraction_session(session_id, results_count):
-    """Update extraction session with progress - FIXED for background threads"""
-    try:
-        # Create application context for background thread
-        with app.app_context():
-            session = ExtractionSession.query.filter_by(session_id=session_id).first()
-            if session:
-                session.total_results += results_count
-                db.session.commit()
-    except Exception as e:
-        app.logger.error(f"Error updating session: {e}")
 
 # -----------------------
 # Enhanced Routes
@@ -656,22 +619,10 @@ def append_result(item: dict, session_id=None):
     # Persist to database if session_id provided
     if session_id:
         try:
-            with app.app_context():
-                session_obj = ExtractionSession.query.filter_by(session_id=session_id).first()
-                if session_obj:
-                    extracted_data = ExtractedData(
-                        session_id=session_obj.id,
-                        phone_number=item.get('number', ''),
-                        business_name=item.get('name', ''),
-                        address=item.get('address', ''),
-                        source=item.get('source', 'unknown')
-                    )
-                    db.session.add(extracted_data)
-                    session_obj.total_results = len(EXTRACTION_DATA)
-                    db.session.commit()
+            add_extracted_data(session_id, [item])
+            update_session_progress(session_id, len(EXTRACTION_DATA))
         except Exception as e:
             app.logger.error(f"Error saving to database: {e}")
-            db.session.rollback()
 
 # Helper to get snapshot safely
 def get_snapshot():
@@ -741,37 +692,14 @@ def start_extraction_worker(keywords, location, platforms, session_id, license_k
             
             # Persist results to database
             try:
-                with app.app_context():
-                    session_obj = ExtractionSession.query.filter_by(session_id=session_id).first()
-                    if session_obj:
-                        for result in results:
-                            extracted_data = ExtractedData(
-                                session_id=session_obj.id,
-                                phone_number=result.get('number', ''),
-                                business_name=result.get('name', ''),
-                                address=result.get('address', ''),
-                                source=result.get('source', 'unknown')
-                            )
-                            db.session.add(extracted_data)
-                        session_obj.total_results = len(results)
-                        session_obj.finished_at = datetime.now(timezone.utc)
-                        session_obj.status = 'completed'
-                        db.session.commit()
-                        app.logger.info(f"✅ Saved {len(results)} results to database for session {session_id}")
+                add_extracted_data(session_id, results)
+                app.logger.info(f"✅ Saved {len(results)} results to database for session {session_id}")
             except Exception as e:
                 app.logger.error(f"❌ Error saving results to database: {e}")
-                db.session.rollback()
 
         # Mark session as completed
         try:
-            with app.app_context():
-                session_obj = ExtractionSession.query.filter_by(session_id=session_id).first()
-                if session_obj:
-                    if not session_obj.finished_at:
-                        session_obj.finished_at = datetime.now(timezone.utc)
-                    if session_obj.status == 'running':
-                        session_obj.status = 'completed'
-                    db.session.commit()
+            update_session_progress(session_id, len(results), 'completed')
         except Exception as e:
             app.logger.error(f"Error updating session completion: {e}")
 
@@ -779,12 +707,7 @@ def start_extraction_worker(keywords, location, platforms, session_id, license_k
         app.logger.exception(f"❌ WORKER: Unexpected error: {e}")
         # Mark session as failed
         try:
-            with app.app_context():
-                session_obj = ExtractionSession.query.filter_by(session_id=session_id).first()
-                if session_obj:
-                    session_obj.finished_at = datetime.now(timezone.utc)
-                    session_obj.status = 'failed'
-                    db.session.commit()
+            update_session_progress(session_id, 0, 'failed')
         except Exception as e:
             app.logger.error(f"Error updating session failure: {e}")
 
@@ -817,30 +740,15 @@ def start_extraction():
     if len(platforms) > 10:
         return jsonify({"error": "Maximum 10 platforms allowed"}), 400
 
-    # Get current user and license - FIXED
+    # Get current user and license
     license_key = session.get('license_key')
-    user_id = session.get('user_id')  # <-- ADD THIS LINE
+    user_id = session.get('user_id')
 
     if not session.get('user_logged_in') or not license_key or not user_id:
         return jsonify({"error": "User session invalid"}), 403
 
     # Create extraction session
-    session_id = str(uuid.uuid4())
-    extraction_session = ExtractionSession(
-        session_id=session_id,
-        user_id=user_id,  # <-- Now user_id is defined
-        license_key=license_key,
-        keywords=keywords,
-        location=location,
-        platforms=json.dumps(platforms)
-    )
-    
-    try:
-        db.session.add(extraction_session)
-        db.session.commit()
-    except Exception as e:
-        app.logger.error(f"Error creating extraction session: {e}")
-        return jsonify({"error": "Failed to start extraction session"}), 500
+    session_id = create_extraction_session(user_id, license_key, keywords, location, platforms)
 
     # Clean slate: clear previous results under lock
     with DATA_LOCK:
@@ -861,10 +769,7 @@ def start_extraction():
     except Exception as e:
         EXTRACTING = False
         # Mark session as failed
-        extraction_session.status = 'failed'
-        extraction_session.finished_at = datetime.now(timezone.utc)
-        db.session.commit()
-        
+        update_session_progress(session_id, 0, 'failed')
         app.logger.exception(f"[EXTRACT] Failed to start thread: {e}")
         return jsonify({"error": f"Failed to start extraction: {str(e)}"}), 500
 
@@ -877,7 +782,7 @@ def start_extraction():
 # Enhanced stop extraction
 @limiter.limit("10/minute")
 @app.route("/stop-extraction", methods=["POST"])
-@csrf.exempt  # Add this line
+@csrf.exempt
 @user_login_required
 def stop_extraction():
     global EXTRACTING
@@ -889,11 +794,10 @@ def stop_extraction():
     
     # Update any active sessions
     try:
-        active_sessions = ExtractionSession.query.filter_by(status='running').all()
-        for session in active_sessions:
-            session.status = 'stopped'
-            session.finished_at = datetime.now(timezone.utc)
-        db.session.commit()
+        mongo.db[SESSIONS_COLLECTION].update_many(
+            {'status': 'running'},
+            {'$set': {'status': 'stopped', 'finished_at': datetime.now(timezone.utc)}}
+        )
     except Exception as e:
         app.logger.error(f"Error updating stopped sessions: {e}")
     
@@ -912,18 +816,16 @@ def view_extraction():
             # Get latest session for current user
             user_id = session.get('user_id')
             if user_id:
-                latest_session = ExtractionSession.query.filter_by(user_id=user_id)\
-                    .order_by(ExtractionSession.started_at.desc()).first()
+                latest_session = get_latest_user_session(user_id)
                 
                 if latest_session:
-                    extracted_data = ExtractedData.query.filter_by(session_id=latest_session.id)\
-                        .order_by(ExtractedData.extracted_at.desc()).limit(1000).all()
+                    extracted_data = get_session_data(latest_session['session_id'])
                     
                     snapshot = [{
-                        'number': item.phone_number,
-                        'name': item.business_name,
-                        'address': item.address,
-                        'source': item.source
+                        'number': item['phone_number'],
+                        'name': item['business_name'],
+                        'address': item['address'],
+                        'source': item['source']
                     } for item in extracted_data]
                     
                     # Also update global variable for backward compatibility
@@ -931,7 +833,7 @@ def view_extraction():
                         EXTRACTION_DATA.clear()
                         EXTRACTION_DATA.extend(snapshot)
                         
-                    app.logger.info(f"📊 Database view: {len(snapshot)} results from session {latest_session.id}")
+                    app.logger.info(f"📊 Database view: {len(snapshot)} results from session {latest_session['session_id']}")
                 else:
                     snapshot = get_snapshot()
             else:
@@ -960,16 +862,19 @@ def export_data():
     try:
         if export_type == 'historical' and user_id:
             # Export all user data
-            extracted_data = ExtractedData.query\
-                .join(ExtractionSession)\
-                .filter(ExtractionSession.user_id == user_id)\
-                .order_by(ExtractedData.extracted_at.desc()).all()
+            user_sessions = get_user_sessions(user_id, limit=1000)
+            session_ids = [session['session_id'] for session in user_sessions]
+            
+            extracted_data = list(mongo.db[EXTRACTED_DATA_COLLECTION].find(
+                {'session_id': {'$in': session_ids}}
+            ).sort('extracted_at', DESCENDING))
+            
             data_list = [{
-                'number': item.phone_number,
-                'name': item.business_name,
-                'address': item.address,
-                'source': item.source,
-                'extracted_at': item.extracted_at.isoformat()
+                'number': item['phone_number'],
+                'name': item['business_name'],
+                'address': item['address'],
+                'source': item['source'],
+                'extracted_at': item['extracted_at'].isoformat()
             } for item in extracted_data]
         else:
             # Export current session data
@@ -1046,47 +951,42 @@ def user_register():
             return jsonify({"success": False, "error": "Password must be at least 6 characters."})
         
         # Check if username exists
-        existing_user = UserData.query.filter_by(username=username).first()
+        existing_user = get_user_by_username(username)
         if existing_user:
             return jsonify({"success": False, "error": "Username already exists."})
         
         # Validate license
-        license_obj = License.query.filter_by(key=license_key).first()
+        license_obj = get_license_by_key(license_key)
         if not license_obj:
             return jsonify({"success": False, "error": "Invalid license key."})
         
-        if license_obj.revoked:
+        if license_obj.get('revoked'):
             return jsonify({"success": False, "error": "License has been revoked."})
         
-        if license_obj.user_id:
+        if license_obj.get('user_id'):
             return jsonify({"success": False, "error": "License is already assigned to another user."})
         
         # Check expiry
-        if license_obj.expiry:
-            expiry = license_obj.expiry
+        if license_obj.get('expiry'):
+            expiry = license_obj['expiry']
             if expiry.tzinfo is None:
                 expiry = expiry.replace(tzinfo=timezone.utc)
             if expiry < datetime.now(timezone.utc):
                 return jsonify({"success": False, "error": "License has expired."})
         
         # Create user
-        new_user = UserData(
+        user_id = create_user(
             username=username,
             password_hash=generate_password_hash(password),
             email=email or None
         )
         
-        db.session.add(new_user)
-        db.session.flush()  # Get the user ID
-        
         # Assign license to user
-        license_obj.user_id = new_user.id
-        
-        db.session.commit()
+        update_license(license_key, {'user_id': user_id})
         
         # Auto-login
         session['user_logged_in'] = True
-        session['user_id'] = new_user.id
+        session['user_id'] = user_id
         session['username'] = username
         session['license_key'] = license_key
         session.permanent = True
@@ -1096,7 +996,6 @@ def user_register():
         return jsonify({"success": True, "message": "Registration successful!"})
         
     except Exception as e:
-        db.session.rollback()
         app.logger.error(f"Error during user registration: {str(e)}")
         return jsonify({"success": False, "error": "Server error occurred. Please try again."})
 
@@ -1111,62 +1010,60 @@ def user_login():
             return jsonify({"success": False, "error": "License key is required."})
 
         # Try to find the license
-        license_obj = License.query.filter_by(key=license_key).first()
+        license_obj = get_license_by_key(license_key)
         
         if not license_obj:
             return jsonify({"success": False, "error": "Invalid license key."})
         
-        if license_obj.revoked:
+        if license_obj.get('revoked'):
             return jsonify({"success": False, "error": "License has been revoked."})
 
         # Check expiry
-        if license_obj.expiry:
-            expiry = license_obj.expiry
+        if license_obj.get('expiry'):
+            expiry = license_obj['expiry']
             if expiry.tzinfo is None:
                 expiry = expiry.replace(tzinfo=timezone.utc)
             if expiry < datetime.now(timezone.utc):
                 return jsonify({"success": False, "error": "License has expired."})
 
         # Update license usage
-        license_obj.last_used = datetime.now(timezone.utc)
-        license_obj.usage_count += 1
+        update_license_usage(license_key)
         
         # Get or create user
-        user = UserData.query.get(license_obj.user_id) if license_obj.user_id else None
+        user = None
+        if license_obj.get('user_id'):
+            user = get_user_by_id(license_obj['user_id'])
         
         if not user:
             # Create a temporary user for this license
             temp_username = f"user_{license_key[:8]}"
-            user = UserData.query.filter_by(username=temp_username).first()
-            if not user:
-                user = UserData(
+            user_data = get_user_by_username(temp_username)
+            if not user_data:
+                user_id = create_user(
                     username=temp_username,
                     password_hash=generate_password_hash(secrets.token_hex(16)),
                     is_active=True
                 )
-                db.session.add(user)
-                db.session.flush()
+                user_data = get_user_by_id(user_id)
             
             # Assign license to user
-            license_obj.user_id = user.id
+            update_license(license_key, {'user_id': user_data['_id']})
+            user = user_data
         
         # Set session variables
         session['user_logged_in'] = True
         session['license_key'] = license_key
-        session['user_id'] = user.id
-        session['username'] = user.username
+        session['user_id'] = str(user['_id'])
+        session['username'] = user['username']
         session.permanent = True
         
         # Update user last login
-        user.last_login = datetime.now(timezone.utc)
+        update_user(str(user['_id']), {'last_login': datetime.now(timezone.utc)})
         
-        db.session.commit()
-        
-        print(f"✅ User login successful: {user.username} with license {license_key}")
-        return jsonify({"success": True, "username": user.username})
+        print(f"✅ User login successful: {user['username']} with license {license_key}")
+        return jsonify({"success": True, "username": user['username']})
         
     except Exception as e:
-        db.session.rollback()
         print(f"❌ Login error: {str(e)}")
         return jsonify({"success": False, "error": "Database error. Please try again."})
 
@@ -1194,21 +1091,23 @@ def admin_login():
     
     return render_template("admin_login.html")
 
-# Enhanced admin routes - SIMPLER FIX
+# Enhanced admin routes
 @app.route("/admin/dashboard")
 @admin_required
 def admin_dashboard():
     """Enhanced admin dashboard"""
     extraction_active = EXTRACTING
     extracted_count = len(EXTRACTION_DATA)
-    user_count = UserData.query.count()
-    licenses = License.query.all()
-    users = UserData.query.all()
+    
+    # Get stats from MongoDB
+    user_count = get_users_count()
+    licenses = get_all_licenses()
+    users = get_all_users()
     
     # Enhanced stats
-    total_extractions = ExtractionSession.query.count()
-    active_sessions = ExtractionSession.query.filter_by(status='running').count()
-    total_extracted_data = ExtractedData.query.count()
+    total_extractions = get_sessions_count()
+    active_sessions = get_active_sessions_count()
+    total_extracted_data = get_extracted_data_count()
     
     # Use naive datetime to avoid timezone issues
     now_naive = datetime.now()
@@ -1227,7 +1126,7 @@ def admin_dashboard():
         current_user=session.get("admin_username", "Admin")
     )
 
-# Admin logout route - CORRECTED
+# Admin logout route
 @app.route("/admin/logout")
 def admin_logout():
     """Admin logout"""
@@ -1236,14 +1135,14 @@ def admin_logout():
     flash("Admin logged out successfully", "success")
     return redirect(url_for("admin_login"))
 
-# License generation route - CORRECTED
+# License generation route
 @app.route("/generate-license", methods=["POST"])
 @admin_required
 def generate_license():
     """Generate new license key with enhanced options"""
     expiry_days = request.form.get("expiry_days", type=int, default=30)
     max_usage = request.form.get("max_usage", type=int, default=1000)
-    user_id = request.form.get("user_id", type=int)
+    user_id = request.form.get("user_id", type=str)
     
     if expiry_days and expiry_days < 1:
         flash("Expiry days must be a positive number", "error")
@@ -1253,22 +1152,17 @@ def generate_license():
         flash("Max usage must be a positive number", "error")
         return redirect(url_for("admin_dashboard"))
     
-    expiry = datetime.now(timezone.utc) + timedelta(days=expiry_days) if expiry_days else None
-    
-    new_license = License(
-        key=secrets.token_hex(8).upper(),
-        expiry=expiry,
+    new_license = create_license(
+        secrets.token_hex(8).upper(),
+        expiry_days=expiry_days,
         max_usage=max_usage,
-        user_id=user_id
+        user_id=user_id if user_id else None
     )
     
     try:
-        db.session.add(new_license)
-        db.session.commit()
-        flash(f"New license generated successfully: {new_license.key}", "success")
-        app.logger.info(f"New license generated: {new_license.key}")
+        flash(f"New license generated successfully: {new_license['key']}", "success")
+        app.logger.info(f"New license generated: {new_license['key']}")
     except Exception as e:
-        db.session.rollback()
         flash("Error generating license", "error")
         app.logger.error(f"Error generating license: {str(e)}")
     
@@ -1278,15 +1172,13 @@ def generate_license():
 @admin_required
 def admin_revoke_license(license_key):
     try:
-        lic = License.query.filter_by(key=license_key).first()
-        if not lic:
+        result = update_license(license_key, {'revoked': True})
+        if result.modified_count == 0:
             return jsonify({"success": False, "error": "License not found"}), 404
-        lic.revoked = True
-        db.session.commit()
+        
         app.logger.info(f"Admin revoked license {license_key}")
         return jsonify({"success": True, "message": "License revoked"})
-    except SQLAlchemyError as e:
-        db.session.rollback()
+    except Exception as e:
         app.logger.exception(f"Error revoking license {license_key}: {e}")
         return jsonify({"success": False, "error": "Database error"}), 500
 
@@ -1301,25 +1193,24 @@ def admin_extend_license(license_key):
     if days <= 0:
         return jsonify({"success": False, "error": "Days must be positive"}), 400
 
-    lic = License.query.filter_by(key=license_key).first()
-    if not lic:
+    license_obj = get_license_by_key(license_key)
+    if not license_obj:
         return jsonify({"success": False, "error": "License not found"}), 404
 
     try:
         now = datetime.now(timezone.utc)
-        if lic.expiry is None:
+        if license_obj.get('expiry') is None:
             new_expiry = now + timedelta(days=days)
         else:
-            expiry = lic.expiry
+            expiry = license_obj['expiry']
             if expiry.tzinfo is None:
                 expiry = expiry.replace(tzinfo=timezone.utc)
             new_expiry = expiry + timedelta(days=days)
-        lic.expiry = new_expiry
-        db.session.commit()
+        
+        update_license(license_key, {'expiry': new_expiry})
         app.logger.info(f"Admin extended license {license_key} by {days} days to {new_expiry.isoformat()}")
-        return jsonify({"success": True, "new_expiry": lic.expiry.isoformat()})
-    except SQLAlchemyError as e:
-        db.session.rollback()
+        return jsonify({"success": True, "new_expiry": new_expiry.isoformat()})
+    except Exception as e:
         app.logger.exception(f"Error extending license {license_key}: {e}")
         return jsonify({"success": False, "error": "Database error"}), 500
 
@@ -1334,82 +1225,74 @@ def admin_reduce_license(license_key):
     if days <= 0:
         return jsonify({"success": False, "error": "Days must be positive"}), 400
 
-    lic = License.query.filter_by(key=license_key).first()
-    if not lic:
+    license_obj = get_license_by_key(license_key)
+    if not license_obj:
         return jsonify({"success": False, "error": "License not found"}), 404
 
-    if not lic.expiry:
+    if not license_obj.get('expiry'):
         return jsonify({"success": False, "error": "Cannot reduce an open-ended license"}), 400
 
     try:
-        expiry = lic.expiry
+        expiry = license_obj['expiry']
         if expiry.tzinfo is None:
             expiry = expiry.replace(tzinfo=timezone.utc)
         new_expiry = expiry - timedelta(days=days)
         # Prevent making expiry earlier than now (optional policy)
         now = datetime.now(timezone.utc)
         if new_expiry < now:
-            lic.expiry = now
-        else:
-            lic.expiry = new_expiry
-        db.session.commit()
-        app.logger.info(f"Admin reduced license {license_key} by {days} days to {lic.expiry.isoformat()}")
-        return jsonify({"success": True, "new_expiry": lic.expiry.isoformat()})
-    except SQLAlchemyError as e:
-        db.session.rollback()
+            new_expiry = now
+        
+        update_license(license_key, {'expiry': new_expiry})
+        app.logger.info(f"Admin reduced license {license_key} by {days} days to {new_expiry.isoformat()}")
+        return jsonify({"success": True, "new_expiry": new_expiry.isoformat()})
+    except Exception as e:
         app.logger.exception(f"Error reducing license {license_key}: {e}")
         return jsonify({"success": False, "error": "Database error"}), 500
 
 @app.route("/admin/license/<license_key>/reset-usage", methods=["POST"])
 @admin_required
 def admin_reset_license_usage(license_key):
-    lic = License.query.filter_by(key=license_key).first()
-    if not lic:
+    result = update_license(license_key, {'usage_count': 0, 'last_used': None})
+    if result.modified_count == 0:
         return jsonify({"success": False, "error": "License not found"}), 404
-    try:
-        lic.usage_count = 0
-        lic.last_used = None
-        db.session.commit()
-        app.logger.info(f"Admin reset usage for license {license_key}")
-        return jsonify({"success": True, "message": "Usage reset"})
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        app.logger.exception(f"Error resetting usage for license {license_key}: {e}")
-        return jsonify({"success": False, "error": "Database error"}), 500
+    
+    app.logger.info(f"Admin reset usage for license {license_key}")
+    return jsonify({"success": True, "message": "Usage reset"})
 
 @app.route("/admin/license/<license_key>/assign", methods=["POST"])
 @admin_required
 def admin_assign_license(license_key):
     # assign to username in form, or empty to unassign
     username = (request.form.get("username") or "").strip()
-    lic = License.query.filter_by(key=license_key).first()
-    if not lic:
+    
+    if username == "":
+        result = update_license(license_key, {'user_id': None})
+        if result.modified_count == 0:
+            return jsonify({"success": False, "error": "License not found"}), 404
+        
+        app.logger.info(f"Admin unassigned license {license_key}")
+        return jsonify({"success": True, "message": "Unassigned"})
+    
+    user = get_user_by_username(username)
+    if not user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+    
+    result = update_license(license_key, {'user_id': str(user['_id'])})
+    if result.modified_count == 0:
         return jsonify({"success": False, "error": "License not found"}), 404
-
-    try:
-        if username == "":
-            lic.user_id = None
-            db.session.commit()
-            app.logger.info(f"Admin unassigned license {license_key}")
-            return jsonify({"success": True, "message": "Unassigned"})
-        user = UserData.query.filter_by(username=username).first()
-        if not user:
-            return jsonify({"success": False, "error": "User not found"}), 404
-        lic.user_id = user.id
-        db.session.commit()
-        app.logger.info(f"Admin assigned license {license_key} to user {username}")
-        return jsonify({"success": True, "message": f"Assigned to {username}"})
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        app.logger.exception(f"Error assigning license {license_key}: {e}")
-        return jsonify({"success": False, "error": "Database error"}), 500
+    
+    app.logger.info(f"Admin assigned license {license_key} to user {username}")
+    return jsonify({"success": True, "message": f"Assigned to {username}"})
 
 # Add enhanced user management
-@app.route("/admin/edit-user/<int:user_id>", methods=["GET", "POST"])
+@app.route("/admin/edit-user/<user_id>", methods=["GET", "POST"])
 @admin_required
 def edit_user(user_id):
     """Enhanced user editing"""
-    user = UserData.query.get_or_404(user_id)
+    user = get_user_by_id(user_id)
+    if not user:
+        flash("User not found", "error")
+        return redirect(url_for("admin_dashboard"))
     
     if request.method == "POST":
         username = request.form.get("username", "").strip()
@@ -1422,15 +1305,17 @@ def edit_user(user_id):
             return render_template("edit_user.html", user=user)
         
         # Check if username is taken by another user
-        existing_user = UserData.query.filter(UserData.username == username, UserData.id != user_id).first()
-        if existing_user:
+        existing_user = get_user_by_username(username)
+        if existing_user and str(existing_user['_id']) != user_id:
             flash("Username already taken", "error")
             return render_template("edit_user.html", user=user)
         
-        user.username = username
-        user.email = email
-        user.is_active = is_active
-        user.is_admin = is_admin
+        update_data = {
+            'username': username,
+            'email': email,
+            'is_active': is_active,
+            'is_admin': is_admin
+        }
         
         # Update password if provided
         new_password = request.form.get("new_password")
@@ -1438,29 +1323,52 @@ def edit_user(user_id):
             if len(new_password) < 6:
                 flash("Password must be at least 6 characters", "error")
                 return render_template("edit_user.html", user=user)
-            user.password_hash = generate_password_hash(new_password)
+            update_data['password_hash'] = generate_password_hash(new_password)
         
         try:
-            db.session.commit()
+            update_user(user_id, update_data)
             flash(f"User {username} updated successfully", "success")
             return redirect(url_for("admin_dashboard"))
         except Exception as e:
-            db.session.rollback()
             flash("Error updating user", "error")
             app.logger.error(f"Error updating user: {str(e)}")
     
     return render_template("edit_user.html", user=user)
 
 # Add user sessions view
-@app.route("/admin/user-sessions/<int:user_id>")
+@app.route("/admin/user-sessions/<user_id>")
 @admin_required
 def user_sessions(user_id):
     """View user extraction sessions"""
-    user = UserData.query.get_or_404(user_id)
-    sessions = ExtractionSession.query.filter_by(user_id=user_id)\
-        .order_by(ExtractionSession.started_at.desc()).all()
+    user = get_user_by_id(user_id)
+    if not user:
+        flash("User not found", "error")
+        return redirect(url_for("admin_dashboard"))
+    
+    sessions = get_user_sessions(user_id)
     
     return render_template("user_sessions.html", user=user, sessions=sessions)
+
+# Database setup route
+@app.route('/setup-db')
+def setup_db():
+    """Manual database setup"""
+    try:
+        init_mongodb()
+        return """
+        <h1>Database Setup Complete!</h1>
+        <p>MongoDB has been initialized with sample data.</p>
+        <p>Try logging in with these license keys:</p>
+        <ul>
+            <li>80595DCBA3ED05E9</li>
+            <li>516C732CEB2F4F6D</li>
+            <li>TEST123456789ABC</li>
+        </ul>
+        <p>Admin: Admin / 112122</p>
+        <p><a href="/">Go to Main App</a></p>
+        """
+    except Exception as e:
+        return f"<h1>Database Setup Error</h1><p>Error: {str(e)}</p>"
 
 # Enhanced health check
 @app.route('/health')
@@ -1471,7 +1379,7 @@ def health_check():
         'timestamp': datetime.now(timezone.utc).isoformat(),
         'extraction_active': EXTRACTING,
         'data_count': len(EXTRACTION_DATA),
-        'database_connected': True,
+        'database_connected': MONGO_AVAILABLE,
         'redis_connected': redis_client is not None,
         'thread_pool_active': thread_pool._threads is not None,
         'version': '2.0.0',
@@ -1479,7 +1387,12 @@ def health_check():
     }
     
     try:
-        db.session.execute('SELECT 1')
+        # Test MongoDB connection
+        if MONGO_AVAILABLE:
+            mongo.db.command('ping')
+        else:
+            health_status['database_connected'] = False
+            health_status['warning'] = 'MongoDB not available'
     except Exception as e:
         health_status.update({
             'status': 'unhealthy',
@@ -1505,7 +1418,7 @@ def health_check():
 if __name__ == "__main__":
     print("[START] Starting Enhanced Flask Application")
     print(f"[OK] CSRF protection: {'Enabled' if CSRF_AVAILABLE else 'Disabled'}")
-    print("[OK] Database initialized with enhanced models")
+    print(f"[OK] MongoDB: {'Enabled' if MONGO_AVAILABLE else 'Disabled'}")
     print("[OK] Redis caching: Enabled" if redis_client else "[WARN] Redis caching: Disabled")
     print("[OK] Concurrent scraping enabled")
     print("[OK] Enhanced admin panel available")
